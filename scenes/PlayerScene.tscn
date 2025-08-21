@@ -1,0 +1,76 @@
+[gd_scene load_steps=10 format=3 uid="uid://bqwactsbgtg1e"]
+
+[ext_resource type="Texture2D" uid="uid://cexgh0xqjw6tg" path="res://sprites/goblin.png" id="1_f302p"]
+[ext_resource type="Script" uid="uid://drsopayjvluf7" path="res://scripts/player.gd" id="1_vdp4a"]
+[ext_resource type="PackedScene" uid="uid://ceokyxnjfscgk" path="res://scenes/HurtboxScene.tscn" id="3_3lb1s"]
+[ext_resource type="Texture2D" uid="uid://bg2gvwofdvhfk" path="res://sprites/healthbar_frame.png" id="5_b4xdg"]
+[ext_resource type="Texture2D" uid="uid://crq5k0vpp8l6w" path="res://sprites/healthbar_fill.png" id="6_qxfha"]
+[ext_resource type="Texture2D" uid="uid://bufxoo20k5lhc" path="res://sprites/xp_bar_frame.png" id="7_hao31"]
+[ext_resource type="Texture2D" uid="uid://bvv1dk2pyq6uc" path="res://sprites/xp_bar_fill.png" id="8_r34t3"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_vdp4a"]
+radius = 1.0
+height = 4.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_b4xdg"]
+size = Vector2(4, 6)
+
+[node name="Player" type="CharacterBody2D"]
+z_index = 1
+motion_mode = 1
+script = ExtResource("1_vdp4a")
+
+[node name="playerSprite" type="Sprite2D" parent="."]
+texture_filter = 1
+texture_repeat = 1
+texture = ExtResource("1_f302p")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="playerCollision" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_vdp4a")
+
+[node name="playerHurtbox" parent="." instance=ExtResource("3_3lb1s")]
+collision_layer = 2
+collision_mask = 4
+hurtBoxState = 2
+
+[node name="hurtboxCollision" parent="playerHurtbox" index="0"]
+shape = SubResource("RectangleShape2D_b4xdg")
+
+[node name="attacks" type="Node2D" parent="."]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="GUIControl" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="HealthBar" type="TextureProgressBar" parent="CanvasLayer/GUIControl"]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 52.0
+offset_right = 136.0
+offset_bottom = 68.0
+scale = Vector2(0.25, 0.25)
+value = 100.0
+texture_over = ExtResource("5_b4xdg")
+texture_progress = ExtResource("6_qxfha")
+
+[node name="XPBar" type="TextureProgressBar" parent="CanvasLayer/GUIControl"]
+layout_mode = 0
+offset_top = 2.0
+offset_right = 640.0
+offset_bottom = 26.0
+scale = Vector2(0.25, 0.25)
+texture_over = ExtResource("7_hao31")
+texture_progress = ExtResource("8_r34t3")
+
+[connection signal="hurt" from="playerHurtbox" to="." method="_on_hurtbox_hurt"]
+
+[editable path="playerHurtbox"]

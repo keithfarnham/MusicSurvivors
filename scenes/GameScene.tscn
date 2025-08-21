@@ -1,0 +1,81 @@
+[gd_scene load_steps=7 format=3 uid="uid://bku5fgkivuptn"]
+
+[ext_resource type="Texture2D" uid="uid://bx03we2g2cgar" path="res://sprites/backgroundgrass.png" id="1_xy3my"]
+[ext_resource type="PackedScene" uid="uid://bqwactsbgtg1e" path="res://scenes/PlayerScene.tscn" id="2_cxv17"]
+[ext_resource type="PackedScene" uid="uid://yxccevfb407i" path="res://scenes/Enemy1Scene.tscn" id="3_cxv17"]
+[ext_resource type="PackedScene" uid="uid://duobub0tgj0ij" path="res://scenes/songdebug.tscn" id="4_xs4ih"]
+[ext_resource type="Script" uid="uid://dnwwaadtspx6u" path="res://scripts/audio.gd" id="5_7s5hy"]
+[ext_resource type="MidiResource" uid="uid://84ninnh3nmh4" path="res://audio/testsong/testsong_lv1.mid" id="6_xs4ih"]
+
+[node name="Game" type="Node2D"]
+
+[node name="Background" type="Sprite2D" parent="."]
+z_index = -1
+texture_filter = 1
+texture_repeat = 3
+texture = ExtResource("1_xy3my")
+region_enabled = true
+region_rect = Rect2(0, 0, 1000, 1000)
+
+[node name="Player" parent="." groups=["Player"] instance=ExtResource("2_cxv17")]
+position = Vector2(76, 37)
+hp = 100
+speed = 40.0
+
+[node name="songdebug" parent="Player/CanvasLayer" index="1" instance=ExtResource("4_xs4ih")]
+visible = false
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_right = 122.07
+offset_bottom = 67.495
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="Enemy1" parent="." instance=ExtResource("3_cxv17")]
+z_index = 1
+texture_filter = 1
+position = Vector2(33, -26)
+scale = Vector2(0.5, 0.5)
+
+[node name="Enemy2" parent="." instance=ExtResource("3_cxv17")]
+z_index = 1
+texture_filter = 1
+position = Vector2(-7, 4)
+scale = Vector2(0.5, 0.5)
+
+[node name="Timer" type="Timer" parent="."]
+
+[node name="Audio" type="Node" parent="."]
+script = ExtResource("5_7s5hy")
+
+[node name="kick" type="AudioStreamPlayer" parent="Audio"]
+max_polyphony = 8
+
+[node name="snare" type="AudioStreamPlayer" parent="Audio"]
+max_polyphony = 8
+
+[node name="cymb" type="AudioStreamPlayer" parent="Audio"]
+max_polyphony = 8
+
+[node name="sample" type="AudioStreamPlayer" parent="Audio"]
+max_polyphony = 8
+
+[node name="bass" type="AudioStreamPlayer" parent="Audio"]
+max_polyphony = 8
+
+[node name="lead" type="AudioStreamPlayer" parent="Audio"]
+max_polyphony = 8
+
+[node name="arp" type="AudioStreamPlayer" parent="Audio"]
+max_polyphony = 8
+
+[node name="chord" type="AudioStreamPlayer" parent="Audio"]
+max_polyphony = 8
+
+[node name="MidiPlayer" type="MidiPlayer" parent="Audio"]
+midi = ExtResource("6_xs4ih")
+
+[editable path="Player"]
+[editable path="Player/playerHurtbox"]
+[editable path="Player/CanvasLayer/songdebug"]
