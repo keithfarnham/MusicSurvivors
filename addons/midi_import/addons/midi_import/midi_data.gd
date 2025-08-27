@@ -42,6 +42,7 @@ static func load_packed_byte_array(bytes: PackedByteArray) -> MidiData:
 		if track == null:
 			_log("chunk: is not a track: %s" % bytes.slice(0, 4).get_string_from_ascii())
 		else:
+			print("adding track " + str(data.tracks.size()))
 			data.tracks.append(track)
 	_log("MIDI import finish")
 	return data

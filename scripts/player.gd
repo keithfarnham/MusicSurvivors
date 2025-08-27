@@ -22,9 +22,9 @@ const MIN_DB = 60
 const ANIMATION_SPEED = 0.1
 const HEIGHT_SCALE = 100.0
 
-enum weapons {kick, cymb, bass}
+#enum weapons {kick, snare, cymb, sample, bass, lead, arp, chord}
 var kick_scene = preload("res://scenes/attacks/kick.tscn")
-var weapon_scenes = {weapons.kick: "res://scenes/attacks/drumkick.tscn", weapons.cymb: "", weapons.bass: ""}
+#var weapon_scenes = {weapons.kick: "res://scenes/attacks/drumkick.tscn", weapons.cymb: "", weapons.bass: ""}
 var active_weapons = []
 
 func _ready():
@@ -37,11 +37,11 @@ func _ready():
 	min_values.fill(0.0)
 	max_values.resize(VU_COUNT)
 	max_values.fill(0.0)
-	active_weapons.resize(weapons.size())
+	active_weapons.resize(SongData.tracks.size())
 	active_weapons.fill(false)
 	var kickInstance = kick_scene.instantiate()
 	attacks.add_child(kickInstance)
-	active_weapons[weapons.kick] = true
+	active_weapons[SongData.tracks.kick] = true
 
 func _process(delta):
 	var prev_hz = 0
@@ -64,38 +64,48 @@ func _process(delta):
 		fft.append(lerp(min_values[i], max_values[i], ANIMATION_SPEED))
 	#sprite.get_material().set_shader_parameter("freq_data", fft)
 	
+	#midi_sync()
+	call_deferred("midi_sync")
 	
-	var index = 0
-	var inital_delay := midi_data.tracks[0].get_offset_in_seconds()
-	var tempo_map: Array[Vector2i] = midi_data.tracks[0].get_tempo_map()
-	var us_per_beat := tempo_map[index].y
-	var time: int = 0
-	for event in midi_data.tracks[1].events:
-		time += event.delta_time
-		while time >= tempo_map[index].x:
-			index += 1
-			us_per_beat = tempo_map[index].y
-		inital_delay += midi_data.header.convert_to_seconds(us_per_beat, event.delta_time)
-		var note_on := event as MidiData.NoteOn
-		if note_on != null:
-			# TODO: wait for inital_delay and play note_on.note
-			inital_delay = 0
-	
-	
-	msDeltaSinceLastUpdate += delta * 1000.0
-	if SongData.currentSong == null:
-		print("Error: No Song Playing")
-	elif (msDeltaSinceLastUpdate >= SongData.currentSong.msPerBeat):
-		#TODO this will desync over time, should calc the diff between expected MS for the beat and the actual delta
-		msDeltaSinceLastUpdate = 0.0
-		for weapon in weapons:
-			if active_weapons[int(weapon)]:
-				match(weapon):
-					weapons.kick:
-						drumkick_attack()
+	#msDeltaSinceLastUpdate += delta * 1000.0
+	#if SongData.currentSong == null:
+		#print("Error: No Song Playing")
+	#elif (msDeltaSinceLastUpdate >= SongData.currentSong.msPerBeat):
+		##TODO this will desync over time, should calc the diff between expected MS for the beat and the actual delta
+		#msDeltaSinceLastUpdate = 0.0
+		#for weapon in weapons:
+			#if active_weapons[int(weapon)]:
+				#match(weapon):
+					#weapons.kick:
+						#drumkick_attack()
 
 func _physics_process(delta):
 	move(delta)
+
+func midi_sync():
+	var index := 0
+	var initial_delay := midi_data.tracks[0].get_offset_in_seconds()
+	var tempo_map: Array[Vector2i]
+	var us_per_beat
+	var time := 0.0
+	for trackIndex in midi_data.tracks.size():
+		var track = trackIndex as SongData.tracks
+		tempo_map = midi_data.tracks[trackIndex].get_tempo_map()
+		us_per_beat = tempo_map[index].y
+		print("track " + str(track))
+		for event in midi_data.tracks[trackIndex].events:
+			time += event.delta_time
+			while time >= tempo_map[index].x:
+				index += 1
+				us_per_beat = tempo_map[index].y
+			initial_delay += midi_data.header.convert_to_seconds(us_per_beat, event.delta_time)
+			var note_on := event as MidiData.NoteOn
+			if note_on != null:
+				# TODO: wait for inital_delay and play note_on.note
+				#idk if spamming the timer create is a great thing to do, might need to more properly integrate this into the _process() call
+				await get_tree().create_timer(initial_delay).timeout
+				#trigger_weapon()
+				initial_delay = 0
 
 func move(delta):
 	var direction = Input.get_vector("move_left","move_right","move_up","move_down")

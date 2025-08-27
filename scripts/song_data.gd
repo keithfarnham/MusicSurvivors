@@ -6,6 +6,8 @@ var currentSong : Song
 
 enum songs {testsong, brango4, lostinspace1}
 
+enum tracks {kick, snare, cymb, sample, bass, lead, arp, chord}
+
 var song_data := {
 	songs.testsong: Song.new("testsong", 136.0, 4)
 	#songs.brango4: Song.new("brango4", 187.0, 4),
