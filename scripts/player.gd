@@ -15,6 +15,7 @@ var msDeltaSinceLastUpdate = 0.0
 var spectrum
 var min_values = []
 var max_values = []
+var midi_data : MidiData = load("res://audio/testsong/testsong_lv1.mid")
 const VU_COUNT = 100
 const FREQ_MAX = 10000.0
 const MIN_DB = 60
@@ -62,6 +63,24 @@ func _process(delta):
 	for i in range(VU_COUNT):
 		fft.append(lerp(min_values[i], max_values[i], ANIMATION_SPEED))
 	#sprite.get_material().set_shader_parameter("freq_data", fft)
+	
+	
+	var index = 0
+	var inital_delay := midi_data.tracks[0].get_offset_in_seconds()
+	var tempo_map: Array[Vector2i] = midi_data.tracks[0].get_tempo_map()
+	var us_per_beat := tempo_map[index].y
+	var time: int = 0
+	for event in midi_data.tracks[1].events:
+		time += event.delta_time
+		while time >= tempo_map[index].x:
+			index += 1
+			us_per_beat = tempo_map[index].y
+		inital_delay += midi_data.header.convert_to_seconds(us_per_beat, event.delta_time)
+		var note_on := event as MidiData.NoteOn
+		if note_on != null:
+			# TODO: wait for inital_delay and play note_on.note
+			inital_delay = 0
+	
 	
 	msDeltaSinceLastUpdate += delta * 1000.0
 	if SongData.currentSong == null:
