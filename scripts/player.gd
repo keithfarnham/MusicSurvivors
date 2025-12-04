@@ -83,26 +83,26 @@ func _physics_process(delta):
 	move(delta)
 
 func midi_sync():
-	var index := 0
-	var initial_delay := midi_data.tracks[0].get_offset_in_seconds()
-	var tempo_map: Array[Vector2i]
-	var us_per_beat
-	var time := 0.0
-	for trackIndex in midi_data.tracks.size():
-		var track = trackIndex as SongData.tracks
-		tempo_map = midi_data.tracks[trackIndex].get_tempo_map()
-		us_per_beat = tempo_map[index].y
-		print("track " + str(track))
+	for trackIndex in range(midi_data.tracks.size()):
+		var index := 0
+		var initial_delay := midi_data.tracks[trackIndex].get_offset_in_seconds()
+		var tempo_map := midi_data.tracks[trackIndex].get_tempo_map()
+		if tempo_map.size() == 0:
+			continue
+		var us_per_beat := tempo_map[index].y
+		var time := 0.0
+		#print("track " + str(trackIndex))
 		for event in midi_data.tracks[trackIndex].events:
 			time += event.delta_time
-			while time >= tempo_map[index].x:
+			# advance tempo map index only while the next entry exists and time passes its threshold
+			while (index + 1) < tempo_map.size() and time >= tempo_map[index + 1].x:
 				index += 1
 				us_per_beat = tempo_map[index].y
 			initial_delay += midi_data.header.convert_to_seconds(us_per_beat, event.delta_time)
 			var note_on := event as MidiData.NoteOn
 			if note_on != null:
-				# TODO: wait for inital_delay and play note_on.note
-				#idk if spamming the timer create is a great thing to do, might need to more properly integrate this into the _process() call
+				# TODO: wait for initial_delay and play note_on.note
+				# using a timer per event for now
 				await get_tree().create_timer(initial_delay).timeout
 				#trigger_weapon()
 				initial_delay = 0
