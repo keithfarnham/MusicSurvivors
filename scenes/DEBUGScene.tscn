@@ -1,0 +1,257 @@
+[gd_scene format=3 uid="uid://ck33t0yhvn2ie"]
+
+[ext_resource type="Script" uid="uid://cdejuklv6ntfh" path="res://scripts/DebugScene.gd" id="1_hwf88"]
+[ext_resource type="Script" uid="uid://dnwwaadtspx6u" path="res://scripts/audio.gd" id="1_lgsdp"]
+
+[sub_resource type="Gradient" id="Gradient_hwf88"]
+offsets = PackedFloat32Array(0.6938776, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_4wgqe"]
+gradient = SubResource("Gradient_hwf88")
+
+[sub_resource type="Gradient" id="Gradient_4wgqe"]
+offsets = PackedFloat32Array(0.82653064, 1)
+colors = PackedColorArray(0, 0, 0.36078432, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_dagca"]
+gradient = SubResource("Gradient_4wgqe")
+
+[sub_resource type="Gradient" id="Gradient_dagca"]
+offsets = PackedFloat32Array(0.75510204, 1)
+colors = PackedColorArray(0.21176471, 0, 0, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_wi0h7"]
+gradient = SubResource("Gradient_dagca")
+
+[node name="AudioTest" type="Control" unique_id=1743367705]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_hwf88")
+
+[node name="Audio" type="Node" parent="." unique_id=1101367878]
+script = ExtResource("1_lgsdp")
+
+[node name="kick" type="AudioStreamPlayer" parent="Audio" unique_id=742718886]
+max_polyphony = 8
+
+[node name="snare" type="AudioStreamPlayer" parent="Audio" unique_id=372996801]
+max_polyphony = 8
+
+[node name="cymb" type="AudioStreamPlayer" parent="Audio" unique_id=239684187]
+max_polyphony = 8
+
+[node name="sample" type="AudioStreamPlayer" parent="Audio" unique_id=185977924]
+max_polyphony = 8
+
+[node name="bass" type="AudioStreamPlayer" parent="Audio" unique_id=2016935806]
+max_polyphony = 8
+
+[node name="lead" type="AudioStreamPlayer" parent="Audio" unique_id=667738476]
+max_polyphony = 8
+
+[node name="arp" type="AudioStreamPlayer" parent="Audio" unique_id=458098169]
+max_polyphony = 8
+
+[node name="chord" type="AudioStreamPlayer" parent="Audio" unique_id=721921235]
+max_polyphony = 8
+
+[node name="TrackMutes" type="GridContainer" parent="." unique_id=1564254716]
+z_index = 1
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.26328126
+anchor_bottom = 0.20694445
+grow_horizontal = 2
+grow_vertical = 2
+columns = 4
+metadata/_edit_use_anchors_ = true
+
+[node name="Kick" type="CheckButton" parent="TrackMutes" unique_id=937706601]
+layout_mode = 2
+text = "Kick"
+
+[node name="KickLv" type="OptionButton" parent="TrackMutes" unique_id=859998334]
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "lv1"
+popup/item_0/id = 0
+popup/item_1/text = "lv2"
+popup/item_1/id = 1
+popup/item_2/text = "lv3"
+popup/item_2/id = 2
+
+[node name="Snare" type="CheckButton" parent="TrackMutes" unique_id=575025516]
+layout_mode = 2
+text = "Snare"
+
+[node name="SnareLv" type="OptionButton" parent="TrackMutes" unique_id=1452849400]
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "lv1"
+popup/item_0/id = 0
+popup/item_1/text = "lv2"
+popup/item_1/id = 1
+popup/item_2/text = "lv3"
+popup/item_2/id = 2
+
+[node name="Cymb" type="CheckButton" parent="TrackMutes" unique_id=730205424]
+layout_mode = 2
+text = "Cymb"
+
+[node name="CymbLv" type="OptionButton" parent="TrackMutes" unique_id=1295501885]
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "lv1"
+popup/item_0/id = 0
+popup/item_1/text = "lv2"
+popup/item_1/id = 1
+popup/item_2/text = "lv3"
+popup/item_2/id = 2
+
+[node name="Sample" type="CheckButton" parent="TrackMutes" unique_id=708507569]
+layout_mode = 2
+text = "Sample"
+
+[node name="SampleLv" type="OptionButton" parent="TrackMutes" unique_id=1747214797]
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "lv1"
+popup/item_0/id = 0
+popup/item_1/text = "lv2"
+popup/item_1/id = 1
+popup/item_2/text = "lv3"
+popup/item_2/id = 2
+
+[node name="Bass" type="CheckButton" parent="TrackMutes" unique_id=1546205012]
+layout_mode = 2
+text = "Bass"
+
+[node name="BassLv" type="OptionButton" parent="TrackMutes" unique_id=728330967]
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "lv1"
+popup/item_0/id = 0
+popup/item_1/text = "lv2"
+popup/item_1/id = 1
+popup/item_2/text = "lv3"
+popup/item_2/id = 2
+
+[node name="Lead" type="CheckButton" parent="TrackMutes" unique_id=1724401529]
+layout_mode = 2
+text = "Lead"
+
+[node name="LeadLv" type="OptionButton" parent="TrackMutes" unique_id=316691596]
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "lv1"
+popup/item_0/id = 0
+popup/item_1/text = "lv2"
+popup/item_1/id = 1
+popup/item_2/text = "lv3"
+popup/item_2/id = 2
+
+[node name="Arp" type="CheckButton" parent="TrackMutes" unique_id=374695672]
+layout_mode = 2
+text = "Arp"
+
+[node name="ArpLv" type="OptionButton" parent="TrackMutes" unique_id=208993383]
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "lv1"
+popup/item_0/id = 0
+popup/item_1/text = "lv2"
+popup/item_1/id = 1
+popup/item_2/text = "lv3"
+popup/item_2/id = 2
+
+[node name="Chord" type="CheckButton" parent="TrackMutes" unique_id=378959661]
+layout_mode = 2
+text = "Chord"
+
+[node name="ChordLv" type="OptionButton" parent="TrackMutes" unique_id=1295726562]
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "lv1"
+popup/item_0/id = 0
+popup/item_1/text = "lv2"
+popup/item_1/id = 1
+popup/item_2/text = "lv3"
+popup/item_2/id = 2
+
+[node name="SongChoice" type="OptionButton" parent="." unique_id=485371660]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.28671876
+anchor_top = 0.008333334
+anchor_right = 0.4171875
+anchor_bottom = 0.13333334
+item_count = 2
+popup/item_0/text = "testsong"
+popup/item_0/id = 0
+popup/item_1/text = "testsong2"
+popup/item_1/id = 1
+popup/item_1/disabled = true
+metadata/_edit_use_anchors_ = true
+
+[node name="KickRect" type="TextureRect" parent="." unique_id=825361383]
+visible = false
+z_index = -1
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.00546875
+anchor_right = 0.040625
+anchor_bottom = 0.045833334
+texture = SubResource("GradientTexture1D_4wgqe")
+expand_mode = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="SnareRect" type="TextureRect" parent="." unique_id=2072918734]
+visible = false
+layout_mode = 0
+anchor_left = 0.125
+anchor_right = 0.1640625
+anchor_bottom = 0.045833334
+texture = SubResource("GradientTexture1D_dagca")
+expand_mode = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="CymbRect" type="TextureRect" parent="." unique_id=1723957850]
+visible = false
+layout_mode = 0
+anchor_left = 0.00625
+anchor_top = 0.05277778
+anchor_right = 0.040625
+anchor_bottom = 0.093055554
+texture = SubResource("GradientTexture1D_wi0h7")
+expand_mode = 1
+metadata/_edit_use_anchors_ = true
+
+[connection signal="toggled" from="TrackMutes/Kick" to="." method="_on_kick_toggled"]
+[connection signal="item_selected" from="TrackMutes/KickLv" to="." method="_on_kick_lv_item_selected"]
+[connection signal="toggled" from="TrackMutes/Snare" to="." method="_on_snare_toggled"]
+[connection signal="item_selected" from="TrackMutes/SnareLv" to="." method="_on_snare_lv_item_selected"]
+[connection signal="toggled" from="TrackMutes/Cymb" to="." method="_on_cymb_toggled"]
+[connection signal="item_selected" from="TrackMutes/CymbLv" to="." method="_on_cymb_lv_item_selected"]
+[connection signal="toggled" from="TrackMutes/Sample" to="." method="_on_sample_toggled"]
+[connection signal="item_selected" from="TrackMutes/SampleLv" to="." method="_on_sample_lv_item_selected"]
+[connection signal="toggled" from="TrackMutes/Bass" to="." method="_on_bass_toggled"]
+[connection signal="item_selected" from="TrackMutes/BassLv" to="." method="_on_bass_lv_item_selected"]
+[connection signal="toggled" from="TrackMutes/Lead" to="." method="_on_lead_toggled"]
+[connection signal="item_selected" from="TrackMutes/LeadLv" to="." method="_on_lead_lv_item_selected"]
+[connection signal="toggled" from="TrackMutes/Arp" to="." method="_on_arp_toggled"]
+[connection signal="item_selected" from="TrackMutes/ArpLv" to="." method="_on_arp_lv_item_selected"]
+[connection signal="toggled" from="TrackMutes/Chord" to="." method="_on_chord_toggled"]
+[connection signal="item_selected" from="TrackMutes/ChordLv" to="." method="_on_chord_lv_item_selected"]
+[connection signal="item_selected" from="SongChoice" to="." method="_on_song_choice_item_selected"]

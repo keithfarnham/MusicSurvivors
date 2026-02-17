@@ -8,12 +8,20 @@
 
 config_version=5
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
 config/name="MusicSurvivors"
 run/main_scene="uid://bku5fgkivuptn"
-config/features=PackedStringArray("4.5", "GL Compatibility")
+config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[audio]
+
+buses/default_bus_layout="uid://dn6tawdb3gimq"
 
 [autoload]
 
@@ -21,14 +29,9 @@ SongData="*res://scripts/song_data.gd"
 
 [display]
 
-window/size/viewport_width=640
-window/size/viewport_height=360
+window/size/viewport_width=1280
+window/size/viewport_height=720
 window/stretch/mode="canvas_items"
-window/stretch/scale=4.0
-
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/midi_import/addons/midi_import/plugin.cfg")
 
 [input]
 
