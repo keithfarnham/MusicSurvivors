@@ -23,6 +23,41 @@ colors = PackedColorArray(0.21176471, 0, 0, 1, 1, 1, 1, 1)
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_wi0h7"]
 gradient = SubResource("Gradient_dagca")
 
+[sub_resource type="Gradient" id="Gradient_wi0h7"]
+offsets = PackedFloat32Array(0.89285713, 1)
+colors = PackedColorArray(0.35686275, 0.22352941, 0, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_jagq2"]
+gradient = SubResource("Gradient_wi0h7")
+
+[sub_resource type="Gradient" id="Gradient_aa4rq"]
+offsets = PackedFloat32Array(0.7755102, 1)
+colors = PackedColorArray(0, 0.16078432, 0, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_xupkg"]
+gradient = SubResource("Gradient_aa4rq")
+
+[sub_resource type="Gradient" id="Gradient_kjiw2"]
+offsets = PackedFloat32Array(0.86734694, 1)
+colors = PackedColorArray(0, 0.22352941, 0.25490198, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_exchb"]
+gradient = SubResource("Gradient_kjiw2")
+
+[sub_resource type="Gradient" id="Gradient_t7gpv"]
+offsets = PackedFloat32Array(0.8010204, 1)
+colors = PackedColorArray(6.858632e-07, 0.32853898, 0.21957022, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_lp530"]
+gradient = SubResource("Gradient_t7gpv")
+
+[sub_resource type="Gradient" id="Gradient_j11na"]
+offsets = PackedFloat32Array(0.81122446, 1)
+colors = PackedColorArray(0.8627451, 0.34117648, 0.07450981, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_dbhed"]
+gradient = SubResource("Gradient_j11na")
+
 [node name="AudioTest" type="Control" unique_id=1743367705]
 layout_mode = 3
 anchors_preset = 15
@@ -197,6 +232,7 @@ anchor_left = 0.28671876
 anchor_top = 0.008333334
 anchor_right = 0.4171875
 anchor_bottom = 0.13333334
+selected = 0
 item_count = 2
 popup/item_0/text = "testsong"
 popup/item_0/id = 0
@@ -235,6 +271,63 @@ anchor_top = 0.05277778
 anchor_right = 0.040625
 anchor_bottom = 0.093055554
 texture = SubResource("GradientTexture1D_wi0h7")
+expand_mode = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="SampleRect" type="TextureRect" parent="." unique_id=2123067150]
+visible = false
+layout_mode = 0
+anchor_left = 0.125
+anchor_top = 0.055555556
+anchor_right = 0.171875
+anchor_bottom = 0.090277776
+texture = SubResource("GradientTexture1D_jagq2")
+expand_mode = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="BassRect" type="TextureRect" parent="." unique_id=1380737018]
+visible = false
+layout_mode = 0
+anchor_left = 0.00390625
+anchor_top = 0.10277778
+anchor_right = 0.03984375
+anchor_bottom = 0.14027777
+texture = SubResource("GradientTexture1D_xupkg")
+expand_mode = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="LeadRect" type="TextureRect" parent="." unique_id=725022599]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.12578125
+anchor_top = 0.10277778
+anchor_right = 0.16875
+anchor_bottom = 0.1388889
+texture = SubResource("GradientTexture1D_exchb")
+expand_mode = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="ArpRect" type="TextureRect" parent="." unique_id=74137604]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.00234375
+anchor_top = 0.14861111
+anchor_right = 0.03984375
+anchor_bottom = 0.19166666
+texture = SubResource("GradientTexture1D_lp530")
+expand_mode = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="ChordRect" type="TextureRect" parent="." unique_id=1510637789]
+visible = false
+layout_mode = 0
+anchor_left = 0.1265625
+anchor_top = 0.15138888
+anchor_right = 0.16484375
+anchor_bottom = 0.18611111
+texture = SubResource("GradientTexture1D_dbhed")
 expand_mode = 1
 metadata/_edit_use_anchors_ = true
 

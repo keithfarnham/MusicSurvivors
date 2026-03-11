@@ -24,12 +24,13 @@ var active_weapons = []
 
 func _ready():
 	midi_data = MidiFileParser.load_file("res://audio/testsong/testsong_lv1.mid")
-	SongData.currentSong = SongData.song_data.get(SongData.songs.testsong)
-	active_weapons.resize(SongData.Tracks.size())
+	#TODO re-evaluate what needs to be initialized here
+	#SongData.currentSong = SongData.song_data.get(SongData.Songs.testsong)
+	active_weapons.resize(TrackData.Tracks.size())
 	active_weapons.fill(false)
 	var kickInstance = kick_scene.instantiate()
 	attacks.add_child(kickInstance)
-	active_weapons[SongData.Tracks.KICK] = true
+	active_weapons[TrackData.Tracks.KICK] = true
 
 func audio_process(delta):
 	for track in midi_data.tracks:
