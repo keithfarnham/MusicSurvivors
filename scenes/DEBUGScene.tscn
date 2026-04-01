@@ -1,7 +1,18 @@
 [gd_scene format=3 uid="uid://ck33t0yhvn2ie"]
 
 [ext_resource type="Script" uid="uid://cdejuklv6ntfh" path="res://scripts/DebugScene.gd" id="1_hwf88"]
-[ext_resource type="Script" uid="uid://dnwwaadtspx6u" path="res://scripts/audio.gd" id="1_lgsdp"]
+[ext_resource type="Script" uid="uid://dnwwaadtspx6u" path="res://scripts/Audio/audio.gd" id="1_lgsdp"]
+
+[sub_resource type="AudioStreamSynchronized" id="AudioStreamSynchronized_hwf88"]
+stream_count = 8
+stream_0/volume = 0.0
+stream_1/volume = 0.0
+stream_2/volume = 0.0
+stream_3/volume = 0.0
+stream_4/volume = 0.0
+stream_5/volume = 0.0
+stream_6/volume = 0.0
+stream_7/volume = 0.0
 
 [sub_resource type="Gradient" id="Gradient_hwf88"]
 offsets = PackedFloat32Array(0.6938776, 1)
@@ -67,32 +78,26 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_hwf88")
 
-[node name="Audio" type="Node" parent="." unique_id=1101367878]
+[node name="AudioController" type="AudioStreamPlayer" parent="." unique_id=1838298916]
+stream = SubResource("AudioStreamSynchronized_hwf88")
+max_polyphony = 8
 script = ExtResource("1_lgsdp")
 
-[node name="kick" type="AudioStreamPlayer" parent="Audio" unique_id=742718886]
-max_polyphony = 8
+[node name="kick" type="AudioStreamPlayer" parent="AudioController" unique_id=742718886]
 
-[node name="snare" type="AudioStreamPlayer" parent="Audio" unique_id=372996801]
-max_polyphony = 8
+[node name="snare" type="AudioStreamPlayer" parent="AudioController" unique_id=372996801]
 
-[node name="cymb" type="AudioStreamPlayer" parent="Audio" unique_id=239684187]
-max_polyphony = 8
+[node name="cymb" type="AudioStreamPlayer" parent="AudioController" unique_id=239684187]
 
-[node name="sample" type="AudioStreamPlayer" parent="Audio" unique_id=185977924]
-max_polyphony = 8
+[node name="sample" type="AudioStreamPlayer" parent="AudioController" unique_id=185977924]
 
-[node name="bass" type="AudioStreamPlayer" parent="Audio" unique_id=2016935806]
-max_polyphony = 8
+[node name="bass" type="AudioStreamPlayer" parent="AudioController" unique_id=2016935806]
 
-[node name="lead" type="AudioStreamPlayer" parent="Audio" unique_id=667738476]
-max_polyphony = 8
+[node name="lead" type="AudioStreamPlayer" parent="AudioController" unique_id=667738476]
 
-[node name="arp" type="AudioStreamPlayer" parent="Audio" unique_id=458098169]
-max_polyphony = 8
+[node name="arp" type="AudioStreamPlayer" parent="AudioController" unique_id=458098169]
 
-[node name="chord" type="AudioStreamPlayer" parent="Audio" unique_id=721921235]
-max_polyphony = 8
+[node name="chord" type="AudioStreamPlayer" parent="AudioController" unique_id=721921235]
 
 [node name="TrackMutes" type="GridContainer" parent="." unique_id=1564254716]
 z_index = 1
@@ -107,6 +112,7 @@ metadata/_edit_use_anchors_ = true
 
 [node name="Kick" type="CheckButton" parent="TrackMutes" unique_id=937706601]
 layout_mode = 2
+button_pressed = true
 text = "Kick"
 
 [node name="KickLv" type="OptionButton" parent="TrackMutes" unique_id=859998334]
@@ -137,6 +143,7 @@ popup/item_2/id = 2
 
 [node name="Cymb" type="CheckButton" parent="TrackMutes" unique_id=730205424]
 layout_mode = 2
+button_pressed = true
 text = "Cymb"
 
 [node name="CymbLv" type="OptionButton" parent="TrackMutes" unique_id=1295501885]
@@ -167,6 +174,7 @@ popup/item_2/id = 2
 
 [node name="Bass" type="CheckButton" parent="TrackMutes" unique_id=1546205012]
 layout_mode = 2
+button_pressed = true
 text = "Bass"
 
 [node name="BassLv" type="OptionButton" parent="TrackMutes" unique_id=728330967]
@@ -197,6 +205,7 @@ popup/item_2/id = 2
 
 [node name="Arp" type="CheckButton" parent="TrackMutes" unique_id=374695672]
 layout_mode = 2
+button_pressed = true
 text = "Arp"
 
 [node name="ArpLv" type="OptionButton" parent="TrackMutes" unique_id=208993383]
@@ -212,6 +221,7 @@ popup/item_2/id = 2
 
 [node name="Chord" type="CheckButton" parent="TrackMutes" unique_id=378959661]
 layout_mode = 2
+button_pressed = true
 text = "Chord"
 
 [node name="ChordLv" type="OptionButton" parent="TrackMutes" unique_id=1295726562]
@@ -330,6 +340,15 @@ anchor_bottom = 0.18611111
 texture = SubResource("GradientTexture1D_dbhed")
 expand_mode = 1
 metadata/_edit_use_anchors_ = true
+
+[node name="CheckButton" type="CheckButton" parent="." unique_id=654391565]
+layout_mode = 0
+offset_left = 33.0
+offset_top = 146.0
+offset_right = 299.0
+offset_bottom = 177.0
+button_pressed = true
+text = "Enable New Display Handler"
 
 [connection signal="toggled" from="TrackMutes/Kick" to="." method="_on_kick_toggled"]
 [connection signal="item_selected" from="TrackMutes/KickLv" to="." method="_on_kick_lv_item_selected"]

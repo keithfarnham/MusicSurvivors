@@ -25,7 +25,7 @@ buses/default_bus_layout="uid://dn6tawdb3gimq"
 
 [autoload]
 
-SongData="*res://scripts/song_data.gd"
+SongData="*res://scripts/Audio/song_data.gd"
 TrackData="*uid://dji2ja2hrpw43"
 
 [display]

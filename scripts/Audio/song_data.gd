@@ -4,6 +4,11 @@ var currentSong : Song
 
 enum Songs {testsong, testsong2}
 
+var SongNameForDisplay = {
+	Songs.testsong : "Test Song",
+	Songs.testsong2 : "Test Song 2"
+}
+
 #var TrackAudioForLevel = {
 	#Tracks.KICK: {Level.lv1: "", Level.lv2: "", Level.lv3: ""},
 	#Tracks.SNARE: {Level.lv1: "", Level.lv2: "", Level.lv3: ""},

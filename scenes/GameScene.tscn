@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://bqwactsbgtg1e" path="res://scenes/PlayerScene.tscn" id="2_cxv17"]
 [ext_resource type="PackedScene" uid="uid://yxccevfb407i" path="res://scenes/Enemy1Scene.tscn" id="3_cxv17"]
 [ext_resource type="PackedScene" uid="uid://duobub0tgj0ij" path="res://scenes/songdebug.tscn" id="4_xs4ih"]
-[ext_resource type="Script" uid="uid://dnwwaadtspx6u" path="res://scripts/audio.gd" id="5_7s5hy"]
+[ext_resource type="Script" uid="uid://dnwwaadtspx6u" path="res://scripts/Audio/audio.gd" id="5_7s5hy"]
 
 [node name="Game" type="Node2D" unique_id=1367614656]
 
@@ -28,9 +28,6 @@ offset_right = 122.07
 offset_bottom = 67.495
 grow_horizontal = 1
 grow_vertical = 1
-
-[node name="prev_next song" parent="Player/CanvasLayer/songdebug/Panel/ScrollContainer/VBoxContainer" index="0"]
-split_offsets = PackedInt32Array(48)
 
 [node name="Enemy1" parent="." unique_id=836248145 instance=ExtResource("3_cxv17")]
 z_index = 1

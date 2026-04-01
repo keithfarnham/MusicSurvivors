@@ -1,6 +1,6 @@
 extends Control
 
-@onready var audio_node = $Audio
+@onready var audio_node = $AudioController
 @onready var song_choice = $SongChoice
 @onready var track_mutes = $TrackMutes
 
@@ -38,53 +38,48 @@ extends Control
 # Current song being played
 var current_levels = {}  # selected level for each track
 var track_muted = {} # is track muted
-
-# Audio stream player nodes
-var track_players = {}
+var mute_toggles = {}
 
 # Track loop timers and get_length for seamless looping
-var track_lengths = {}  # length of each loaded track
 var loop_timers = {}  # timers to prepare next loop
-
-# MIDI sync
-var midi_parser = null
-var midi_processes = []
-var midi_track_map = {} # midi track index -> TrackData.Tracks enum
 
 # Display mapping and timers
 var display_map = {}
 var display_timers = {}
 
+var loop_total = {}
+var last_loop_start_time = {}
+
+
 func _ready():
-	# Initialize track players dictionary, have to do it in _ready to make sure node is available
-	track_players = {
-		TrackData.Tracks.KICK: $Audio/kick,
-		TrackData.Tracks.SNARE: $Audio/snare,
-		TrackData.Tracks.CYMB: $Audio/cymb,
-		TrackData.Tracks.SAMPLE: $Audio/sample,
-		TrackData.Tracks.BASS: $Audio/bass,
-		TrackData.Tracks.LEAD: $Audio/lead,
-		TrackData.Tracks.ARP: $Audio/arp,
-		TrackData.Tracks.CHORD: $Audio/chord,
+	audio_node.end_of_loop.connect(_on_end_of_loop)
+	for track in TrackData.Tracks:
+		loop_total.set(track, 1)
+		last_loop_start_time.set(track, 0.0)
+	
+	mute_toggles = {
+		TrackData.Tracks.KICK: kick_toggle,
+		TrackData.Tracks.SNARE: snare_toggle,
+		TrackData.Tracks.CYMB: cymb_toggle,
+		TrackData.Tracks.SAMPLE: sample_toggle,
+		TrackData.Tracks.BASS: bass_toggle,
+		TrackData.Tracks.LEAD: lead_toggle,
+		TrackData.Tracks.ARP: arp_toggle,
+		TrackData.Tracks.CHORD: chord_toggle,
 	}
 	
-	for track in TrackData.Tracks.keys():
-		track_muted.set(track, false)
-	
-	# Connect finished signal for each audio player to enable looping
 	for track in TrackData.Tracks.values():
-		if track in track_players:
-			var player = track_players[track]
-			# Disconnect the old finished signal if it exists
-			if player.finished.is_connected(_on_player_finished.bindv([track])):
-				player.finished.disconnect(_on_player_finished.bindv([track]))
+		var muted = false
+		if mute_toggles[track].button_pressed:
+			muted = true
+		_set_track_mute(track, muted)
 	
 	# Initialize current levels to lv1
 	for track in TrackData.Tracks.values():
 		current_levels[track] = TrackData.Level.lv1
 	
 	# Load initial song
-	_load_song(SongData.Songs.testsong)
+	audio_node.load_song(SongData.Songs.testsong)
 
 	# Prepare display map
 	display_map = {
@@ -102,6 +97,17 @@ func _ready():
 			display_map[track].visible = false
 			display_timers[track] = 0
 
+func _on_end_of_loop(loop : int):
+	var now = Time.get_ticks_msec()
+	for track in SongData.currentSong.trackData.values():
+		loop_total[TrackData.Tracks.keys()[track.TrackType]] = loop
+		print("Looping %s now on loop %s. Started at [%s] and ending at [%s], diff = %s" % \
+		[ str(TrackData.Tracks.keys()[track.TrackType]), str(loop_total[TrackData.Tracks.keys()[track.TrackType]]), str(track.MidiProcess.start_time), str(now), str(now - track.MidiProcess.start_time) ])
+		# Reset to loop the MIDI track
+		track.MidiProcess.delta_tick = 0
+		track.MidiProcess.event_index = 0
+		# Adjust start_time to keep sync with audio loops
+		track.MidiProcess.start_time = now 
 
 func _on_song_choice_item_selected(index):
 	var songs = SongData.Songs
@@ -109,99 +115,7 @@ func _on_song_choice_item_selected(index):
 	
 	if index >= 0 and index < song_names.size():
 		var selected_song = SongData.Songs[song_names[index]]
-		_load_song(selected_song)
-
-
-func _load_song(song: SongData.Songs):
-	SongData.currentSong = Song.new(song, "testsong", 136.0, 4)
-	# Stop all currently playing audio
-	for player in track_players.values():
-		player.stop()
-	
-	# Load audio + midi files for all tracks and levels
-	_load_audio_for_song(song)
-	
-	# Load and play all tracks in sync
-	_load_all_tracks_synced()
-
-
-func _load_audio_for_song(song: SongData.Songs):
-	# Call the audio node's load function to populate SongData.TrackAudioForLevel
-	audio_node._load_audio_files(song)
-	
-	# Load MIDI for the song (default to lv1 MIDI)
-	_load_midi_for_song(song, TrackData.Level.lv1)
-	
-	# Debug: print what was loaded
-	_debug_print_loaded_tracks()
-
-
-func _load_all_tracks_synced():
-	# First, load all streams without playing
-	for track in TrackData.Tracks.values():
-		_load_track_stream(track)
-	
-	# Then start all players at the same time using deferred call
-	call_deferred("_play_all_tracks_simultaneously")
-
-
-func _load_track_stream(track: TrackData.Tracks):
-	if track not in track_players:
-		return
-	
-	var player = track_players[track]
-	var level = current_levels[track]
-	
-	# Get the audio path from SongData
-	var audio_path = SongData.currentSong.get_audio_path_for_level(track, level)#TrackAudioForLevel[track][level]
-	
-	if audio_path and audio_path != "":
-		player.stream = load(audio_path)
-		# update cached length if available
-		if player.stream:
-			track_lengths[track] = player.stream.get_length()
-	else:
-		print("No audio file found for track %d, level %d" % [track, level+1])
-		player.stream = null
-
-
-func _play_all_tracks_simultaneously():
-	# Start all players at the same time
-	for player in track_players.values():
-		if player.stream:
-			player.play()
-
-	# start MIDI processing clock
-	midi_processes.clear()
-	if midi_parser:
-		for i in range(midi_parser.tracks.size()):
-			midi_processes.append({"start_time": Time.get_ticks_msec(), "delta_tick": 0, "event_index": 0})
-
-
-func _refresh_all_tracks():
-	for track in TrackData.Tracks.values():
-		_play_track(track)
-
-
-func _play_track(track: int):
-	if track not in track_players:
-		return
-	
-	var player = track_players[track]
-	var level = current_levels[track]
-	
-	# Get the audio path from SongData
-	var audio_path = SongData.TrackAudioForLevel[track][level]
-	
-	if audio_path and audio_path != "":
-		player.stop()
-		player.stream = load(audio_path)
-		# Use a small deferred delay to ensure sync between track changes
-		player.call_deferred("play")
-	else:
-		print("No audio file found for track %d, level %d" % [track, level+1])
-		player.stop()
-
+		audio_node.load_song(selected_song)
 
 #region Mute Toggles 
 func _on_kick_toggled(toggled_on):
@@ -229,12 +143,12 @@ func _on_chord_toggled(toggled_on):
 	_set_track_mute(TrackData.Tracks.CHORD, toggled_on)
 
 func _set_track_mute(track: TrackData.Tracks, is_muted: bool):
-	if track not in track_players:
+	if track not in audio_node.track_players:
 		return
 	
-	var player = track_players[track]
+	var player = audio_node.stream.get_sync_stream(track)#track_players[track]
 	track_muted.set(track, is_muted)
-	player.volume_db = -80 if is_muted else 0
+	audio_node.stream.set_sync_stream_volume(track, -80 if is_muted else 0)
 #endregion Mute Toggles
 
 #region Track level selectors
@@ -271,121 +185,72 @@ func _on_chord_lv_item_selected(index):
 	_update_track_synced(TrackData.Tracks.CHORD)
 
 func _update_track_synced(track: TrackData.Tracks):
+	SongData.currentSong.set_level_for_track(track, current_levels[track])
 	# Update the stream for this track and resync all playback
-	_load_track_stream(track)
+	audio_node.load_track_stream(track)
 	
 	# Get the current playback position to maintain sync
 	var sync_pos = 0.0
-	for player in track_players.values():
+	for player in audio_node.track_players.values():
 		if player.playing:
 			sync_pos = player.get_playback_position()
 			break
 	
 	# Stop all and restart from the same position for sync
-	for player in track_players.values():
+	for player in audio_node.track_players.values():
 		player.stop()
 	
 	# Resume playback at the same position
 	call_deferred("_resume_all_synced", sync_pos)
-#endregion Track level selectors
 
 func _resume_all_synced(playback_pos: float):
-	for player in track_players.values():
+	for player in audio_node.track_players.values():
 		if player.stream:
 			player.play()
 			if playback_pos > 0.0:
 				player.seek(playback_pos)
+#endregion Track level selectors
 
-
-func _on_player_finished(track: int):
-	# Restart this player when it finishes to loop
-	if track in track_players:
-		var player = track_players[track]
-		if player.stream:
-			player.play()
-
-
-func _debug_print_loaded_tracks():
-	print("\n=== Loaded Audio Tracks ===")
-	for track in TrackData.Tracks.values():
-		var track_name = TrackData.Tracks
-		print("Track %s (%d):" % [track_name, track])
-		for level in TrackData.Level.values():
-			var path = SongData.currentSong.get_audio_path_for_level(track, level)
-			if path and path != "":
-				print("  lv%d: %s" % [level, path])
-			else:
-				print("  lv%d: [EMPTY]" % [level])
-
-
-func _load_midi_for_song(song: SongData.Songs, midi_level: TrackData.Level = TrackData.Level.lv1):
-	midi_parser = null
-	midi_track_map.clear()
-	midi_processes.clear()
-	var songInfo = SongData.currentSong as Song
-	var midi_path = "res://songs/" + songInfo.songTitle + "/midi/" + songInfo.songTitle + "_lv" + str(midi_level) + ".mid"
-	var f = FileAccess.open(midi_path, FileAccess.READ)
-	if f:
-		f.close()
-		midi_parser = MidiFileParser.load_file(midi_path)
-		# build track name map
-		for midi_tr_index in range(midi_parser.tracks.size()):
-			var midi_tr = midi_parser.tracks[midi_tr_index]
-			var mapped = -1
-			for ev in midi_tr.events:
-				if ev.event_type == MidiFileParser.Event.EventType.META and ev.type == MidiFileParser.Meta.Type.TRACK_NAME:
-					var tr_name = ""
-					if ev.bytes:
-						tr_name = ev.bytes.get_string_from_ascii()
-					tr_name = tr_name.to_lower()
-					for track in TrackData.Tracks.keys():
-						if tr_name.find(TrackData.MidiTrackNameMap[TrackData.Tracks[track]]) >= 0:
-							mapped = track
-			midi_track_map[midi_tr_index] = mapped
-	else:
-		print("MIDI not found: " + midi_path)
-
-func _display_handler():
-	# find song tick length
+func _display_handler_new():
 	var songInfo = SongData.currentSong
 	var ms_per_tick = songInfo.ms_per_tick
-	for midi_tr_index in range(midi_parser.tracks.size()):
-		var mapped = midi_track_map.get(midi_tr_index)
-		if track_muted.get(mapped):
+	var now = Time.get_ticks_msec()
+	
+	#Display the debug color for each track
+	for track in SongData.currentSong.trackData.values():
+		if track_muted.get(track.TrackType):
 			#early out for muted tracks
 			continue
-		var midi_tr = midi_parser.tracks[midi_tr_index]
-		var proc = null
-		if midi_tr_index < midi_processes.size():
-			proc = midi_processes[midi_tr_index]
-		else:
-			continue
-		var elapsed_ms = Time.get_ticks_msec() - proc.start_time
+		var elapsed_ms = now - track.MidiProcess.start_time
 		var delta_ticks = float(elapsed_ms) / ms_per_tick if ms_per_tick > 0 else 0
-		while proc.event_index < midi_tr.events.size():
-			var ev = midi_tr.events[proc.event_index]
-			if proc.delta_tick + ev.delta_ticks > delta_ticks:
+		var level = current_levels[track.TrackType] as TrackData.Level
+		var midi = track.GetMidiForLevel(level) as MidiFileParser.Track
+		while track.MidiProcess.event_index < midi.events.size():
+			var ev = track.MidiForLevel[TrackData.Level.keys()[level - 1]].events[track.MidiProcess.event_index]
+			if track.MidiProcess.delta_tick + ev.delta_ticks > delta_ticks:
 				break
-			proc.delta_tick += ev.delta_ticks
-			proc.event_index += 1
+			track.MidiProcess.delta_tick += ev.delta_ticks
+			track.MidiProcess.event_index += 1
 			if ev.event_type == MidiFileParser.Event.EventType.MIDI:
 				var midi_ev = ev as MidiFileParser.Midi
 				# NOTE_ON status and velocity > 0
 				if midi_ev.status == MidiFileParser.Midi.Status.NOTE_ON and midi_ev.velocity > 0:
-					
-					if mapped >= 0 and mapped in display_map and display_map[mapped]:
+					if track.TrackType in display_map.keys() and display_map[track.TrackType]:
 						# show display and start timer
-						display_map[mapped].visible = true
-						display_timers[mapped] = Time.get_ticks_msec()
+						display_map[track.TrackType].visible = true
+						display_timers[track.TrackType] = Time.get_ticks_msec()
+						print("Display Handler - mapped %s, current level %s" % [str(TrackData.Tracks.keys()[track.TrackType]), str(TrackData.Level.keys()[level - 1])])
 		# Check if we've reached the end of the track and loop it
-		if proc.event_index >= midi_tr.events.size():
-			# Reset to loop the MIDI track
-			proc.delta_tick = 0
-			proc.event_index = 0
-			# Adjust start_time to keep sync with audio loops
-			proc.start_time = Time.get_ticks_msec()
+		#if track.MidiProcess.event_index >= midi.events.size():
+			#loop_total[TrackData.Tracks.keys()[track.TrackType]] += 1
+			#print("Looping %s now on loop %s. Started at [%s] and ending at [%s], diff = %s" % \
+			#[ str(TrackData.Tracks.keys()[track.TrackType]), str(loop_total[TrackData.Tracks.keys()[track.TrackType]]), str(track.MidiProcess.start_time), str(now), str(now - track.MidiProcess.start_time) ])
+			## Reset to loop the MIDI track
+			#track.MidiProcess.delta_tick = 0
+			#track.MidiProcess.event_index = 0
+			## Adjust start_time to keep sync with audio loops
+			#track.MidiProcess.start_time = now 
 	# hide displays after short duration
-	var now = Time.get_ticks_msec()
 	for track in display_map.keys():
 		var t = display_timers.get(track, 0)
 		if t > 0 and now - t > 120: # ms to show
@@ -394,6 +259,4 @@ func _display_handler():
 			display_timers[track] = 0
 
 func _process(delta):
-	if midi_parser == null:
-		return
-	_display_handler()
+	_display_handler_new()

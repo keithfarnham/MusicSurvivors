@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://duobub0tgj0ij"]
+[gd_scene format=3 uid="uid://duobub0tgj0ij"]
 
 [ext_resource type="Script" uid="uid://e2ifdg6o4n1c" path="res://scripts/debug_prev_next_song.gd" id="1_ljsuy"]
 
-[node name="songdebug" type="Control"]
+[node name="songdebug" type="Control" unique_id=1429599112]
 z_index = 3
 layout_mode = 3
 anchors_preset = 15
@@ -14,7 +14,7 @@ grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.4, 0.4)
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Panel" type="Panel" parent="." unique_id=1550185330]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,14 +22,14 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Panel"]
+[node name="RichTextLabel" type="RichTextLabel" parent="Panel" unique_id=1240328090]
 layout_mode = 0
 offset_right = 56.685
 offset_bottom = 19.255
 theme_override_font_sizes/normal_font_size = 10
 text = "SongDebug"
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Panel"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel" unique_id=1373273816]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -42,20 +42,21 @@ grow_horizontal = 2
 grow_vertical = 2
 horizontal_scroll_mode = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel/ScrollContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/ScrollContainer" unique_id=182893522]
 layout_mode = 2
 
-[node name="prev_next song" type="HSplitContainer" parent="Panel/ScrollContainer/VBoxContainer"]
+[node name="prev_next song" type="HSplitContainer" parent="Panel/ScrollContainer/VBoxContainer" unique_id=2123062403]
 layout_mode = 2
-split_offset = 48
+split_offsets = PackedInt32Array(48)
 dragger_visibility = 1
+split_offset = 48
 script = ExtResource("1_ljsuy")
 
-[node name="prev" type="Button" parent="Panel/ScrollContainer/VBoxContainer/prev_next song"]
+[node name="prev" type="Button" parent="Panel/ScrollContainer/VBoxContainer/prev_next song" unique_id=1216147214]
 layout_mode = 2
 text = "prev"
 
-[node name="next" type="Button" parent="Panel/ScrollContainer/VBoxContainer/prev_next song"]
+[node name="next" type="Button" parent="Panel/ScrollContainer/VBoxContainer/prev_next song" unique_id=742225864]
 layout_mode = 2
 text = "next"
 
