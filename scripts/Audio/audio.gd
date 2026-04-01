@@ -73,6 +73,8 @@ func _process(delta):
 	if not SongData.currentSong:
 		print("[audio] currentSong not setup in SongData")
 		return
+	if !playing:
+		print("Audio stopped playing")
 	#_check_track_playback()
 	var now = Time.get_ticks_msec()
 	var songProgress = now - song_start

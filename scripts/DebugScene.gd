@@ -185,30 +185,42 @@ func _on_chord_lv_item_selected(index):
 	_update_track_synced(TrackData.Tracks.CHORD)
 
 func _update_track_synced(track: TrackData.Tracks):
+	#update the track data
 	SongData.currentSong.set_level_for_track(track, current_levels[track])
+	
 	# Update the stream for this track and resync all playback
 	audio_node.load_track_stream(track)
-	
-	# Get the current playback position to maintain sync
+
+	#Get current playpack pos
 	var sync_pos = 0.0
-	for player in audio_node.track_players.values():
-		if player.playing:
-			sync_pos = player.get_playback_position()
-			break
+	if audio_node.playing:
+		sync_pos = audio_node.get_playback_position() + AudioServer.get_time_since_last_mix()
+	#audio_node.stop()
 	
-	# Stop all and restart from the same position for sync
-	for player in audio_node.track_players.values():
-		player.stop()
+	## Get the current playback position to maintain sync
+	#var sync_pos = 0.0
+	#for player in audio_node.track_players.values():
+		#if player.playing:
+			#sync_pos = player.get_playback_position()
+			#break
+	#
+	## Stop all and restart from the same position for sync
+	#for player in audio_node.track_players.values():
+		#player.stop()
 	
 	# Resume playback at the same position
 	call_deferred("_resume_all_synced", sync_pos)
 
 func _resume_all_synced(playback_pos: float):
-	for player in audio_node.track_players.values():
-		if player.stream:
-			player.play()
-			if playback_pos > 0.0:
-				player.seek(playback_pos)
+	if audio_node:
+		audio_node.play()
+		if playback_pos > 0.0:
+			audio_node.seek(playback_pos)
+	#for player in audio_node.track_players.values():
+		#if player.stream:
+			#player.play()
+			#if playback_pos > 0.0:
+				#player.seek(playback_pos)
 #endregion Track level selectors
 
 func _display_handler_new():
