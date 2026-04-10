@@ -1,16 +1,21 @@
 extends AudioStreamPlayer
 
-const measure_per_loop := 8
-var current_measure := 0
+@onready var Debug = $"../DebugInfo"
+
+var current_measure := 1
 var current_loop := 1
 var song_start := 0.0
+var playback_time := 0.0
 
 var songFolder = "res://songs/"
 var audioFiles = []
 var track_players = {}
 var track_lengths = {}  # length of each loaded track
 
-var debug_printed = false
+var sync_stream = stream as AudioStreamSynchronized
+
+var loop_total = {}
+var last_loop_start_time = {}
 
 signal end_of_loop(loop)
 
@@ -19,7 +24,7 @@ func start_song():
 	play()
 	# start MIDI processing clock
 	for track in TrackData.Tracks.values():
-		print("Starting midi for %s at %s" % [str(TrackData.Tracks.keys()[track]), str(Time.get_ticks_msec())])
+		Log.print("[audio] Starting midi for %s at %s" % [str(TrackData.Tracks.keys()[track]), str(Time.get_ticks_msec())])
 		SongData.currentSong.trackData[track].MidiProcess = {"start_time": Time.get_ticks_msec(), "delta_tick": 0, "event_index": 0}
 
 func load_song(song: SongData.Songs):
@@ -37,7 +42,7 @@ func load_track_stream(track: TrackData.Tracks):
 		return
 	
 	var level = SongData.currentSong.get_current_level_for_track(track)#trackData[track].CurrentLevel
-	print("Loading track %s at level %s" % [str(TrackData.Tracks.keys()[track]), str(TrackData.Level.keys()[level - 1])])
+	Log.print("[audio] Loading track %s at level %s" % [str(TrackData.Tracks.keys()[track]), str(TrackData.Level.keys()[level - 1])])
 	# Get the audio path from SongData
 	var audio_path = SongData.currentSong.get_audio_path_for_level(track, level)#TrackAudioForLevel[track][level]
 	
@@ -47,7 +52,7 @@ func load_track_stream(track: TrackData.Tracks):
 		if stream:
 			track_lengths[track] = stream.get_length()
 	else:
-		print("ERROR - No audio file found for track %d, level %d" % [track, level - 1])
+		Log.print("[audio] ERROR - No audio file found for track %d, level %d" % [track, level - 1])
 		stream = null
 
 func _ready():
@@ -64,45 +69,66 @@ func _ready():
 		TrackData.Tracks.CHORD: $chord,
 	}
 	
-	var sync_stream = stream as AudioStreamSynchronized
+	for track in TrackData.Tracks:
+		loop_total.set(track, 1)
+		last_loop_start_time.set(track, 0.0)
+	
 	for track in track_players:
 		var player = track_players.values()[track]
 		sync_stream.set_sync_stream(track, player)
 
 func _process(delta):
 	if not SongData.currentSong:
-		print("[audio] currentSong not setup in SongData")
+		Log.print("[audio] currentSong not setup in SongData")
 		return
 	if !playing:
-		print("Audio stopped playing")
-	#_check_track_playback()
+		Log.print("[audio] Audio stopped playing")
 	var now = Time.get_ticks_msec()
-	var songProgress = now - song_start
-	var measure = snapped(songProgress / SongData.currentSong.ms_per_measure, 1.0)
-	if songProgress > SongData.currentSong.ms_per_measure and measure > current_measure:
-		current_measure += 1
-		print("[audio] Measure %s Loop %s - program time %s, calculated song time %s, playback time %s = %f + %f" % \
-		[ str(current_measure), str(_get_current_loop()), str(now), str(songProgress), str(get_playback_position() + AudioServer.get_time_since_last_mix()), get_playback_position(), AudioServer.get_time_since_last_mix() ])
-		if current_measure / measure_per_loop > current_loop:
-			current_loop += 1
-			end_of_loop.emit(current_loop)
+	var calculated_song_progress = now - song_start #TODO breaks if i use godot debug pause, change to a script var timer accumulating from delta
 
-func _on_end_of_loop(loop : int):
-	print("Loop ended, now on loop %s" % [str(loop)])
+	var loop_playback_ms = (get_playback_position() + AudioServer.get_time_since_last_mix()) * 1000.0
+	var measure = int(loop_playback_ms / SongData.currentSong.ms_per_measure) + 1
+	Log.print("measure is %d, current measure is %d" % [measure, current_measure])
+	#check if we are on the next measure
+	if measure > current_measure:
+		current_measure = measure
+		Log.print("[audio] Measure %d Loop %d - program time %d, calculated song time %d, playback time %s = %f + %f" % \
+		[ current_measure, current_loop, now, calculated_song_progress, str(loop_playback_ms), get_playback_position(), AudioServer.get_time_since_last_mix() ])
+		
+	#check if we've looped around from last measure MEASURE_PER_LOOP to first
+	if current_measure >= SongData.MEASURE_PER_LOOP and measure == 1:
+		current_loop += 1
+		current_measure = 1
+		Log.print("[audio] Now on loop %d" % [current_loop])
+		var calculated_loop_end = song_start + (current_loop * SongData.MEASURE_PER_LOOP * SongData.currentSong.ms_per_measure)
+		var offset = calculated_loop_end - now
+		end_of_loop.emit(current_loop, offset)
+	
+	Debug.update_debug_info(now, loop_playback_ms, song_start, calculated_song_progress, current_loop, measure)
 
-func _check_track_playback() -> bool:
-	#playback pos of tracks should all be close to each other or something bad has happened
-	var pos = []
-	const FAIL_THRESHOLD = 2
-	for track in track_players.values():
-		for compareTo in track_players.values():
-			if abs( track.get_playback_position() - compareTo.get_playback_position() ) > 0.1:
-				print("--- ERROR --- track playback error")
-				return false
-	return true
+func _on_end_of_loop(loop : int, start_offset : int):
+	Log.print("[audio] Loop ended, now on loop %s" % [str(loop)])
+	var now = Time.get_ticks_msec()
+	for track in SongData.currentSong.trackData.values():
+		loop_total[TrackData.Tracks.keys()[track.TrackType]] = loop
+		Log.print("[audio] Looping %s now on loop %s. Started at [%s] and ending at [%s], diff = %s" % \
+		[ str(TrackData.Tracks.keys()[track.TrackType]), str(loop_total[TrackData.Tracks.keys()[track.TrackType]]), str(track.MidiProcess.start_time), str(now), str(now - track.MidiProcess.start_time) ])
+		# Reset to loop the MIDI track
+		track.MidiProcess.delta_tick = 0
+		track.MidiProcess.event_index = 0
+		# Adjust start_time to keep sync with audio loops
+		track.MidiProcess.start_time = now + start_offset
 
-func _get_current_loop() -> int:
-	return 1 if current_measure < 8 else current_measure / 8 + 1
+#func _check_track_playback() -> bool:
+	##playback pos of tracks should all be close to each other or something bad has happened
+	#var pos = []
+	#const FAIL_THRESHOLD = 2
+	#for track in track_players.values():
+		#for compareTo in track_players.values():
+			#if abs( track.get_playback_position() - compareTo.get_playback_position() ) > 0.1:
+				#print("--- ERROR --- track playback error")
+				#return false
+	#return true
 
 func _load_audio_files(song : SongData.Songs):
 	audioFiles.clear()
@@ -124,7 +150,7 @@ func _load_audio_files(song : SongData.Songs):
 			fileName = dir.get_next()
 		dir.list_dir_end()
 	else:
-		print("Error opening directory: " + basePath)
+		Log.print("[audio] Error opening directory: " + basePath)
 		error_string(DirAccess.get_open_error())
 
 func _load_track_files(trackPath: String, trackEnum: int):
@@ -151,7 +177,7 @@ func _load_track_files(trackPath: String, trackEnum: int):
 						var fullPath = trackPath + "/" + fileName
 						SongData.currentSong.set_audio_path_for_level(trackEnum, level, fullPath)
 						audioFiles.append(fullPath)
-						print("Loaded: %s -> Track %d, Level %d" % [fullPath, trackEnum, level])
+						Log.print("[audio] Loaded: %s -> Track %d, Level %d" % [fullPath, trackEnum, level])
 			
 			fileName = trackDir.get_next()
 		trackDir.list_dir_end()
@@ -191,7 +217,7 @@ func _load_audio_for_song(song: SongData.Songs):
 	_load_audio_files(song)
 	
 	# Debug: print what was loaded
-	_debug_print_loaded_tracks()
+	Log.debug_print_loaded_tracks()
 
 func _load_all_tracks_synced():
 	# First, load all streams without playing
@@ -200,15 +226,3 @@ func _load_all_tracks_synced():
 	
 	# Then start all players at the same time using deferred call
 	call_deferred("start_song")
-
-func _debug_print_loaded_tracks():
-	print("\n=== Loaded Audio Tracks ===")
-	for track in TrackData.Tracks.values():
-		var track_name = TrackData.Tracks.keys()[track]
-		print("Track %s (%d):" % [track_name, track])
-		for level in TrackData.Level.values():
-			var path = SongData.currentSong.get_audio_path_for_level(track, level)
-			if path and path != "":
-				print("  lv%d: %s" % [level, path])
-			else:
-				print("  lv%d: [EMPTY]" % [level])

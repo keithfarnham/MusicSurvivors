@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://duobub0tgj0ij"]
 
-[ext_resource type="Script" uid="uid://e2ifdg6o4n1c" path="res://scripts/debug_prev_next_song.gd" id="1_ljsuy"]
+[ext_resource type="Script" uid="uid://e2ifdg6o4n1c" path="res://scripts/Debug/debug_prev_next_song.gd" id="1_ljsuy"]
 
 [node name="songdebug" type="Control" unique_id=1429599112]
 z_index = 3

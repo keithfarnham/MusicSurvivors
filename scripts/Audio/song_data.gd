@@ -2,6 +2,8 @@ extends Node
 
 var currentSong : Song
 
+const MEASURE_PER_LOOP := 8
+
 enum Songs {testsong, testsong2}
 
 var SongNameForDisplay = {

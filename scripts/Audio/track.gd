@@ -16,7 +16,7 @@ func GetMidiForLevel(level : TrackData.Level) -> MidiFileParser.Track:
 	return MidiForLevel.values()[level - 1]
 
 func _init(song : SongData.Songs, track_type : TrackData.Tracks, starting_level : TrackData.Level = TrackData.Level.lv1):
-	print("Initializing track " + str(TrackData.Tracks.keys()[track_type]))
+	Log.print("[track] Initializing track " + str(TrackData.Tracks.keys()[track_type]))
 	TrackType = track_type
 	CurrentLevel = starting_level
 	_load_midi_for_track(song, track_type)
@@ -40,10 +40,10 @@ func _load_midi_for_track(song : SongData.Songs, track_type : TrackData.Tracks):
 							tr_name = ev.bytes.get_string_from_ascii()
 						tr_name = tr_name.to_lower()
 						if tr_name.find(str(TrackData.Tracks.keys()[track_type]).to_lower()) >= 0:
-							print("Loaded midi for track %s at level %s" % [TrackData.Tracks.keys()[track_type], level])
+							Log.print("[track] Loaded midi for track %s at level %s" % [TrackData.Tracks.keys()[track_type], level])
 							assert(midi_tr != null, "midi for track is null")
 							MidiForLevel[level] = midi_tr
 							break
 							#MidiTrackIndex = midi_tr_index
 		else:
-			print("MIDI not found for track %s at path %s " % [TrackData.Tracks.keys()[track_type], midi_path])
+			Log.print("[track] MIDI not found for track %s at path %s " % [TrackData.Tracks.keys()[track_type], midi_path])

@@ -19,7 +19,7 @@ func _process(delta):
 
 func _on_enemy_hurtbox_hurt(damage):
 	hp -= damage
-	print("enemy hp: " + str(hp))
+	Log.print("enemy hp: " + str(hp))
 	if hp <= 0:
 		queue_free()
-		print("SwordEnemy died")
+		Log.print("SwordEnemy died")

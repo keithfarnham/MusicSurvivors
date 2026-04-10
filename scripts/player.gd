@@ -56,15 +56,15 @@ func audio_process(delta):
 				#I don't think I'll need this given my songs will be consistent tempo?
 				#TODO prob remove
 				SongData.currentSong.ms_per_tick = event.ms_per_tick
-				print("tempo now " +str(event.bpm)+ " bpm")
+				Log.print("[player] tempo now " +str(event.bpm)+ " bpm")
 			if event.event_type == event.EventType.MIDI && event.note_name != '':
 				var offset = event.param1 - 69
 				if event.velocity > 0:
 					#play_sound(event.note_name, event.frequency, event.velocity)
-					print("Play "+event.note_name+" with velocity "+str(event.velocity)+" freq "+str(event.frequency))
+					Log.print("[player] Play "+event.note_name+" with velocity "+str(event.velocity)+" freq "+str(event.frequency))
 				else:
 					#play_sound(event.note_name)
-					print("Stop "+event.note_name)
+					Log.print("[player] Stop "+event.note_name)
 				
 				# event.velocity <= 0 = note off
 				# event.velocity > 0 = note on
@@ -141,8 +141,8 @@ func drumkick_attack():
 
 func _on_hurtbox_hurt(damage):
 	hp -= damage
-	print("[player] hp: " + str(hp))
+	Log.print("[player] hp: " + str(hp))
 	#healthBar.max_value = maxhp
 	healthBar.value = hp
 	if hp <= 0:
-		print("[player] died")
+		Log.print("[player] died")

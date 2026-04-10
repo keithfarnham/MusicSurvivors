@@ -47,16 +47,8 @@ var loop_timers = {}  # timers to prepare next loop
 var display_map = {}
 var display_timers = {}
 
-var loop_total = {}
-var last_loop_start_time = {}
 
-
-func _ready():
-	audio_node.end_of_loop.connect(_on_end_of_loop)
-	for track in TrackData.Tracks:
-		loop_total.set(track, 1)
-		last_loop_start_time.set(track, 0.0)
-	
+func _ready():	
 	mute_toggles = {
 		TrackData.Tracks.KICK: kick_toggle,
 		TrackData.Tracks.SNARE: snare_toggle,
@@ -96,18 +88,6 @@ func _ready():
 		if display_map[track]:
 			display_map[track].visible = false
 			display_timers[track] = 0
-
-func _on_end_of_loop(loop : int):
-	var now = Time.get_ticks_msec()
-	for track in SongData.currentSong.trackData.values():
-		loop_total[TrackData.Tracks.keys()[track.TrackType]] = loop
-		print("Looping %s now on loop %s. Started at [%s] and ending at [%s], diff = %s" % \
-		[ str(TrackData.Tracks.keys()[track.TrackType]), str(loop_total[TrackData.Tracks.keys()[track.TrackType]]), str(track.MidiProcess.start_time), str(now), str(now - track.MidiProcess.start_time) ])
-		# Reset to loop the MIDI track
-		track.MidiProcess.delta_tick = 0
-		track.MidiProcess.event_index = 0
-		# Adjust start_time to keep sync with audio loops
-		track.MidiProcess.start_time = now 
 
 func _on_song_choice_item_selected(index):
 	var songs = SongData.Songs
@@ -194,7 +174,10 @@ func _update_track_synced(track: TrackData.Tracks):
 	#Get current playpack pos
 	var sync_pos = 0.0
 	if audio_node.playing:
-		sync_pos = audio_node.get_playback_position() + AudioServer.get_time_since_last_mix()
+		var sync_stream = audio_node.stream# as AudioStreamSynchronized
+		var playback_pos = audio_node.get_playback_position()#audio_node.get_stream_playback().get_playback_position()
+		#TODO why does the get_playback_time() only ever return 0
+		sync_pos = playback_pos + AudioServer.get_time_since_last_mix()
 	#audio_node.stop()
 	
 	## Get the current playback position to maintain sync
@@ -209,13 +192,14 @@ func _update_track_synced(track: TrackData.Tracks):
 		#player.stop()
 	
 	# Resume playback at the same position
+	Log.print("[DebugScene] updating track - resuming at %ss" % [str(sync_pos)])
 	call_deferred("_resume_all_synced", sync_pos)
 
 func _resume_all_synced(playback_pos: float):
 	if audio_node:
-		audio_node.play()
-		if playback_pos > 0.0:
-			audio_node.seek(playback_pos)
+		audio_node.play(playback_pos)
+		#if playback_pos > 0.0:
+			#audio_node.seek()
 	#for player in audio_node.track_players.values():
 		#if player.stream:
 			#player.play()
@@ -223,7 +207,7 @@ func _resume_all_synced(playback_pos: float):
 				#player.seek(playback_pos)
 #endregion Track level selectors
 
-func _display_handler_new():
+func _display_handler():
 	var songInfo = SongData.currentSong
 	var ms_per_tick = songInfo.ms_per_tick
 	var now = Time.get_ticks_msec()
@@ -251,7 +235,7 @@ func _display_handler_new():
 						# show display and start timer
 						display_map[track.TrackType].visible = true
 						display_timers[track.TrackType] = Time.get_ticks_msec()
-						print("Display Handler - mapped %s, current level %s" % [str(TrackData.Tracks.keys()[track.TrackType]), str(TrackData.Level.keys()[level - 1])])
+						Log.print("[DebugScene] Display Handler - mapped %s, current level %s" % [str(TrackData.Tracks.keys()[track.TrackType]), str(TrackData.Level.keys()[level - 1])])
 		# Check if we've reached the end of the track and loop it
 		#if track.MidiProcess.event_index >= midi.events.size():
 			#loop_total[TrackData.Tracks.keys()[track.TrackType]] += 1
@@ -271,4 +255,4 @@ func _display_handler_new():
 			display_timers[track] = 0
 
 func _process(delta):
-	_display_handler_new()
+	_display_handler()
