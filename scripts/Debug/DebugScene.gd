@@ -217,6 +217,7 @@ func _display_handler():
 		if track_muted.get(track.TrackType):
 			#early out for muted tracks
 			continue
+		assert(now >= track.MidiProcess.start_time, "now < MidiProcess.start_time resulting in negative delta_ticks")
 		var elapsed_ms = now - track.MidiProcess.start_time
 		var delta_ticks = float(elapsed_ms) / ms_per_tick if ms_per_tick > 0 else 0
 		var level = current_levels[track.TrackType] as TrackData.Level

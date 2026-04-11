@@ -88,7 +88,7 @@ func _process(delta):
 
 	var loop_playback_ms = (get_playback_position() + AudioServer.get_time_since_last_mix()) * 1000.0
 	var measure = int(loop_playback_ms / SongData.currentSong.ms_per_measure) + 1
-	Log.print("measure is %d, current measure is %d" % [measure, current_measure])
+	
 	#check if we are on the next measure
 	if measure > current_measure:
 		current_measure = measure
@@ -101,7 +101,7 @@ func _process(delta):
 		current_measure = 1
 		Log.print("[audio] Now on loop %d" % [current_loop])
 		var calculated_loop_end = song_start + (current_loop * SongData.MEASURE_PER_LOOP * SongData.currentSong.ms_per_measure)
-		var offset = calculated_loop_end - now
+		var offset = calculated_loop_end - now # TODO reasses if offset is necessary, it was causing problems with midi looping
 		end_of_loop.emit(current_loop, offset)
 	
 	Debug.update_debug_info(now, loop_playback_ms, song_start, calculated_song_progress, current_loop, measure)
@@ -117,7 +117,7 @@ func _on_end_of_loop(loop : int, start_offset : int):
 		track.MidiProcess.delta_tick = 0
 		track.MidiProcess.event_index = 0
 		# Adjust start_time to keep sync with audio loops
-		track.MidiProcess.start_time = now + start_offset
+		track.MidiProcess.start_time = now# + start_offset
 
 #func _check_track_playback() -> bool:
 	##playback pos of tracks should all be close to each other or something bad has happened
