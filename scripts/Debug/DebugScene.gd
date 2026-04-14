@@ -1,6 +1,6 @@
 extends Control
 
-@onready var audio_node = $AudioController
+@onready var audio_node = $AudioController as AudioController
 @onready var song_choice = $SongChoice
 @onready var track_mutes = $TrackMutes
 
@@ -167,29 +167,14 @@ func _on_chord_lv_item_selected(index):
 func _update_track_synced(track: TrackData.Tracks):
 	#update the track data
 	SongData.currentSong.set_level_for_track(track, current_levels[track])
-	
-	# Update the stream for this track and resync all playback
-	audio_node.load_track_stream(track)
 
 	#Get current playpack pos
 	var sync_pos = 0.0
 	if audio_node.playing:
-		var sync_stream = audio_node.stream# as AudioStreamSynchronized
-		var playback_pos = audio_node.get_playback_position()#audio_node.get_stream_playback().get_playback_position()
-		#TODO why does the get_playback_time() only ever return 0
+		var sync_stream = audio_node.stream as AudioStreamSynchronized
+		var playback_pos = audio_node.get_playback_position()
 		sync_pos = playback_pos + AudioServer.get_time_since_last_mix()
-	#audio_node.stop()
-	
-	## Get the current playback position to maintain sync
-	#var sync_pos = 0.0
-	#for player in audio_node.track_players.values():
-		#if player.playing:
-			#sync_pos = player.get_playback_position()
-			#break
-	#
-	## Stop all and restart from the same position for sync
-	#for player in audio_node.track_players.values():
-		#player.stop()
+	audio_node.load_track_stream(track)
 	
 	# Resume playback at the same position
 	Log.print("[DebugScene] updating track - resuming at %ss" % [str(sync_pos)])

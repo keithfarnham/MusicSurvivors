@@ -1,5 +1,7 @@
 extends AudioStreamPlayer
 
+class_name AudioController
+
 @onready var Debug = $"../DebugInfo"
 
 var current_measure := 1
@@ -86,14 +88,16 @@ func _process(delta):
 	var now = Time.get_ticks_msec()
 	var calculated_song_progress = now - song_start #TODO breaks if i use godot debug pause, change to a script var timer accumulating from delta
 
-	var loop_playback_ms = (get_playback_position() + AudioServer.get_time_since_last_mix()) * 1000.0
+	var playback_position = get_playback_position()
+	var time_since_last_mix = AudioServer.get_time_since_last_mix()
+	var loop_playback_ms = (playback_position + AudioServer.get_time_since_last_mix()) * 1000.0
 	var measure = int(loop_playback_ms / SongData.currentSong.ms_per_measure) + 1
 	
 	#check if we are on the next measure
 	if measure > current_measure:
 		current_measure = measure
 		Log.print("[audio] Measure %d Loop %d - program time %d, calculated song time %d, playback time %s = %f + %f" % \
-		[ current_measure, current_loop, now, calculated_song_progress, str(loop_playback_ms), get_playback_position(), AudioServer.get_time_since_last_mix() ])
+		[ current_measure, current_loop, now, calculated_song_progress, str(loop_playback_ms), playback_position, time_since_last_mix ])
 		
 	#check if we've looped around from last measure MEASURE_PER_LOOP to first
 	if current_measure >= SongData.MEASURE_PER_LOOP and measure == 1:
