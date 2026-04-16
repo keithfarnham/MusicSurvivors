@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://cim2in2pmvo1w"]
+
+[ext_resource type="Texture2D" uid="uid://pmsgy6e5j634" path="res://sprites/WeaponIcons/kickdrum.PNG" id="1_4c0k1"]
+[ext_resource type="Script" uid="uid://dlowjjnkdiud1" path="res://scripts/weapon_pickup.gd" id="1_cxdhy"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_cxdhy"]
+radius = 8.0
+
+[node name="WeaponPickup" type="Node2D" unique_id=747192900]
+script = ExtResource("1_cxdhy")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=542326612]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_4c0k1")
+
+[node name="PickupArea" type="Area2D" parent="." unique_id=649343909]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PickupArea" unique_id=1449522832]
+shape = SubResource("CircleShape2D_cxdhy")
+
+[connection signal="area_entered" from="PickupArea" to="." method="_on_pickup_area_area_entered"]

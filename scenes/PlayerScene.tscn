@@ -53,10 +53,10 @@ metadata/_edit_use_anchors_ = true
 
 [node name="HealthBar" type="TextureProgressBar" parent="CanvasLayer/GUIControl" unique_id=1374582787]
 layout_mode = 0
-offset_left = 72.0
-offset_top = 52.0
-offset_right = 136.0
-offset_bottom = 68.0
+offset_left = -8.0
+offset_top = 5.0
+offset_right = 56.0
+offset_bottom = 21.0
 scale = Vector2(0.25, 0.25)
 value = 100.0
 texture_over = ExtResource("5_b4xdg")

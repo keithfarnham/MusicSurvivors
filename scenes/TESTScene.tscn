@@ -1,19 +1,7 @@
 [gd_scene format=3 uid="uid://ck33t0yhvn2ie"]
 
-[ext_resource type="Script" uid="uid://cdejuklv6ntfh" path="res://scripts/Debug/DebugScene.gd" id="1_hwf88"]
-[ext_resource type="Script" uid="uid://dnwwaadtspx6u" path="res://scripts/Audio/audio.gd" id="1_lgsdp"]
-[ext_resource type="Script" uid="uid://b55t3ol6xw0og" path="res://scripts/Debug/debug_tools.gd" id="3_4wgqe"]
-
-[sub_resource type="AudioStreamSynchronized" id="AudioStreamSynchronized_hwf88"]
-stream_count = 8
-stream_0/volume = 0.0
-stream_1/volume = 0.0
-stream_2/volume = 0.0
-stream_3/volume = 0.0
-stream_4/volume = 0.0
-stream_5/volume = 0.0
-stream_6/volume = 0.0
-stream_7/volume = 0.0
+[ext_resource type="Script" uid="uid://cdejuklv6ntfh" path="res://scripts/Debug/TESTScene.gd" id="1_2vhy6"]
+[ext_resource type="PackedScene" uid="uid://xea7vhfq8eq7" path="res://scenes/AudioController.tscn" id="2_afuhl"]
 
 [sub_resource type="Gradient" id="Gradient_hwf88"]
 offsets = PackedFloat32Array(0.6938776, 1)
@@ -77,44 +65,42 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_hwf88")
+script = ExtResource("1_2vhy6")
 
-[node name="AudioController" type="AudioStreamPlayer" parent="." unique_id=1838298916]
-stream = SubResource("AudioStreamSynchronized_hwf88")
-max_polyphony = 8
-script = ExtResource("1_lgsdp")
-
-[node name="kick" type="AudioStreamPlayer" parent="AudioController" unique_id=742718886]
-
-[node name="snare" type="AudioStreamPlayer" parent="AudioController" unique_id=372996801]
-
-[node name="cymb" type="AudioStreamPlayer" parent="AudioController" unique_id=239684187]
-
-[node name="sample" type="AudioStreamPlayer" parent="AudioController" unique_id=185977924]
-
-[node name="bass" type="AudioStreamPlayer" parent="AudioController" unique_id=2016935806]
-
-[node name="lead" type="AudioStreamPlayer" parent="AudioController" unique_id=667738476]
-
-[node name="arp" type="AudioStreamPlayer" parent="AudioController" unique_id=458098169]
-
-[node name="chord" type="AudioStreamPlayer" parent="AudioController" unique_id=721921235]
+[node name="AudioController" parent="." unique_id=651702734 instance=ExtResource("2_afuhl")]
 
 [node name="TrackMutes" type="GridContainer" parent="." unique_id=1564254716]
 z_index = 1
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.26328126
-anchor_bottom = 0.20694445
+anchor_left = 0.025
+anchor_top = 0.35555556
+anchor_right = 0.525
+anchor_bottom = 0.75555557
+offset_right = 160.0
+offset_bottom = 72.0
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(0.5, 0.5)
 columns = 4
 metadata/_edit_use_anchors_ = true
 
 [node name="Kick" type="CheckButton" parent="TrackMutes" unique_id=937706601]
 layout_mode = 2
-button_pressed = true
 text = "Kick"
+
+[node name="KickRect" type="TextureRect" parent="TrackMutes/Kick" unique_id=825361383]
+visible = false
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture1D_4wgqe")
+expand_mode = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="KickLv" type="OptionButton" parent="TrackMutes" unique_id=859998334]
 layout_mode = 2
@@ -129,7 +115,21 @@ popup/item_2/id = 2
 
 [node name="Snare" type="CheckButton" parent="TrackMutes" unique_id=575025516]
 layout_mode = 2
+button_pressed = true
 text = "Snare"
+
+[node name="SnareRect" type="TextureRect" parent="TrackMutes/Snare" unique_id=2072918734]
+visible = false
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture1D_dagca")
+expand_mode = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="SnareLv" type="OptionButton" parent="TrackMutes" unique_id=1452849400]
 layout_mode = 2
@@ -144,8 +144,20 @@ popup/item_2/id = 2
 
 [node name="Cymb" type="CheckButton" parent="TrackMutes" unique_id=730205424]
 layout_mode = 2
-button_pressed = true
 text = "Cymb"
+
+[node name="CymbRect" type="TextureRect" parent="TrackMutes/Cymb" unique_id=1723957850]
+visible = false
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture1D_wi0h7")
+expand_mode = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="CymbLv" type="OptionButton" parent="TrackMutes" unique_id=1295501885]
 layout_mode = 2
@@ -160,7 +172,21 @@ popup/item_2/id = 2
 
 [node name="Sample" type="CheckButton" parent="TrackMutes" unique_id=708507569]
 layout_mode = 2
+button_pressed = true
 text = "Sample"
+
+[node name="SampleRect" type="TextureRect" parent="TrackMutes/Sample" unique_id=2123067150]
+visible = false
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture1D_jagq2")
+expand_mode = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="SampleLv" type="OptionButton" parent="TrackMutes" unique_id=1747214797]
 layout_mode = 2
@@ -175,8 +201,20 @@ popup/item_2/id = 2
 
 [node name="Bass" type="CheckButton" parent="TrackMutes" unique_id=1546205012]
 layout_mode = 2
-button_pressed = true
 text = "Bass"
+
+[node name="BassRect" type="TextureRect" parent="TrackMutes/Bass" unique_id=1380737018]
+visible = false
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture1D_xupkg")
+expand_mode = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="BassLv" type="OptionButton" parent="TrackMutes" unique_id=728330967]
 layout_mode = 2
@@ -191,7 +229,21 @@ popup/item_2/id = 2
 
 [node name="Lead" type="CheckButton" parent="TrackMutes" unique_id=1724401529]
 layout_mode = 2
+button_pressed = true
 text = "Lead"
+
+[node name="LeadRect" type="TextureRect" parent="TrackMutes/Lead" unique_id=725022599]
+visible = false
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture1D_exchb")
+expand_mode = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="LeadLv" type="OptionButton" parent="TrackMutes" unique_id=316691596]
 layout_mode = 2
@@ -206,8 +258,20 @@ popup/item_2/id = 2
 
 [node name="Arp" type="CheckButton" parent="TrackMutes" unique_id=374695672]
 layout_mode = 2
-button_pressed = true
 text = "Arp"
+
+[node name="ArpRect" type="TextureRect" parent="TrackMutes/Arp" unique_id=74137604]
+visible = false
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture1D_lp530")
+expand_mode = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="ArpLv" type="OptionButton" parent="TrackMutes" unique_id=208993383]
 layout_mode = 2
@@ -222,8 +286,20 @@ popup/item_2/id = 2
 
 [node name="Chord" type="CheckButton" parent="TrackMutes" unique_id=378959661]
 layout_mode = 2
-button_pressed = true
 text = "Chord"
+
+[node name="ChordRect" type="TextureRect" parent="TrackMutes/Chord" unique_id=1510637789]
+visible = false
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture1D_dbhed")
+expand_mode = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="ChordLv" type="OptionButton" parent="TrackMutes" unique_id=1295726562]
 layout_mode = 2
@@ -239,10 +315,10 @@ popup/item_2/id = 2
 [node name="SongChoice" type="OptionButton" parent="." unique_id=485371660]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.28671876
-anchor_top = 0.008333334
-anchor_right = 0.4171875
-anchor_bottom = 0.13333334
+anchor_left = 0.021875
+anchor_top = 0.05
+anchor_right = 0.359375
+anchor_bottom = 0.22222222
 selected = 0
 item_count = 2
 popup/item_0/text = "testsong"
@@ -251,180 +327,6 @@ popup/item_1/text = "testsong2"
 popup/item_1/id = 1
 popup/item_1/disabled = true
 metadata/_edit_use_anchors_ = true
-
-[node name="KickRect" type="TextureRect" parent="." unique_id=825361383]
-visible = false
-z_index = -1
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.00546875
-anchor_right = 0.040625
-anchor_bottom = 0.045833334
-texture = SubResource("GradientTexture1D_4wgqe")
-expand_mode = 1
-metadata/_edit_use_anchors_ = true
-
-[node name="SnareRect" type="TextureRect" parent="." unique_id=2072918734]
-visible = false
-layout_mode = 0
-anchor_left = 0.125
-anchor_right = 0.1640625
-anchor_bottom = 0.045833334
-texture = SubResource("GradientTexture1D_dagca")
-expand_mode = 1
-metadata/_edit_use_anchors_ = true
-
-[node name="CymbRect" type="TextureRect" parent="." unique_id=1723957850]
-visible = false
-layout_mode = 0
-anchor_left = 0.00625
-anchor_top = 0.05277778
-anchor_right = 0.040625
-anchor_bottom = 0.093055554
-texture = SubResource("GradientTexture1D_wi0h7")
-expand_mode = 1
-metadata/_edit_use_anchors_ = true
-
-[node name="SampleRect" type="TextureRect" parent="." unique_id=2123067150]
-visible = false
-layout_mode = 0
-anchor_left = 0.125
-anchor_top = 0.055555556
-anchor_right = 0.171875
-anchor_bottom = 0.090277776
-texture = SubResource("GradientTexture1D_jagq2")
-expand_mode = 1
-metadata/_edit_use_anchors_ = true
-
-[node name="BassRect" type="TextureRect" parent="." unique_id=1380737018]
-visible = false
-layout_mode = 0
-anchor_left = 0.00390625
-anchor_top = 0.10277778
-anchor_right = 0.03984375
-anchor_bottom = 0.14027777
-texture = SubResource("GradientTexture1D_xupkg")
-expand_mode = 1
-metadata/_edit_use_anchors_ = true
-
-[node name="LeadRect" type="TextureRect" parent="." unique_id=725022599]
-visible = false
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.12578125
-anchor_top = 0.10277778
-anchor_right = 0.16875
-anchor_bottom = 0.1388889
-texture = SubResource("GradientTexture1D_exchb")
-expand_mode = 1
-metadata/_edit_use_anchors_ = true
-
-[node name="ArpRect" type="TextureRect" parent="." unique_id=74137604]
-visible = false
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.00234375
-anchor_top = 0.14861111
-anchor_right = 0.03984375
-anchor_bottom = 0.19166666
-texture = SubResource("GradientTexture1D_lp530")
-expand_mode = 1
-metadata/_edit_use_anchors_ = true
-
-[node name="ChordRect" type="TextureRect" parent="." unique_id=1510637789]
-visible = false
-layout_mode = 0
-anchor_left = 0.1265625
-anchor_top = 0.15138888
-anchor_right = 0.16484375
-anchor_bottom = 0.18611111
-texture = SubResource("GradientTexture1D_dbhed")
-expand_mode = 1
-metadata/_edit_use_anchors_ = true
-
-[node name="DebugInfo" type="Control" parent="." unique_id=224799760]
-layout_mode = 1
-anchor_left = 0.5984375
-anchor_top = -0.0013888889
-anchor_right = 0.76171875
-anchor_bottom = 0.27222222
-script = ExtResource("3_4wgqe")
-metadata/_edit_use_anchors_ = true
-
-[node name="DebugGrid" type="GridContainer" parent="DebugInfo" unique_id=1125222781]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-columns = 2
-metadata/_edit_use_anchors_ = true
-
-[node name="SongStartLabel" type="RichTextLabel" parent="DebugInfo/DebugGrid" unique_id=448806762]
-custom_minimum_size = Vector2(0, 24)
-layout_mode = 2
-text = "Song Start: "
-
-[node name="SongStartValue" type="RichTextLabel" parent="DebugInfo/DebugGrid" unique_id=1213205905]
-layout_mode = 2
-text = "0.0"
-
-[node name="ProgramTimeLabel" type="RichTextLabel" parent="DebugInfo/DebugGrid" unique_id=725471890]
-custom_minimum_size = Vector2(124, 24)
-layout_mode = 2
-text = "Program Time:"
-
-[node name="ProgramTimeValue" type="RichTextLabel" parent="DebugInfo/DebugGrid" unique_id=1229513928]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "00000.0"
-metadata/_edit_use_anchors_ = true
-
-[node name="SongProgressLabel" type="RichTextLabel" parent="DebugInfo/DebugGrid" unique_id=1045266311]
-custom_minimum_size = Vector2(0, 24)
-layout_mode = 2
-text = "Song Progress: "
-
-[node name="SongProgressValue" type="RichTextLabel" parent="DebugInfo/DebugGrid" unique_id=1329269014]
-layout_mode = 2
-text = "0.0"
-
-[node name="AudioPlaybackTimeLabel" type="RichTextLabel" parent="DebugInfo/DebugGrid" unique_id=140622364]
-custom_minimum_size = Vector2(124, 28)
-layout_mode = 2
-text = "Playback Time:"
-
-[node name="AudioPlaybackValue" type="RichTextLabel" parent="DebugInfo/DebugGrid" unique_id=1826112808]
-layout_mode = 2
-text = "00000.00"
-metadata/_edit_use_anchors_ = true
-
-[node name="LoopCountLabel" type="RichTextLabel" parent="DebugInfo/DebugGrid" unique_id=1298041582]
-custom_minimum_size = Vector2(0, 24)
-layout_mode = 2
-text = "Loop: "
-
-[node name="LoopCountValue" type="RichTextLabel" parent="DebugInfo/DebugGrid" unique_id=103156765]
-layout_mode = 2
-text = "0"
-
-[node name="MeasureCountLabel" type="RichTextLabel" parent="DebugInfo/DebugGrid" unique_id=1767342923]
-custom_minimum_size = Vector2(0, 24)
-layout_mode = 2
-text = "Measure: "
-
-[node name="MeasureCountValue" type="RichTextLabel" parent="DebugInfo/DebugGrid" unique_id=453983887]
-layout_mode = 2
-text = "0"
-
-[node name="LoopProgress" type="ProgressBar" parent="DebugInfo" unique_id=1529700874]
-layout_mode = 0
-offset_left = -687.0
-offset_top = 239.0
-offset_right = 431.0
-offset_bottom = 348.0
-show_percentage = false
 
 [connection signal="toggled" from="TrackMutes/Kick" to="." method="_on_kick_toggled"]
 [connection signal="item_selected" from="TrackMutes/KickLv" to="." method="_on_kick_lv_item_selected"]

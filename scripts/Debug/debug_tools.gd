@@ -1,11 +1,11 @@
 extends Control
 
-@onready var program_time_text = $DebugGrid/ProgramTimeValue
-@onready var playback_time_text = $DebugGrid/AudioPlaybackValue
-@onready var song_start_text = $DebugGrid/SongStartValue
-@onready var song_progress_text = $DebugGrid/SongProgressValue
-@onready var loop_count_text = $DebugGrid/LoopCountValue
-@onready var measure_count_text = $DebugGrid/MeasureCountValue
+@onready var program_time_text = $VBoxValues/ProgramTimeValue
+@onready var playback_time_text = $VBoxValues/AudioPlaybackValue
+@onready var song_start_text = $VBoxValues/SongStartValue
+@onready var song_progress_text = $VBoxValues/SongProgressValue
+@onready var loop_count_text = $VBoxValues/LoopCountValue
+@onready var measure_count_text = $VBoxValues/MeasureCountValue
 
 func _ready():
 	pass # Replace with function body.

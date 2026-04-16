@@ -5,7 +5,6 @@ extends CharacterBody2D
 @onready var attacks = $attacks
 @onready var healthBar = $CanvasLayer/GUIControl/HealthBar
 @onready var xpBar = $CanvasLayer/GUIControl/XPBar
-#@onready var song = $"../song" as AudioStreamPlayer
 
 @export var hp : int = 100
 @export var speed : float = 40.0
@@ -17,67 +16,62 @@ var min_values = []
 var max_values = []
 var midi_data : MidiFileParser
 
-#enum weapons {kick, snare, cymb, sample, bass, lead, arp, chord}
 var kick_scene = preload("res://scenes/attacks/kick.tscn")
-#var weapon_scenes = {weapons.kick: "res://scenes/attacks/drumkick.tscn", weapons.cymb: "", weapons.bass: ""}
 var active_weapons = []
 
 func _ready():
-	midi_data = MidiFileParser.load_file("res://audio/testsong/testsong_lv1.mid")
-	#TODO re-evaluate what needs to be initialized here
-	#SongData.currentSong = SongData.song_data.get(SongData.Songs.testsong)
 	active_weapons.resize(TrackData.Tracks.size())
 	active_weapons.fill(false)
 	var kickInstance = kick_scene.instantiate()
 	attacks.add_child(kickInstance)
 	active_weapons[TrackData.Tracks.KICK] = true
 
-func audio_process(delta):
-	for track in midi_data.tracks:
-		var player_process
-		# storing internal player process in track data
-		if "player_process" not in track.additional_data:
-			track.additional_data.player_process = {"start_time" : Time.get_ticks_msec(), "delta_tick" : 0, "event_index" : 0}
-			player_process = track.additional_data.player_process
-		else:
-			player_process = track.additional_data.player_process
-			
-		while player_process.event_index < track.events.size():
-			var elapsed_ms = Time.get_ticks_msec() - player_process.start_time
-			var delta_ticks = elapsed_ms / SongData.currentSong.ms_per_tick
-			var event = track.events[player_process.event_index]
-			if player_process.delta_tick + event.delta_ticks > delta_ticks:
-				break
-			player_process.delta_tick += event.delta_ticks
-			player_process.event_index += 1
-			#self.emit_signal("event", event, track)
-			if event.event_type == MidiFileParser.Event.EventType.META && event.type == MidiFileParser.Meta.Type.SET_TEMPO:
-				# tempo update
-				#I don't think I'll need this given my songs will be consistent tempo?
-				#TODO prob remove
-				SongData.currentSong.ms_per_tick = event.ms_per_tick
-				Log.print("[player] tempo now " +str(event.bpm)+ " bpm")
-			if event.event_type == event.EventType.MIDI && event.note_name != '':
-				var offset = event.param1 - 69
-				if event.velocity > 0:
-					#play_sound(event.note_name, event.frequency, event.velocity)
-					Log.print("[player] Play "+event.note_name+" with velocity "+str(event.velocity)+" freq "+str(event.frequency))
-				else:
-					#play_sound(event.note_name)
-					Log.print("[player] Stop "+event.note_name)
-				
-				# event.velocity <= 0 = note off
-				# event.velocity > 0 = note on
-				# see MidiFileParser.Midi for more information about the midi data
-				pass
+#func audio_process(delta):
+	#for track in midi_data.tracks:
+		#var player_process
+		## storing internal player process in track data
+		#if "player_process" not in track.additional_data:
+			#track.additional_data.player_process = {"start_time" : Time.get_ticks_msec(), "delta_tick" : 0, "event_index" : 0}
+			#player_process = track.additional_data.player_process
+		#else:
+			#player_process = track.additional_data.player_process
+			#
+		#while player_process.event_index < track.events.size():
+			#var elapsed_ms = Time.get_ticks_msec() - player_process.start_time
+			#var delta_ticks = elapsed_ms / SongData.currentSong.ms_per_tick
+			#var event = track.events[player_process.event_index]
+			#if player_process.delta_tick + event.delta_ticks > delta_ticks:
+				#break
+			#player_process.delta_tick += event.delta_ticks
+			#player_process.event_index += 1
+			##self.emit_signal("event", event, track)
+			#if event.event_type == MidiFileParser.Event.EventType.META && event.type == MidiFileParser.Meta.Type.SET_TEMPO:
+				## tempo update
+				##I don't think I'll need this given my songs will be consistent tempo?
+				##TODO prob remove
+				#SongData.currentSong.ms_per_tick = event.ms_per_tick
+				#Log.print("[player] tempo now " +str(event.bpm)+ " bpm")
+			#if event.event_type == event.EventType.MIDI && event.note_name != '':
+				#var offset = event.param1 - 69
+				#if event.velocity > 0:
+					##play_sound(event.note_name, event.frequency, event.velocity)
+					#Log.print("[player] Play "+event.note_name+" with velocity "+str(event.velocity)+" freq "+str(event.frequency))
+				#else:
+					##play_sound(event.note_name)
+					#Log.print("[player] Stop "+event.note_name)
+				#
+				## event.velocity <= 0 = note off
+				## event.velocity > 0 = note on
+				## see MidiFileParser.Midi for more information about the midi data
+				#pass
 
-func _process(delta):
+#sdddddawdasdwdfunc _process(delta):
 	#for track in midi_data.tracks:
 		#for event in track:
 			##Do stuff
 			#print("midi event for track " + str(track))
 			
-	audio_process(delta)
+#	audio_process(delta)
 	
 	#sprite.get_material().set_shader_parameter("freq_data", fft)
 	

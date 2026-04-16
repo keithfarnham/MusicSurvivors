@@ -2,7 +2,7 @@ extends AudioStreamPlayer
 
 class_name AudioController
 
-@onready var Debug = $"../DebugInfo"
+@onready var Debug = $CanvasLayer/DebugInfo
 
 var current_measure := 1
 var current_loop := 1
@@ -13,6 +13,7 @@ var songFolder = "res://songs/"
 var audioFiles = []
 var track_players = {}
 var track_lengths = {}  # length of each loaded track
+var track_active = {}
 
 var sync_stream = stream as AudioStreamSynchronized
 
@@ -56,6 +57,14 @@ func load_track_stream(track: TrackData.Tracks):
 	else:
 		Log.print("[audio] ERROR - No audio file found for track %d, level %d" % [track, level - 1])
 		stream = null
+
+func set_track_active(track: TrackData.Tracks, is_enabled: bool):
+	if track not in track_players:
+		return
+	
+	var player = stream.get_sync_stream(track)
+	track_active.set(track, is_enabled)
+	stream.set_sync_stream_volume(track, 0 if is_enabled else -80)
 
 func _ready():
 	end_of_loop.connect(_on_end_of_loop)

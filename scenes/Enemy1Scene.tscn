@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://yxccevfb407i"]
+[gd_scene format=3 uid="uid://yxccevfb407i"]
 
 [ext_resource type="Texture2D" uid="uid://foy1grb2bh8f" path="res://sprites/mage.png" id="1_mn0d1"]
 [ext_resource type="Script" uid="uid://hdngyis0s1dd" path="res://scripts/enemy_sword.gd" id="1_vm68c"]
@@ -15,17 +15,17 @@ size = Vector2(2, 7)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_divfq"]
 size = Vector2(6, 10)
 
-[node name="SwordEnemy" type="CharacterBody2D"]
+[node name="SwordEnemy" type="CharacterBody2D" unique_id=1098599000]
 script = ExtResource("1_vm68c")
 
-[node name="sprite" type="Sprite2D" parent="."]
+[node name="sprite" type="Sprite2D" parent="." unique_id=1076869869]
 texture_filter = 1
 texture = ExtResource("1_mn0d1")
 
-[node name="enemyCollision" type="CollisionShape2D" parent="."]
+[node name="enemyCollision" type="CollisionShape2D" parent="." unique_id=1028636312]
 shape = SubResource("CapsuleShape2D_8hsf7")
 
-[node name="enemyHitbox" parent="." instance=ExtResource("3_divfq")]
+[node name="enemyHitbox" parent="." unique_id=1261358791 instance=ExtResource("3_divfq")]
 position = Vector2(5, -0.5)
 collision_layer = 4
 collision_mask = 2
@@ -33,7 +33,7 @@ collision_mask = 2
 [node name="hitboxCollision" parent="enemyHitbox" index="0"]
 shape = SubResource("RectangleShape2D_qecla")
 
-[node name="enemyHurtbox" parent="." instance=ExtResource("3_8hsf7")]
+[node name="enemyHurtbox" parent="." unique_id=726361817 instance=ExtResource("3_8hsf7")]
 collision_layer = 4
 collision_mask = 2
 

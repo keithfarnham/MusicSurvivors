@@ -5,14 +5,14 @@ extends Control
 @onready var track_mutes = $TrackMutes
 
 #region Debug Event Handlers
-@onready var kick_display = $KickRect
-@onready var snare_display = $SnareRect
-@onready var cymb_display = $CymbRect
-@onready var sample_display = $SampleRect
-@onready var bass_display = $BassRect
-@onready var lead_display = $LeadRect
-@onready var arp_display = $ArpRect
-@onready var chord_display = $ChordRect
+@onready var kick_display = $TrackMutes/Kick/KickRect
+@onready var snare_display = $TrackMutes/Snare/SnareRect
+@onready var cymb_display = $TrackMutes/Cymb/CymbRect
+@onready var sample_display = $TrackMutes/Sample/SampleRect
+@onready var bass_display = $TrackMutes/Bass/BassRect
+@onready var lead_display = $TrackMutes/Lead/LeadRect
+@onready var arp_display = $TrackMutes/Arp/ArpRect
+@onready var chord_display = $TrackMutes/Chord/ChordRect
 
 # UI element references
 @onready var kick_toggle = $TrackMutes/Kick
@@ -37,7 +37,7 @@ extends Control
 
 # Current song being played
 var current_levels = {}  # selected level for each track
-var track_muted = {} # is track muted
+#var track_muted = {} # is track muted
 var mute_toggles = {}
 
 # Track loop timers and get_length for seamless looping
@@ -64,7 +64,7 @@ func _ready():
 		var muted = false
 		if mute_toggles[track].button_pressed:
 			muted = true
-		_set_track_mute(track, muted)
+		audio_node.set_track_active(track, muted)
 	
 	# Initialize current levels to lv1
 	for track in TrackData.Tracks.values():
@@ -99,36 +99,28 @@ func _on_song_choice_item_selected(index):
 
 #region Mute Toggles 
 func _on_kick_toggled(toggled_on):
-	_set_track_mute(TrackData.Tracks.KICK, toggled_on)
+	audio_node.set_track_active(TrackData.Tracks.KICK, toggled_on)
 
 func _on_snare_toggled(toggled_on):
-	_set_track_mute(TrackData.Tracks.SNARE, toggled_on)
+	audio_node.set_track_active(TrackData.Tracks.SNARE, toggled_on)
 
 func _on_cymb_toggled(toggled_on):
-	_set_track_mute(TrackData.Tracks.CYMB, toggled_on)
+	audio_node.set_track_active(TrackData.Tracks.CYMB, toggled_on)
 
 func _on_sample_toggled(toggled_on):
-	_set_track_mute(TrackData.Tracks.SAMPLE, toggled_on)
+	audio_node.set_track_active(TrackData.Tracks.SAMPLE, toggled_on)
 
 func _on_bass_toggled(toggled_on):
-	_set_track_mute(TrackData.Tracks.BASS, toggled_on)
+	audio_node.set_track_active(TrackData.Tracks.BASS, toggled_on)
 
 func _on_lead_toggled(toggled_on):
-	_set_track_mute(TrackData.Tracks.LEAD, toggled_on)
+	audio_node.set_track_active(TrackData.Tracks.LEAD, toggled_on)
 
 func _on_arp_toggled(toggled_on):
-	_set_track_mute(TrackData.Tracks.ARP, toggled_on)
+	audio_node.set_track_active(TrackData.Tracks.ARP, toggled_on)
 
 func _on_chord_toggled(toggled_on):
-	_set_track_mute(TrackData.Tracks.CHORD, toggled_on)
-
-func _set_track_mute(track: TrackData.Tracks, is_muted: bool):
-	if track not in audio_node.track_players:
-		return
-	
-	var player = audio_node.stream.get_sync_stream(track)#track_players[track]
-	track_muted.set(track, is_muted)
-	audio_node.stream.set_sync_stream_volume(track, -80 if is_muted else 0)
+	audio_node.set_track_active(TrackData.Tracks.CHORD, toggled_on)
 #endregion Mute Toggles
 
 #region Track level selectors
@@ -199,7 +191,7 @@ func _display_handler():
 	
 	#Display the debug color for each track
 	for track in SongData.currentSong.trackData.values():
-		if track_muted.get(track.TrackType):
+		if !audio_node.track_active.get(track.TrackType):
 			#early out for muted tracks
 			continue
 		assert(now >= track.MidiProcess.start_time, "now < MidiProcess.start_time resulting in negative delta_ticks")
@@ -222,16 +214,7 @@ func _display_handler():
 						display_map[track.TrackType].visible = true
 						display_timers[track.TrackType] = Time.get_ticks_msec()
 						Log.print("[DebugScene] Display Handler - mapped %s, current level %s" % [str(TrackData.Tracks.keys()[track.TrackType]), str(TrackData.Level.keys()[level - 1])])
-		# Check if we've reached the end of the track and loop it
-		#if track.MidiProcess.event_index >= midi.events.size():
-			#loop_total[TrackData.Tracks.keys()[track.TrackType]] += 1
-			#print("Looping %s now on loop %s. Started at [%s] and ending at [%s], diff = %s" % \
-			#[ str(TrackData.Tracks.keys()[track.TrackType]), str(loop_total[TrackData.Tracks.keys()[track.TrackType]]), str(track.MidiProcess.start_time), str(now), str(now - track.MidiProcess.start_time) ])
-			## Reset to loop the MIDI track
-			#track.MidiProcess.delta_tick = 0
-			#track.MidiProcess.event_index = 0
-			## Adjust start_time to keep sync with audio loops
-			#track.MidiProcess.start_time = now 
+	
 	# hide displays after short duration
 	for track in display_map.keys():
 		var t = display_timers.get(track, 0)
