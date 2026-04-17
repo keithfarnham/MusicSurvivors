@@ -18,4 +18,4 @@ texture = ExtResource("1_4c0k1")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PickupArea" unique_id=1449522832]
 shape = SubResource("CircleShape2D_cxdhy")
 
-[connection signal="area_entered" from="PickupArea" to="." method="_on_pickup_area_area_entered"]
+[connection signal="area_entered" from="PickupArea" to="." method="_on_pickup_area_entered"]

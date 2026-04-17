@@ -10,7 +10,7 @@ func _ready():
 	
 	for track in TrackData.Tracks.values():
 		var isActive = false
-		if player.active_weapons[track]:
+		if player.is_weapon_active(track):
 			isActive = true
 		audio.set_track_active(track, isActive)
 	

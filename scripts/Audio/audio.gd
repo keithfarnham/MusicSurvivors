@@ -4,10 +4,10 @@ class_name AudioController
 
 @onready var Debug = $CanvasLayer/DebugInfo
 
-var current_measure := 1
-var current_loop := 1
-var song_start := 0.0
-var playback_time := 0.0
+var current_measure : int = 1
+var current_loop : int = 1
+var song_start : float = 0.0
+var playback_time : float = 0.0
 
 var songFolder = "res://songs/"
 var audioFiles = []

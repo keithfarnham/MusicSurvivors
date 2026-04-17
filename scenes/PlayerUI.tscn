@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://bowa3juik316y"]
+
+[ext_resource type="Texture2D" uid="uid://bg2gvwofdvhfk" path="res://sprites/healthbar_frame.png" id="1_08kqy"]
+[ext_resource type="Script" uid="uid://damtvam56dwq7" path="res://scripts/player_ui.gd" id="1_p6wq6"]
+[ext_resource type="Texture2D" uid="uid://crq5k0vpp8l6w" path="res://sprites/healthbar_fill.png" id="2_p6wq6"]
+[ext_resource type="Texture2D" uid="uid://bufxoo20k5lhc" path="res://sprites/xp_bar_frame.png" id="3_wq4ys"]
+[ext_resource type="Texture2D" uid="uid://bvv1dk2pyq6uc" path="res://sprites/xp_bar_fill.png" id="4_22y41"]
+
+[node name="CanvasLayer" type="CanvasLayer" unique_id=1938607081]
+script = ExtResource("1_p6wq6")
+
+[node name="GUIControl" type="Control" parent="." unique_id=957168856]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="HealthBar" type="TextureProgressBar" parent="GUIControl" unique_id=1381607248]
+layout_mode = 0
+offset_left = 152.0
+offset_top = 96.0
+offset_right = 216.0
+offset_bottom = 112.0
+scale = Vector2(0.25, 0.25)
+value = 100.0
+texture_over = ExtResource("1_08kqy")
+texture_progress = ExtResource("2_p6wq6")
+
+[node name="XPBar" type="TextureProgressBar" parent="GUIControl" unique_id=1367090531]
+layout_mode = 0
+offset_left = 80.0
+offset_top = 2.0
+offset_right = 720.0
+offset_bottom = 26.0
+scale = Vector2(0.25, 0.25)
+texture_over = ExtResource("3_wq4ys")
+texture_progress = ExtResource("4_22y41")

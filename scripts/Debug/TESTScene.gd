@@ -48,7 +48,7 @@ var display_map = {}
 var display_timers = {}
 
 
-func _ready():	
+func _ready():
 	mute_toggles = {
 		TrackData.Tracks.KICK: kick_toggle,
 		TrackData.Tracks.SNARE: snare_toggle,

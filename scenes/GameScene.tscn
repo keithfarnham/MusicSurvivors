@@ -5,11 +5,14 @@
 [ext_resource type="PackedScene" uid="uid://bqwactsbgtg1e" path="res://scenes/PlayerScene.tscn" id="2_cxv17"]
 [ext_resource type="PackedScene" uid="uid://yxccevfb407i" path="res://scenes/Enemy1Scene.tscn" id="3_cxv17"]
 [ext_resource type="PackedScene" uid="uid://xea7vhfq8eq7" path="res://scenes/AudioController.tscn" id="5_7s5hy"]
+[ext_resource type="PackedScene" uid="uid://bowa3juik316y" path="res://scenes/PlayerUI.tscn" id="6_xs4ih"]
 
 [node name="Game" type="Node2D" unique_id=1367614656]
 script = ExtResource("1_xs4ih")
 
 [node name="AudioController" parent="." unique_id=651702734 instance=ExtResource("5_7s5hy")]
+
+[node name="PlayerUI" parent="." unique_id=1938607081 instance=ExtResource("6_xs4ih")]
 
 [node name="Background" type="Sprite2D" parent="." unique_id=536093311]
 z_index = -1
@@ -20,13 +23,7 @@ region_enabled = true
 region_rect = Rect2(0, 0, 1000, 1000)
 
 [node name="Player" parent="." unique_id=1075770607 groups=["Player"] instance=ExtResource("2_cxv17")]
-position = Vector2(76, 37)
-
-[node name="HealthBar" parent="Player/CanvasLayer/GUIControl" parent_id_path=PackedInt32Array(1075770607, 463697749) index="0" unique_id=1374582787]
-offset_left = 0.0
-offset_top = 8.0
-offset_right = 64.0
-offset_bottom = 24.0
+position = Vector2(160, 90)
 
 [node name="Enemy1" parent="." unique_id=836248145 instance=ExtResource("3_cxv17")]
 z_index = 1
@@ -39,8 +36,3 @@ z_index = 1
 texture_filter = 1
 position = Vector2(-7, 4)
 scale = Vector2(0.75, 0.75)
-
-[node name="Timer" type="Timer" parent="." unique_id=296270948]
-
-[editable path="Player"]
-[editable path="Player/playerHurtbox"]

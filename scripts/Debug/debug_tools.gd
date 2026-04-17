@@ -14,7 +14,7 @@ func update_debug_info(programTime : float, loopPlaybackTime : float, songStart 
 	program_time_text.text = str(programTime)
 	playback_time_text.text = str(snapped(loopPlaybackTime, 0.01))
 	song_start_text.text = str(songStart)
-	song_progress_text.text = str(songProgress) #TODO this isn't accurate if I pause program through godot debug tools - anyway to fix?
+	song_progress_text.text = str(songProgress) #TODO this isn't accurate if I pause program through godot debug tools - switch to incremented process delta likely needed in future
 	loop_count_text.text = str(loopCount)
 	measure_count_text.text = str(measureCount)
 	

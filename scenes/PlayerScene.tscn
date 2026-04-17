@@ -3,10 +3,8 @@
 [ext_resource type="Texture2D" uid="uid://cexgh0xqjw6tg" path="res://sprites/goblin.png" id="1_f302p"]
 [ext_resource type="Script" uid="uid://drsopayjvluf7" path="res://scripts/player.gd" id="1_vdp4a"]
 [ext_resource type="PackedScene" uid="uid://ceokyxnjfscgk" path="res://scenes/HurtboxScene.tscn" id="3_3lb1s"]
-[ext_resource type="Texture2D" uid="uid://bg2gvwofdvhfk" path="res://sprites/healthbar_frame.png" id="5_b4xdg"]
-[ext_resource type="Texture2D" uid="uid://crq5k0vpp8l6w" path="res://sprites/healthbar_fill.png" id="6_qxfha"]
-[ext_resource type="Texture2D" uid="uid://bufxoo20k5lhc" path="res://sprites/xp_bar_frame.png" id="7_hao31"]
-[ext_resource type="Texture2D" uid="uid://bvv1dk2pyq6uc" path="res://sprites/xp_bar_fill.png" id="8_r34t3"]
+[ext_resource type="PackedScene" uid="uid://fosyj45yykcs" path="res://scenes/attacks/kick.tscn" id="4_hwioa"]
+[ext_resource type="PackedScene" uid="uid://cbsy48yuv2fhr" path="res://scenes/attacks/snare.tscn" id="5_3lb1s"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_vdp4a"]
 radius = 1.0
@@ -38,38 +36,11 @@ hurtBoxState = 2
 [node name="hurtboxCollision" parent="playerHurtbox" index="0"]
 shape = SubResource("RectangleShape2D_b4xdg")
 
-[node name="attacks" type="Node2D" parent="." unique_id=2118226043]
+[node name="attacks" type="Node2D" parent="." unique_id=931420720]
 
-[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=2045716758]
+[node name="kick" parent="attacks" unique_id=503724186 instance=ExtResource("4_hwioa")]
 
-[node name="GUIControl" type="Control" parent="CanvasLayer" unique_id=463697749]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-metadata/_edit_use_anchors_ = true
-
-[node name="HealthBar" type="TextureProgressBar" parent="CanvasLayer/GUIControl" unique_id=1374582787]
-layout_mode = 0
-offset_left = -8.0
-offset_top = 5.0
-offset_right = 56.0
-offset_bottom = 21.0
-scale = Vector2(0.25, 0.25)
-value = 100.0
-texture_over = ExtResource("5_b4xdg")
-texture_progress = ExtResource("6_qxfha")
-
-[node name="XPBar" type="TextureProgressBar" parent="CanvasLayer/GUIControl" unique_id=1217614797]
-layout_mode = 0
-offset_top = 2.0
-offset_right = 640.0
-offset_bottom = 26.0
-scale = Vector2(0.25, 0.25)
-texture_over = ExtResource("7_hao31")
-texture_progress = ExtResource("8_r34t3")
+[node name="snare" parent="attacks" unique_id=1923596603 instance=ExtResource("5_3lb1s")]
 
 [connection signal="hurt" from="playerHurtbox" to="." method="_on_hurtbox_hurt"]
 
