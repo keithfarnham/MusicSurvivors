@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://yxccevfb407i"]
 
-[ext_resource type="Texture2D" uid="uid://foy1grb2bh8f" path="res://sprites/mage.png" id="1_mn0d1"]
+[ext_resource type="Texture2D" uid="uid://foy1grb2bh8f" path="res://sprites/Character/Enemy/mage.png" id="1_mn0d1"]
 [ext_resource type="Script" uid="uid://hdngyis0s1dd" path="res://scripts/enemy_sword.gd" id="1_vm68c"]
 [ext_resource type="PackedScene" uid="uid://ceokyxnjfscgk" path="res://scenes/HurtboxScene.tscn" id="3_8hsf7"]
 [ext_resource type="PackedScene" uid="uid://dgswms5nnfie4" path="res://scenes/HitboxScene.tscn" id="3_divfq"]

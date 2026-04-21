@@ -8,7 +8,7 @@ extends Area2D
 signal hurt(damage)
 
 func _on_area_entered(area):
-	#print("area " + str(name) + " colliding with " + str(area.name))
+	Log.print("area %s colliding with %s" % [str(name), str(area.name)])
 	if area.is_in_group("attack"):
 		if area.get("damage") == null:
 			return
@@ -21,8 +21,8 @@ func _on_area_entered(area):
 				#emit_signal("damage", area.get("damage"))
 				pass
 			2: # Disable
-				if area.has_method("disable"):
-					area.disable()
+				if area.has_method("cooldown"):
+					area.cooldown()
 		hurt.emit(area.get("damage"))
 
 func _on_hurt_timer_timeout():

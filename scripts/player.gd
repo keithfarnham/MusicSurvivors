@@ -16,6 +16,9 @@ func _ready():
 	_setup_weapons()
 	#weapons[TrackData.Tracks.KICK].activate_weapon()
 
+func _process(delta):
+	_attack_handler()
+
 func _physics_process(delta):
 	move(delta)
 
@@ -44,38 +47,46 @@ func move(delta):
 	velocity = direction * speed
 	move_and_collide(velocity * delta)
 	
-#func _attack_handler():
-	#var songInfo = SongData.currentSong
-	#var ms_per_tick = songInfo.ms_per_tick
-	#var now = Time.get_ticks_msec()
-	#
-	## trigger the weapon for each active track
-	#for track in SongData.currentSong.trackData.values():
-		#if !audio_node.track_active.get(track.TrackType):
-			##early out for inactive/muted tracks
-			#continue
-		#assert(now >= track.MidiProcess.start_time, "[player] ERROR: now < MidiProcess.start_time resulting in negative delta_ticks. This is bad.")
-		#var elapsed_ms = now - track.MidiProcess.start_time
-		#var delta_ticks = float(elapsed_ms) / ms_per_tick if ms_per_tick > 0 else 0
+func _get_weapon_node(track : TrackData.Tracks) -> Weapon:
+	for weapon_node in $attacks.get_children():
+		if weapon_node.track == track:
+			return weapon_node
+	assert(false, "[player] ERROR weapon node not found")
+	return null
+	
+func _attack_handler():
+	var songInfo = SongData.currentSong
+	var ms_per_tick = songInfo.ms_per_tick
+	var now = Time.get_ticks_msec()
+	
+	# trigger the weapon for each active track
+	for track in SongData.currentSong.trackData.values():
+		if !audio_node.track_active.get(track.TrackType):
+			#early out for inactive/muted tracks
+			continue
+		assert(now >= track.MidiProcess.start_time, "[player] ERROR: now < MidiProcess.start_time resulting in negative delta_ticks. This is bad.")
+		var elapsed_ms = now - track.MidiProcess.start_time
+		var delta_ticks = float(elapsed_ms) / ms_per_tick if ms_per_tick > 0 else 0
 		#var level = current_levels[track.TrackType] as TrackData.Level
-		#var midi = track.GetMidiForLevel(level) as MidiFileParser.Track
-		#while track.MidiProcess.event_index < midi.events.size():
-			#var ev = track.MidiForLevel[TrackData.Level.keys()[level - 1]].events[track.MidiProcess.event_index]
-			#if track.MidiProcess.delta_tick + ev.delta_ticks > delta_ticks:
-				#break
-			#track.MidiProcess.delta_tick += ev.delta_ticks
-			#track.MidiProcess.event_index += 1
-			#if ev.event_type == MidiFileParser.Event.EventType.MIDI:
-				#var midi_ev = ev as MidiFileParser.Midi
-				## NOTE_ON status and velocity > 0
-				#if midi_ev.status == MidiFileParser.Midi.Status.NOTE_ON and midi_ev.velocity > 0:
-					#if track.TrackType in display_map.keys() and display_map[track.TrackType]:
-						## show display and start timer
-						#display_map[track.TrackType].visible = true
-						#display_timers[track.TrackType] = Time.get_ticks_msec()
-						#Log.print("[player] Display Handler - mapped %s, current level %s" % [str(TrackData.Tracks.keys()[track.TrackType]), str(TrackData.Level.keys()[level - 1])])
-	#
-	## hide displays after short duration
+		var weapon_node = _get_weapon_node(track.TrackType)
+		var level = weapon_node.current_level as TrackData.Level
+		var midi = track.GetMidiForLevel(level) as MidiFileParser.Track
+		while track.MidiProcess.event_index < midi.events.size():
+			var ev = track.MidiForLevel[TrackData.Level.keys()[level - 1]].events[track.MidiProcess.event_index]
+			if track.MidiProcess.delta_tick + ev.delta_ticks > delta_ticks:
+				break
+			track.MidiProcess.delta_tick += ev.delta_ticks
+			track.MidiProcess.event_index += 1
+			if ev.event_type == MidiFileParser.Event.EventType.MIDI:
+				var midi_ev = ev as MidiFileParser.Midi
+				# NOTE_ON status and velocity > 0
+				if midi_ev.status == MidiFileParser.Midi.Status.NOTE_ON and midi_ev.velocity > 0:
+					# trigger attack
+					Log.print("[player] Attack Handler - triggered %s, current level %s" % [str(TrackData.Tracks.keys()[track.TrackType]), str(TrackData.Level.keys()[level - 1])])
+					weapon_node.trigger_weapon()
+	
+	#TODO prob want to handle the disabling within the weapon itself so i can modify cooldowns and such
+	# hide displays after short duration
 	#for track in display_map.keys():
 		#var t = display_timers.get(track, 0)
 		#if t > 0 and now - t > 120: # ms to show
@@ -83,8 +94,8 @@ func move(delta):
 				#display_map[track].visible = false
 			#display_timers[track] = 0
 
-func drumkick_attack():
-	attacks.get_node("kick").visible = !attacks.get_node("kick").visible
+#func drumkick_attack():
+	#attacks.get_node("kick").visible = !attacks.get_node("kick").visible
 	#var collision = attacks.get_node("kick").get_node("drumkickHitbox/hitboxCollision") as CollisionShape2D
 
 func _on_hurtbox_hurt(damage):

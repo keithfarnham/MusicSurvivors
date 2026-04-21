@@ -1,16 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://ceokyxnjfscgk"]
+[gd_scene format=3 uid="uid://ceokyxnjfscgk"]
 
 [ext_resource type="Script" uid="uid://dddfoh48nbwkg" path="res://scripts/hurtbox.gd" id="1_fsmdu"]
 
-[node name="hurtbox" type="Area2D"]
+[node name="hurtbox" type="Area2D" unique_id=539300886]
 collision_layer = 0
 collision_mask = 0
 script = ExtResource("1_fsmdu")
 
-[node name="hurtboxCollision" type="CollisionShape2D" parent="."]
+[node name="hurtboxCollision" type="CollisionShape2D" parent="." unique_id=1654927551]
 debug_color = Color(0, 0.64846, 0.180047, 0.42)
 
-[node name="hurtTimer" type="Timer" parent="."]
+[node name="hurtTimer" type="Timer" parent="." unique_id=937311651]
 wait_time = 0.5
 one_shot = true
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://pmsgy6e5j634"
-path="res://.godot/imported/kickdrum.PNG-1f4743a4fa516fa254014116b06d088f.ctex"
+uid="uid://c1ds2pslffyh4"
+path="res://.godot/imported/snare.png-36dfa38d8aa70d0bd7fbc8ab69c6c5fa.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/WeaponIcons/kickdrum.PNG"
-dest_files=["res://.godot/imported/kickdrum.PNG-1f4743a4fa516fa254014116b06d088f.ctex"]
+source_file="res://sprites/WeaponIcons/attack/snare.png"
+dest_files=["res://.godot/imported/snare.png-36dfa38d8aa70d0bd7fbc8ab69c6c5fa.ctex"]
 
 [params]
 

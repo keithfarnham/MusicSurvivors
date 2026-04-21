@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://bowa3juik316y"]
 
-[ext_resource type="Texture2D" uid="uid://bg2gvwofdvhfk" path="res://sprites/healthbar_frame.png" id="1_08kqy"]
+[ext_resource type="Texture2D" uid="uid://bg2gvwofdvhfk" path="res://sprites/UI/healthbar_frame.png" id="1_08kqy"]
 [ext_resource type="Script" uid="uid://damtvam56dwq7" path="res://scripts/player_ui.gd" id="1_p6wq6"]
-[ext_resource type="Texture2D" uid="uid://crq5k0vpp8l6w" path="res://sprites/healthbar_fill.png" id="2_p6wq6"]
-[ext_resource type="Texture2D" uid="uid://bufxoo20k5lhc" path="res://sprites/xp_bar_frame.png" id="3_wq4ys"]
-[ext_resource type="Texture2D" uid="uid://bvv1dk2pyq6uc" path="res://sprites/xp_bar_fill.png" id="4_22y41"]
+[ext_resource type="Texture2D" uid="uid://crq5k0vpp8l6w" path="res://sprites/UI/healthbar_fill.png" id="2_p6wq6"]
+[ext_resource type="Texture2D" uid="uid://bufxoo20k5lhc" path="res://sprites/UI/xp_bar_frame.png" id="3_wq4ys"]
+[ext_resource type="Texture2D" uid="uid://bvv1dk2pyq6uc" path="res://sprites/UI/xp_bar_fill.png" id="4_22y41"]
 
 [node name="CanvasLayer" type="CanvasLayer" unique_id=1938607081]
 script = ExtResource("1_p6wq6")
