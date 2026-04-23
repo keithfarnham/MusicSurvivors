@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://fosyj45yykcs"]
 
 [ext_resource type="Texture2D" uid="uid://ca8gjea2ktsf0" path="res://sprites/WeaponIcons/attack/slow_zone.png" id="1_4quvo"]
-[ext_resource type="Script" uid="uid://d2wndbif6x8ks" path="res://scripts/Weapons/kick.gd" id="1_s23ry"]
+[ext_resource type="Script" uid="uid://d2wndbif6x8ks" path="res://scripts/Weapons/Player/kick.gd" id="1_s23ry"]
 [ext_resource type="PackedScene" uid="uid://dgswms5nnfie4" path="res://scenes/HitboxScene.tscn" id="2_s23ry"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_v53ad"]
@@ -15,11 +15,11 @@ texture_filter = 1
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("1_4quvo")
 
-[node name="Hitbox" parent="." unique_id=56940634 instance=ExtResource("2_s23ry")]
+[node name="kickHitbox" parent="." unique_id=56940634 instance=ExtResource("2_s23ry")]
 collision_layer = 2
 collision_mask = 4
 
-[node name="hitboxCollision" parent="Hitbox" index="0"]
+[node name="hitboxCollision" parent="kickHitbox" index="0"]
 shape = SubResource("CircleShape2D_v53ad")
 
 [node name="activeTimer" type="Timer" parent="." unique_id=408745741]
@@ -28,4 +28,4 @@ one_shot = true
 
 [connection signal="timeout" from="activeTimer" to="." method="_on_active_timeout"]
 
-[editable path="Hitbox"]
+[editable path="kickHitbox"]

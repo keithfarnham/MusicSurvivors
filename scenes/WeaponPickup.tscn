@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cim2in2pmvo1w"]
 
 [ext_resource type="Texture2D" uid="uid://pmsgy6e5j634" path="res://sprites/WeaponIcons/pickups/kickdrum.PNG" id="1_4c0k1"]
-[ext_resource type="Script" uid="uid://dlowjjnkdiud1" path="res://scripts/Weapons/weapon_pickup.gd" id="1_cxdhy"]
+[ext_resource type="Script" uid="uid://dlowjjnkdiud1" path="res://scripts/Weapons/Player/weapon_pickup.gd" id="1_cxdhy"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_cxdhy"]
 radius = 8.0
