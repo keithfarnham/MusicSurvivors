@@ -18,8 +18,9 @@ texture = ExtResource("1_4quvo")
 [node name="kickHitbox" parent="." unique_id=56940634 instance=ExtResource("2_s23ry")]
 collision_layer = 2
 collision_mask = 4
+damage = 2
 
-[node name="hitboxCollision" parent="kickHitbox" index="0"]
+[node name="hitboxCollision" parent="kickHitbox" index="0" unique_id=1189916875]
 shape = SubResource("CircleShape2D_v53ad")
 
 [node name="activeTimer" type="Timer" parent="." unique_id=408745741]
