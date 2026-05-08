@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+class_name Player
+
 @onready var sprite = $playerSprite as Sprite2D
 @onready var attacks = $attacks
 @onready var interface = $"../PlayerUI" as PlayerUI

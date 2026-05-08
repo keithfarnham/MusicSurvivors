@@ -3,9 +3,9 @@
 [ext_resource type="Texture2D" uid="uid://cexgh0xqjw6tg" path="res://sprites/Character/Player/goblin.png" id="1_f302p"]
 [ext_resource type="Script" uid="uid://drsopayjvluf7" path="res://scripts/player.gd" id="1_vdp4a"]
 [ext_resource type="PackedScene" uid="uid://ceokyxnjfscgk" path="res://scenes/HurtboxScene.tscn" id="3_3lb1s"]
-[ext_resource type="PackedScene" uid="uid://fosyj45yykcs" path="res://scenes/attacks/kick.tscn" id="4_hwioa"]
-[ext_resource type="PackedScene" uid="uid://cbsy48yuv2fhr" path="res://scenes/attacks/snare.tscn" id="5_b4xdg"]
-[ext_resource type="PackedScene" uid="uid://bx6147dclp3e6" path="res://scenes/attacks/cymb.tscn" id="6_qxfha"]
+[ext_resource type="PackedScene" uid="uid://fosyj45yykcs" path="res://scenes/attacks/Kick.tscn" id="4_hwioa"]
+[ext_resource type="PackedScene" uid="uid://dll0qttr7dhpn" path="res://scenes/attacks/Snare.tscn" id="5_b4xdg"]
+[ext_resource type="PackedScene" uid="uid://bx6147dclp3e6" path="res://scenes/attacks/Cymb.tscn" id="6_qxfha"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_vdp4a"]
 radius = 1.0
@@ -14,7 +14,7 @@ height = 4.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_b4xdg"]
 size = Vector2(4, 6)
 
-[node name="Player" type="CharacterBody2D" unique_id=523533696]
+[node name="Player" type="CharacterBody2D" unique_id=523533696 groups=["Player"]]
 z_index = 1
 motion_mode = 1
 script = ExtResource("1_vdp4a")
@@ -40,7 +40,8 @@ shape = SubResource("RectangleShape2D_b4xdg")
 
 [node name="kick" parent="attacks" unique_id=503724186 instance=ExtResource("4_hwioa")]
 
-[node name="snare" parent="attacks" unique_id=405191859 instance=ExtResource("5_b4xdg")]
+[node name="snare" parent="attacks" unique_id=1938818084 groups=["attack"] instance=ExtResource("5_b4xdg")]
+track = 1
 
 [node name="cymb" parent="attacks" unique_id=284221930 instance=ExtResource("6_qxfha")]
 track = 2

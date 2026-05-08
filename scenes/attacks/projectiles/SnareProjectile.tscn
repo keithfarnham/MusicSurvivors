@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://cbsy48yuv2fhr"]
+
+[ext_resource type="Script" uid="uid://clx0ssgi7y83n" path="res://scripts/Weapons/Player/snare.gd" id="1_b5x8b"]
+[ext_resource type="Texture2D" uid="uid://c1ds2pslffyh4" path="res://sprites/WeaponIcons/attack/snare.png" id="2_5e27i"]
+[ext_resource type="PackedScene" uid="uid://dgswms5nnfie4" path="res://scenes/HitboxScene.tscn" id="3_5ccsb"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hrqed"]
+radius = 1.0
+height = 2.0
+
+[node name="snareProjectile" type="Node2D" unique_id=405191859 groups=["attack"]]
+script = ExtResource("1_b5x8b")
+track = 1
+
+[node name="snareSprite" type="Sprite2D" parent="." unique_id=458918324]
+texture_filter = 1
+position = Vector2(0.1, 0)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_5e27i")
+
+[node name="snareHitbox" parent="." unique_id=56940634 instance=ExtResource("3_5ccsb")]
+collision_layer = 2
+collision_mask = 4
+
+[node name="hitboxCollision" parent="snareHitbox" index="0" unique_id=1189916875]
+position = Vector2(0, -0.6)
+scale = Vector2(0.7, 1)
+shape = SubResource("CapsuleShape2D_hrqed")
+debug_color = Color(2.5027991e-06, 0.6476252, 0.20777756, 0.41960785)
+
+[editable path="snareHitbox"]

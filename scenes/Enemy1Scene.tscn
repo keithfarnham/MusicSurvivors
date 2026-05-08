@@ -15,7 +15,7 @@ size = Vector2(2, 7)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_divfq"]
 size = Vector2(6, 10)
 
-[node name="SwordEnemy" type="CharacterBody2D" unique_id=1098599000]
+[node name="SwordEnemy" type="CharacterBody2D" unique_id=1098599000 groups=["Enemy"]]
 script = ExtResource("1_vm68c")
 
 [node name="sprite" type="Sprite2D" parent="." unique_id=1076869869]

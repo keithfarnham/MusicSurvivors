@@ -39,6 +39,10 @@ window/stretch/mode="canvas_items"
 window/stretch/scale_mode="integer"
 window/default_font_multichannel_signed_distance_field=false
 
+[global_group]
+
+Player=""
+
 [gui]
 
 theme/default_font_multichannel_signed_distance_field=true

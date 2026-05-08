@@ -7,7 +7,6 @@ var current_levels = {}  # selected level for each track
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	
 	for track in TrackData.Tracks.values():
 		var isActive = false
 		if player.is_weapon_active(track):

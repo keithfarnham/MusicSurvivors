@@ -1,12 +1,11 @@
 [gd_scene format=3 uid="uid://bx6147dclp3e6"]
 
 [ext_resource type="Script" uid="uid://v14uh4kfbkpn" path="res://scripts/Weapons/Player/cymb.gd" id="1_g4s1r"]
-[ext_resource type="Texture2D" uid="uid://c1ds2pslffyh4" path="res://sprites/WeaponIcons/attack/snare.png" id="2_r5fxn"]
 [ext_resource type="PackedScene" uid="uid://dgswms5nnfie4" path="res://scenes/HitboxScene.tscn" id="3_p6k8w"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hrqed"]
 radius = 1.0
-height = 4.0
+height = 2.0
 
 [node name="cymb" type="Node2D" unique_id=405191859 groups=["attack"]]
 script = ExtResource("1_g4s1r")
@@ -14,13 +13,12 @@ script = ExtResource("1_g4s1r")
 [node name="cymbSprite" type="Sprite2D" parent="." unique_id=458918324]
 texture_filter = 1
 scale = Vector2(0.25, 0.25)
-texture = ExtResource("2_r5fxn")
 
 [node name="cymbHitbox" parent="." unique_id=56940634 instance=ExtResource("3_p6k8w")]
 collision_layer = 2
 collision_mask = 4
 
-[node name="hitboxCollision" parent="cymbHitbox" index="0"]
+[node name="hitboxCollision" parent="cymbHitbox" index="0" unique_id=1189916875]
 shape = SubResource("CapsuleShape2D_hrqed")
 debug_color = Color(2.5027991e-06, 0.6476252, 0.20777756, 0.41960785)
 

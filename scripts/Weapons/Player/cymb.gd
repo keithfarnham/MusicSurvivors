@@ -1,4 +1,4 @@
-extends Projectile
+extends ProjectileSpawner
 
 class_name Cymb
 
@@ -8,7 +8,7 @@ func trigger_weapon():
 	Log.print("[%s] triggering" % [str(TrackData.Tracks.keys()[track])])
 	# TODO handle the spawning of the projectile
 
-func spawn_projectile():
+func spawn_projectiles():
 	#TODO
 	pass
 	

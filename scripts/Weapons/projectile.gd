@@ -1,16 +1,16 @@
 @abstract
-extends Weapon
+extends Node2D
 
 class_name Projectile
 
-# class for projectile specific vars and functions
-@abstract func spawn_projectile()
-@abstract func setup_path() # path will be specific to inheriting weapon type
-	
-func get_nearest_target() -> CharacterBody2D:
-	#TODO
-	return CharacterBody2D.new()
+var hits_before_despawn : int = 1
+var target_pos : Vector2
+var speed : float = 1.0
+var damage : int
+var angle : Vector2
+var turn_speed : float = 1.0 #TODO setup turnspeed
 
-func get_random_target():
-	#TODO
+func move():
 	pass
+	#TODO setup movement
+	#move_toward(position, pos, speed)
