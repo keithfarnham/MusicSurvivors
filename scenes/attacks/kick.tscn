@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://ca8gjea2ktsf0" path="res://sprites/WeaponIcons/attack/slow_zone.png" id="1_4quvo"]
 [ext_resource type="Script" uid="uid://d2wndbif6x8ks" path="res://scripts/Weapons/Player/kick.gd" id="1_s23ry"]
-[ext_resource type="PackedScene" uid="uid://dgswms5nnfie4" path="res://scenes/HitboxScene.tscn" id="2_s23ry"]
+[ext_resource type="PackedScene" uid="uid://dgswms5nnfie4" path="res://scenes/Hitbox.tscn" id="2_s23ry"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_v53ad"]
 radius = 11.0

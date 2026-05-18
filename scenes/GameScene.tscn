@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://b3218mam6h4je" path="res://scripts/game_controller.gd" id="1_xs4ih"]
 [ext_resource type="Texture2D" uid="uid://bx03we2g2cgar" path="res://sprites/backgroundgrass.png" id="1_xy3my"]
-[ext_resource type="PackedScene" uid="uid://bqwactsbgtg1e" path="res://scenes/PlayerScene.tscn" id="2_cxv17"]
-[ext_resource type="PackedScene" uid="uid://yxccevfb407i" path="res://scenes/Enemy1Scene.tscn" id="3_cxv17"]
+[ext_resource type="PackedScene" uid="uid://bqwactsbgtg1e" path="res://scenes/Player.tscn" id="2_cxv17"]
+[ext_resource type="PackedScene" uid="uid://yxccevfb407i" path="res://scenes/Enemy1.tscn" id="3_cxv17"]
 [ext_resource type="PackedScene" uid="uid://xea7vhfq8eq7" path="res://scenes/AudioController.tscn" id="5_7s5hy"]
 [ext_resource type="PackedScene" uid="uid://bowa3juik316y" path="res://scenes/PlayerUI.tscn" id="6_xs4ih"]
 
@@ -36,3 +36,5 @@ z_index = 1
 texture_filter = 1
 position = Vector2(-7, 4)
 scale = Vector2(0.75, 0.75)
+
+[node name="Projectiles" type="Node" parent="." unique_id=633507272]

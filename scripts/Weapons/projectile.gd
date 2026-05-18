@@ -10,7 +10,10 @@ var damage : int
 var angle : Vector2
 var turn_speed : float = 1.0 #TODO setup turnspeed
 
-func move():
-	pass
-	#TODO setup movement
-	#move_toward(position, pos, speed)
+func initialize(newDmg : int, newStartPos : Vector2, newTargetPos : Vector2, newSpeed : float, newAngle := Vector2.ZERO, newTurnSpeed := 1.0):
+	damage = newDmg
+	position = newStartPos
+	target_pos = newTargetPos
+	speed = newSpeed
+	angle = newAngle
+	turn_speed = newTurnSpeed

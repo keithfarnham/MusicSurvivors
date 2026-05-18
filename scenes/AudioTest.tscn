@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://ck33t0yhvn2ie"]
 
-[ext_resource type="Script" uid="uid://cdejuklv6ntfh" path="res://scripts/Debug/TESTScene.gd" id="1_2vhy6"]
-[ext_resource type="PackedScene" uid="uid://xea7vhfq8eq7" path="res://scenes/AudioController.tscn" id="2_afuhl"]
+[ext_resource type="Script" uid="uid://cdejuklv6ntfh" path="res://scripts/Audio/AudioTest.gd" id="1_cmrro"]
+[ext_resource type="PackedScene" uid="uid://xea7vhfq8eq7" path="res://scenes/AudioController.tscn" id="2_qn2mr"]
 
 [sub_resource type="Gradient" id="Gradient_hwf88"]
 offsets = PackedFloat32Array(0.6938776, 1)
@@ -65,9 +65,21 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_2vhy6")
+script = ExtResource("1_cmrro")
 
-[node name="AudioController" parent="." unique_id=651702734 instance=ExtResource("2_afuhl")]
+[node name="Background" type="Control" parent="." unique_id=802830520]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SubViewport" type="SubViewport" parent="Background" unique_id=1249403257]
+
+[node name="BackgroundSprite2D" type="Sprite2D" parent="Background/SubViewport" unique_id=1388237553]
+
+[node name="AudioController" parent="." unique_id=651702734 instance=ExtResource("2_qn2mr")]
 
 [node name="TrackMutes" type="GridContainer" parent="." unique_id=1564254716]
 z_index = 1
@@ -315,10 +327,10 @@ popup/item_2/id = 2
 [node name="SongChoice" type="OptionButton" parent="." unique_id=485371660]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.021875
-anchor_top = 0.05
-anchor_right = 0.359375
-anchor_bottom = 0.22222222
+anchor_left = 0.025
+anchor_top = 0.044444446
+anchor_right = 0.3625
+anchor_bottom = 0.21666667
 selected = 0
 item_count = 2
 popup/item_0/text = "testsong"
@@ -326,6 +338,26 @@ popup/item_0/id = 0
 popup/item_1/text = "testsong2"
 popup/item_1/id = 1
 popup/item_1/disabled = true
+metadata/_edit_use_anchors_ = true
+
+[node name="Randomize" type="Button" parent="." unique_id=1707769519]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.025
+anchor_top = 0.84444445
+anchor_right = 0.26875
+anchor_bottom = 0.95555556
+theme_override_font_sizes/font_size = 8
+text = "Randomize Levels"
+metadata/_edit_use_anchors_ = true
+
+[node name="StartPause" type="Button" parent="." unique_id=612408514]
+layout_mode = 0
+anchor_left = 0.45
+anchor_top = 0.044444446
+anchor_right = 0.746875
+anchor_bottom = 0.21666667
+text = "Start Music"
 metadata/_edit_use_anchors_ = true
 
 [connection signal="toggled" from="TrackMutes/Kick" to="." method="_on_kick_toggled"]
@@ -345,3 +377,5 @@ metadata/_edit_use_anchors_ = true
 [connection signal="toggled" from="TrackMutes/Chord" to="." method="_on_chord_toggled"]
 [connection signal="item_selected" from="TrackMutes/ChordLv" to="." method="_on_chord_lv_item_selected"]
 [connection signal="item_selected" from="SongChoice" to="." method="_on_song_choice_item_selected"]
+[connection signal="pressed" from="Randomize" to="." method="_on_randomize_pressed"]
+[connection signal="pressed" from="StartPause" to="." method="_on_start_pause_pressed"]

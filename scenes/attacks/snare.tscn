@@ -4,3 +4,4 @@
 
 [node name="snare" type="Node2D" unique_id=1938818084]
 script = ExtResource("1_h3lcd")
+track = 1

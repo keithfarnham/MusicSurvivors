@@ -29,7 +29,7 @@ func _setup_weapons():
 	for weapon_node in $attacks.get_children():
 		#TODO this is just manually adding KICK as an active starting track
 		# need to finish setting up the weapon scenes and remove this once i have starting weapons figured out
-		if weapon_node.track == TrackData.Tracks.KICK:
+		if weapon_node.track == TrackData.Tracks.KICK or weapon_node.track == TrackData.Tracks.SNARE:
 			weapon_node.activate_weapon()
 
 func is_weapon_active(track : TrackData.Tracks) -> bool:

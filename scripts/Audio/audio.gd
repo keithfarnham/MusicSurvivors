@@ -7,7 +7,9 @@ class_name AudioController
 var current_measure : int = 1
 var current_loop : int = 1
 var song_start : float = 0.0
-var playback_time : float = 0.0
+var playback_time_sec : float = 0.0
+var paused_at : float = 0.0
+var paused_for_ms : float = 0.0
 
 var songFolder = "res://songs/"
 var audioFiles = []
@@ -22,16 +24,39 @@ var last_loop_start_time = {}
 
 signal end_of_loop(loop)
 
-func start_song():
+func pause():
+	playback_time_sec = get_playback_position() + AudioServer.get_time_since_last_mix() # TODO idk if this works
+	paused_at = Time.get_ticks_msec()
+	stream_paused = true
+	stop()
+	
+func resume(): 
+	stream_paused = false
+	#play(playback_time)
+	start_song(playback_time_sec) # the midi start in start_song() might be a problem
+
+func get_playback_time_sec() -> float:
+	var playback = get_playback_position()
+	Log.print("Playback at %s" % [str(playback)])
+	return playback
+
+func start_song(from_position : float = 0.0):
+	play(from_position)
+	
+	if from_position != 0.0:
+		# early out if we are resuming song
+		return
+	
 	song_start = Time.get_ticks_msec()
-	play()
-	# start MIDI processing clock
+	paused_at = 0.0
+	paused_for_ms = 0.0
+	# start MIDI processing clock if we are starting from beginning
 	for track in TrackData.Tracks.values():
 		Log.print("[audio] Starting midi for %s at %s" % [str(TrackData.Tracks.keys()[track]), str(Time.get_ticks_msec())])
 		SongData.currentSong.trackData[track].MidiProcess = {"start_time": Time.get_ticks_msec(), "delta_tick": 0, "event_index": 0}
 
 func load_song(song: SongData.Songs):
-	SongData.currentSong = Song.new(song, 136.0, 4)
+	SongData.currentSong = Song.new(song, 136.0, 4) #TODO should not be hard coded values
 	stop()
 	
 	# Load audio + midi files for all tracks and levels
@@ -92,21 +117,25 @@ func _process(delta):
 	if not SongData.currentSong:
 		Log.print("[audio] currentSong not setup in SongData")
 		return
-	if !playing:
-		Log.print("[audio] Audio stopped playing")
+	
+	if not playing:
+		if paused_at > 0.0:
+			paused_for_ms += delta * 1000
+			#TODO might want to 'if OS.is_debug_build()' this and update_debug_info call at end of func
+			Debug.update_paused_info(paused_for_ms)
+		return
+	
 	var now = Time.get_ticks_msec()
-	var calculated_song_progress = now - song_start #TODO breaks if i use godot debug pause, change to a script var timer accumulating from delta
-
 	var playback_position = get_playback_position()
 	var time_since_last_mix = AudioServer.get_time_since_last_mix()
-	var loop_playback_ms = (playback_position + AudioServer.get_time_since_last_mix()) * 1000.0
+	var loop_playback_ms = playback_time_sec * 1000 if playback_position == 0.0 else (playback_position + AudioServer.get_time_since_last_mix()) * 1000.0
 	var measure = int(loop_playback_ms / SongData.currentSong.ms_per_measure) + 1
 	
 	#check if we are on the next measure
 	if measure > current_measure:
 		current_measure = measure
-		Log.print("[audio] Measure %d Loop %d - program time %d, calculated song time %d, playback time %s = %f + %f" % \
-		[ current_measure, current_loop, now, calculated_song_progress, str(loop_playback_ms), playback_position, time_since_last_mix ])
+		Log.print("[audio] Measure %d Loop %d - program time %d, playback time %sms = %fs + %fs" % \
+		[ current_measure, current_loop, now, str(loop_playback_ms), playback_position, time_since_last_mix ])
 		
 	#check if we've looped around from last measure MEASURE_PER_LOOP to first
 	if current_measure >= SongData.MEASURE_PER_LOOP and measure == 1:
@@ -117,7 +146,7 @@ func _process(delta):
 		var offset = calculated_loop_end - now # TODO reasses if offset is necessary, it was causing problems with midi looping
 		end_of_loop.emit(current_loop, offset)
 	
-	Debug.update_debug_info(now, loop_playback_ms, song_start, calculated_song_progress, current_loop, measure)
+	Debug.update_debug_info(now, loop_playback_ms, song_start, current_loop, measure, paused_for_ms)
 
 func _on_end_of_loop(loop : int, start_offset : int):
 	Log.print("[audio] Loop ended, now on loop %s" % [str(loop)])
@@ -131,17 +160,6 @@ func _on_end_of_loop(loop : int, start_offset : int):
 		track.MidiProcess.event_index = 0
 		# Adjust start_time to keep sync with audio loops
 		track.MidiProcess.start_time = now# + start_offset
-
-#func _check_track_playback() -> bool:
-	##playback pos of tracks should all be close to each other or something bad has happened
-	#var pos = []
-	#const FAIL_THRESHOLD = 2
-	#for track in track_players.values():
-		#for compareTo in track_players.values():
-			#if abs( track.get_playback_position() - compareTo.get_playback_position() ) > 0.1:
-				#print("--- ERROR --- track playback error")
-				#return false
-	#return true
 
 func _load_audio_files(song : SongData.Songs):
 	audioFiles.clear()
@@ -233,9 +251,6 @@ func _load_audio_for_song(song: SongData.Songs):
 	Log.debug_print_loaded_tracks()
 
 func _load_all_tracks_synced():
-	# First, load all streams without playing
+	# load all streams without playing
 	for track in TrackData.Tracks.values():
 		load_track_stream(track)
-	
-	# Then start all players at the same time using deferred call
-	call_deferred("start_song")

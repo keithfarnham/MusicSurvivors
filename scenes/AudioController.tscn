@@ -69,12 +69,6 @@ layout_mode = 2
 theme_override_font_sizes/normal_font_size = 8
 text = "Program Time:"
 
-[node name="SongProgressLabel" type="RichTextLabel" parent="CanvasLayer/DebugInfo/VBoxLabels" unique_id=2016886496]
-custom_minimum_size = Vector2(60, 12)
-layout_mode = 2
-theme_override_font_sizes/normal_font_size = 8
-text = "Song Progress: "
-
 [node name="AudioPlaybackTimeLabel" type="RichTextLabel" parent="CanvasLayer/DebugInfo/VBoxLabels" unique_id=2001368410]
 custom_minimum_size = Vector2(60, 12)
 layout_mode = 2
@@ -92,6 +86,12 @@ custom_minimum_size = Vector2(60, 12)
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 8
 text = "Measure: "
+
+[node name="PausedTimeLabel" type="RichTextLabel" parent="CanvasLayer/DebugInfo/VBoxLabels" unique_id=1369117605]
+custom_minimum_size = Vector2(60, 12)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 8
+text = "Paused Time:"
 
 [node name="VBoxValues" type="VBoxContainer" parent="CanvasLayer/DebugInfo" unique_id=1929460350]
 layout_mode = 1
@@ -115,12 +115,6 @@ theme_override_font_sizes/normal_font_size = 8
 text = "00000.0"
 metadata/_edit_use_anchors_ = true
 
-[node name="SongProgressValue" type="RichTextLabel" parent="CanvasLayer/DebugInfo/VBoxValues" unique_id=643026888]
-custom_minimum_size = Vector2(0, 12)
-layout_mode = 2
-theme_override_font_sizes/normal_font_size = 8
-text = "0.0"
-
 [node name="AudioPlaybackValue" type="RichTextLabel" parent="CanvasLayer/DebugInfo/VBoxValues" unique_id=1336148677]
 custom_minimum_size = Vector2(0, 12)
 layout_mode = 2
@@ -139,6 +133,12 @@ custom_minimum_size = Vector2(0, 12)
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 8
 text = "0"
+
+[node name="PausedTimeValue" type="RichTextLabel" parent="CanvasLayer/DebugInfo/VBoxValues" unique_id=318678276]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 8
+text = "0.0"
 
 [node name="LoopProgress" type="ProgressBar" parent="CanvasLayer/DebugInfo" unique_id=1848122597]
 layout_mode = 1
