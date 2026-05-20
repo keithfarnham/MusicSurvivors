@@ -87,9 +87,14 @@ func set_track_active(track: TrackData.Tracks, is_enabled: bool):
 	if track not in track_players:
 		return
 	
-	var player = stream.get_sync_stream(track)
+	#var player = stream.get_sync_stream(track)
 	track_active.set(track, is_enabled)
 	stream.set_sync_stream_volume(track, 0 if is_enabled else -80)
+	
+func set_track_level(track : TrackData.Tracks, level : TrackData.Level):
+	#update the track data
+	SongData.currentSong.set_level_for_track(track, level)
+	load_track_stream(track)
 
 func _ready():
 	end_of_loop.connect(_on_end_of_loop)
@@ -150,6 +155,7 @@ func _process(delta):
 
 func _on_end_of_loop(loop : int, start_offset : int):
 	Log.print("[audio] Loop ended, now on loop %s" % [str(loop)])
+	paused_for_ms = 0.0 # reset paused_for_ms time on loop end - only need it to sync up midi in a single loop
 	var now = Time.get_ticks_msec()
 	for track in SongData.currentSong.trackData.values():
 		loop_total[TrackData.Tracks.keys()[track.TrackType]] = loop
@@ -254,3 +260,33 @@ func _load_all_tracks_synced():
 	# load all streams without playing
 	for track in TrackData.Tracks.values():
 		load_track_stream(track)
+
+func update_track_level(track: TrackData.Tracks, level : TrackData.Level):
+	var sync_pos = 0.0
+	# Get current playpack pos
+	if playing:
+		#var sync_stream = audio_node.stream as AudioStreamSynchronized
+		var playback_pos = get_playback_time_sec()
+		sync_pos = playback_pos + AudioServer.get_time_since_last_mix()
+	set_track_level(track, level)
+	# Resume playback at the same position
+	Log.print("[AudioTest] updating track - resuming at %ss = %s + %s" % [str(sync_pos), str(get_playback_position()), str(AudioServer.get_time_since_last_mix())])
+	$sfx/levelup.play()
+	call_deferred("_resume_at", sync_pos)
+
+func update_all_tracks_synced(current_levels):
+	var sync_pos = 0.0
+	# Get current playpack pos
+	if playing:
+		#var sync_stream = audio_node.stream as AudioStreamSynchronized
+		var playback_pos = get_playback_position()
+		sync_pos = playback_pos + AudioServer.get_time_since_last_mix()
+	# update all the tracks
+	for track in TrackData.Tracks.values():
+		set_track_level(track, current_levels[track])
+	Log.print("[AudioTest] updating all tracks - resuming at %ss. playing = %s" % [str(sync_pos), str(playing)])
+	$sfx/levelup.play()
+	call_deferred("_resume_at", sync_pos)
+
+func _resume_at(playback_pos: float):
+	play(playback_pos)

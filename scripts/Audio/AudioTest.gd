@@ -51,6 +51,9 @@ var display_timers = {}
 
 var pause_playback_time : float
 
+var play_texture = preload("res://sprites/play.png")
+var pause_texture = preload("res://sprites/pause.png")
+
 func _ready():
 	mute_toggles = {
 		TrackData.Tracks.KICK: kick_toggle,
@@ -135,84 +138,91 @@ func _on_arp_toggled(toggled_on):
 
 func _on_chord_toggled(toggled_on):
 	audio_node.set_track_active(TrackData.Tracks.CHORD, toggled_on)
+	
+func _on_randomize_active_tracks_pressed():
+	for mute in mute_toggles.values():
+		mute.button_pressed = randi() % 2
 #endregion Mute Toggles
 
 #region Track level selectors
 func _on_kick_lv_item_selected(index):
 	current_levels[TrackData.Tracks.KICK] = index + 1 as TrackData.Level
-	_update_track_synced(TrackData.Tracks.KICK)
+	audio_node.update_track_level(TrackData.Tracks.KICK, current_levels[TrackData.Tracks.KICK])
 
 func _on_snare_lv_item_selected(index):
 	current_levels[TrackData.Tracks.SNARE] = index + 1 as TrackData.Level
-	_update_track_synced(TrackData.Tracks.SNARE)
+	audio_node.update_track_level(TrackData.Tracks.SNARE, current_levels[TrackData.Tracks.SNARE])
 
 func _on_cymb_lv_item_selected(index):
 	current_levels[TrackData.Tracks.CYMB] = index + 1 as TrackData.Level
-	_update_track_synced(TrackData.Tracks.CYMB)
+	audio_node.update_track_level(TrackData.Tracks.CYMB, current_levels[TrackData.Tracks.CYMB])
 
 func _on_sample_lv_item_selected(index):
 	current_levels[TrackData.Tracks.SAMPLE] = index + 1 as TrackData.Level
-	_update_track_synced(TrackData.Tracks.SAMPLE)
+	audio_node.update_track_level(TrackData.Tracks.SAMPLE, current_levels[TrackData.Tracks.SAMPLE])
 
 func _on_bass_lv_item_selected(index):
 	current_levels[TrackData.Tracks.BASS] = index + 1 as TrackData.Level
-	_update_track_synced(TrackData.Tracks.BASS)
+	audio_node.update_track_level(TrackData.Tracks.BASS, current_levels[TrackData.Tracks.BASS])
 
 func _on_lead_lv_item_selected(index):
 	current_levels[TrackData.Tracks.LEAD] = index + 1 as TrackData.Level
-	_update_track_synced(TrackData.Tracks.LEAD)
+	audio_node.update_track_level(TrackData.Tracks.LEAD, current_levels[TrackData.Tracks.LEAD])
 
 func _on_arp_lv_item_selected(index):
 	current_levels[TrackData.Tracks.ARP] = index + 1 as TrackData.Level
-	_update_track_synced(TrackData.Tracks.ARP)
+	audio_node.update_track_level(TrackData.Tracks.ARP, current_levels[TrackData.Tracks.ARP])
 
 func _on_chord_lv_item_selected(index):
 	current_levels[TrackData.Tracks.CHORD] = index + 1 as TrackData.Level
-	_update_track_synced(TrackData.Tracks.CHORD)
+	audio_node.update_track_level(TrackData.Tracks.CHORD, current_levels[TrackData.Tracks.CHORD])
 
-func _update_track(track : TrackData.Tracks):
-	#update the track data
-	SongData.currentSong.set_level_for_track(track, current_levels[track])
-	audio_node.load_track_stream(track)
+#func _update_track_synced(track: TrackData.Tracks):
+	#audio_node.set_track_level(track, current_levels[track])
+	## Get current playpack pos
+	#var sync_pos = 0.0
+	#if audio_node.playing:
+		##var sync_stream = audio_node.stream as AudioStreamSynchronized
+		#var playback_pos = audio_node.get_playback_time_sec()
+		#sync_pos = playback_pos + AudioServer.get_time_since_last_mix()
+	## Resume playback at the same position
+	#Log.print("[AudioTest] updating track - resuming at %ss = %s + %s" % [str(sync_pos), str(audio_node.get_playback_position()), str(AudioServer.get_time_since_last_mix())])
+	#call_deferred("_resume_at", sync_pos)
+#
+#func _update_all_tracks_synced():
+	#var sync_pos = 0.0
+	## update all the tracks
+	#for track in TrackData.Tracks.values():
+		#audio_node.set_track_level(track, current_levels[track])
+	## Get current playpack pos
+	#if audio_node.playing:
+		##var sync_stream = audio_node.stream as AudioStreamSynchronized
+		#var playback_pos = audio_node.get_playback_position()
+		#sync_pos = playback_pos + AudioServer.get_time_since_last_mix()
+	#Log.print("[AudioTest] updating all tracks - resuming at %ss" % [str(sync_pos)])
+	#call_deferred("_resume_at", sync_pos)
+#
+#func _resume_at(playback_pos: float):
+	#if audio_node:
+		#audio_node.play(playback_pos)
 
-func _update_track_synced(track: TrackData.Tracks):
-	_update_track(track)
-	# Get current playpack pos
-	var sync_pos = 0.0
-	if audio_node.playing:
-		#var sync_stream = audio_node.stream as AudioStreamSynchronized
-		var playback_pos = audio_node.get_playback_time_sec()
-		sync_pos = playback_pos + AudioServer.get_time_since_last_mix()
-	# Resume playback at the same position
-	Log.print("[AudioTest] updating track - resuming at %ss = %s + %s" % [str(sync_pos), str(audio_node.get_playback_position()), str(AudioServer.get_time_since_last_mix())])
-	call_deferred("_resume_all_synced", sync_pos)
-
-func _update_all_tracks_synced():
-	var sync_pos = 0.0
-	# update all the tracks
-	for track in TrackData.Tracks.values():
-		_update_track(track)
-	# Get current playpack pos
-	if audio_node.playing:
-		#var sync_stream = audio_node.stream as AudioStreamSynchronized
-		var playback_pos = audio_node.get_playback_position()
-		sync_pos = playback_pos + AudioServer.get_time_since_last_mix()
-	Log.print("[AudioTest] updating all tracks - resuming at %ss" % [str(sync_pos)])
-	call_deferred("_resume_all_synced", sync_pos)
-
-func _resume_all_synced(playback_pos: float):
-	if audio_node:
-		audio_node.play(playback_pos)
-
-func _on_randomize_pressed():
+func _on_randomize_levels_pressed():
 	for trackType in TrackData.Tracks.values():
 		var newLvl : TrackData.Level = TrackData.Level.values()[randi_range(0, TrackData.Level.size() - 1)]
 		Log.print("[AudioTest] Randomizing %s level to %s" % [TrackData.Tracks.keys()[trackType], newLvl])
 		current_levels[trackType] = newLvl as TrackData.Level
 		lvl_selectors[trackType].select(newLvl - 1)
-	_update_all_tracks_synced()
+	audio_node.update_all_tracks_synced(current_levels)
 
 #endregion Track level selectors
+
+func _on_start_pause_pressed():
+	if audio_node.playing:
+		audio_node.pause()
+		$StartPause.texture_normal = play_texture
+	else:
+		audio_node.resume()
+		$StartPause.texture_normal = pause_texture
 
 func _display_handler():
 	var songInfo = SongData.currentSong
@@ -232,11 +242,14 @@ func _display_handler():
 		var delta_ticks = float(elapsed_ms) / ms_per_tick if ms_per_tick > 0 else 0
 		var level = current_levels[track.TrackType] as TrackData.Level
 		var midi = track.GetMidiForLevel(level) as MidiFileParser.Track
+		#BUG elapsed time goes negative on first beat of new loop after pause
+		assert(elapsed_ms >= 0.0, "[DisplayHandler] elapsed time should not be negative. elapsed_ms: %s = %s - %s - %s" % [str(elapsed_ms), str(now), str(track.MidiProcess.start_time), str(audio_node.paused_for_ms)])
+#		Log.print("[DisplayHandler] elapsedms: %s, delta_ticks: %s, level: %s" % [str(elapsed_ms), str(delta_ticks), str(TrackData.Level.keys()[level - 1])])
 		while track.MidiProcess.event_index < midi.events.size():
 			var ev = track.MidiForLevel[TrackData.Level.keys()[level - 1]].events[track.MidiProcess.event_index]
 			if track.MidiProcess.delta_tick + ev.delta_ticks > delta_ticks:
 				break
-			#TODO this should be internal to the audio node rather than handled externally
+			#TODO should this be internal to the audio node rather than handled externally?
 			track.MidiProcess.delta_tick += ev.delta_ticks
 			track.MidiProcess.event_index += 1
 			if ev.event_type == MidiFileParser.Event.EventType.MIDI:
@@ -247,7 +260,7 @@ func _display_handler():
 						# show display and start timer
 						display_map[track.TrackType].visible = true
 						display_timers[track.TrackType] = Time.get_ticks_msec()
-						Log.print("[AudioTest] Display Handler - mapped %s, current level %s" % [str(TrackData.Tracks.keys()[track.TrackType]), str(TrackData.Level.keys()[level - 1])])
+						#Log.print("[AudioTest] Display Handler - mapped %s, current level %s" % [str(TrackData.Tracks.keys()[track.TrackType]), str(TrackData.Level.keys()[level - 1])])
 	
 	# hide displays after short duration
 	for track in display_map.keys():
@@ -259,13 +272,3 @@ func _display_handler():
 
 func _process(delta):
 	_display_handler()
-
-func _on_start_pause_pressed():
-	#TODO pausing and unpausing causes midi desync
-	#TODO track.MidiProcess.start_time is probably how i'd sync up midi after unpause/pause
-	if audio_node.playing:
-		audio_node.pause()
-		$StartPause.text = "Start Music"
-	else:
-		audio_node.resume()
-		$StartPause.text = "Pause Music"

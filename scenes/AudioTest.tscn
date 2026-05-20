@@ -2,6 +2,8 @@
 
 [ext_resource type="Script" uid="uid://cdejuklv6ntfh" path="res://scripts/Audio/AudioTest.gd" id="1_cmrro"]
 [ext_resource type="PackedScene" uid="uid://xea7vhfq8eq7" path="res://scenes/AudioController.tscn" id="2_qn2mr"]
+[ext_resource type="Texture2D" uid="uid://b7t4jmcnt16al" path="res://sprites/playpause.png" id="3_qn2mr"]
+[ext_resource type="Texture2D" uid="uid://dpft6ikyjgvbw" path="res://sprites/playpauseatlas.tres" id="4_1l0cp"]
 
 [sub_resource type="Gradient" id="Gradient_hwf88"]
 offsets = PackedFloat32Array(0.6938776, 1)
@@ -57,6 +59,10 @@ colors = PackedColorArray(0.8627451, 0.34117648, 0.07450981, 1, 1, 1, 1, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_dbhed"]
 gradient = SubResource("Gradient_j11na")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1l0cp"]
+atlas = ExtResource("3_qn2mr")
+region = Rect2(0, 0, 32, 32)
 
 [node name="AudioTest" type="Control" unique_id=1743367705]
 layout_mode = 3
@@ -328,9 +334,10 @@ popup/item_2/id = 2
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.025
-anchor_top = 0.044444446
-anchor_right = 0.3625
-anchor_bottom = 0.21666667
+anchor_top = 0.13333334
+anchor_right = 0.2875
+anchor_bottom = 0.26666668
+theme_override_font_sizes/font_size = 11
 selected = 0
 item_count = 2
 popup/item_0/text = "testsong"
@@ -340,25 +347,52 @@ popup/item_1/id = 1
 popup/item_1/disabled = true
 metadata/_edit_use_anchors_ = true
 
-[node name="Randomize" type="Button" parent="." unique_id=1707769519]
+[node name="SongChoiceLabel" type="RichTextLabel" parent="SongChoice" unique_id=1720257533]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = -0.58333325
+anchor_right = 0.7619048
+theme_override_font_sizes/normal_font_size = 10
+text = "Song Choice:"
+scroll_active = false
+metadata/_edit_use_anchors_ = true
+
+[node name="RandomizeLevels" type="Button" parent="." unique_id=1707769519]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.025
-anchor_top = 0.84444445
-anchor_right = 0.26875
-anchor_bottom = 0.95555556
+anchor_top = 0.75555557
+anchor_right = 0.2
+anchor_bottom = 0.9777778
 theme_override_font_sizes/font_size = 8
-text = "Randomize Levels"
+text = "Randomize Track Levels"
+autowrap_mode = 3
 metadata/_edit_use_anchors_ = true
 
-[node name="StartPause" type="Button" parent="." unique_id=612408514]
-layout_mode = 0
-anchor_left = 0.45
-anchor_top = 0.044444446
-anchor_right = 0.746875
-anchor_bottom = 0.21666667
-text = "Start Music"
+[node name="StartPause" type="TextureButton" parent="." unique_id=883685089]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.625
+anchor_top = 0.4
+anchor_right = 0.775
+anchor_bottom = 0.6666667
+offset_right = -16.0
+offset_bottom = -16.000004
+scale = Vector2(1.5, 1.5)
+toggle_mode = true
+texture_normal = SubResource("AtlasTexture_1l0cp")
+texture_pressed = ExtResource("4_1l0cp")
 metadata/_edit_use_anchors_ = true
+
+[node name="RandomizeActiveTracks" type="Button" parent="." unique_id=418366545]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 136.0
+offset_right = 136.0
+offset_bottom = 176.0
+theme_override_font_sizes/font_size = 8
+text = "Randomize Active Tracks"
+autowrap_mode = 3
 
 [connection signal="toggled" from="TrackMutes/Kick" to="." method="_on_kick_toggled"]
 [connection signal="item_selected" from="TrackMutes/KickLv" to="." method="_on_kick_lv_item_selected"]
@@ -377,5 +411,6 @@ metadata/_edit_use_anchors_ = true
 [connection signal="toggled" from="TrackMutes/Chord" to="." method="_on_chord_toggled"]
 [connection signal="item_selected" from="TrackMutes/ChordLv" to="." method="_on_chord_lv_item_selected"]
 [connection signal="item_selected" from="SongChoice" to="." method="_on_song_choice_item_selected"]
-[connection signal="pressed" from="Randomize" to="." method="_on_randomize_pressed"]
+[connection signal="pressed" from="RandomizeLevels" to="." method="_on_randomize_levels_pressed"]
 [connection signal="pressed" from="StartPause" to="." method="_on_start_pause_pressed"]
+[connection signal="pressed" from="RandomizeActiveTracks" to="." method="_on_randomize_active_tracks_pressed"]
