@@ -13,10 +13,6 @@ const HEIGHT_SCALE = 100.0
 var spectrum
 var min_values = []
 var max_values = []
-var prevFrame : ImageTexture
-var prevFrame2 : ImageTexture
-var framesToSkip := 60
-var framesWaited := 0
 
 func _ready():
 	var busIndex = AudioServer.get_bus_index("Master")

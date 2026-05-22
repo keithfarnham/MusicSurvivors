@@ -16,7 +16,6 @@ var weapons : Array[Weapon] = []
 func _ready():
 	weapons.resize(TrackData.Tracks.size())
 	_setup_weapons()
-	#weapons[TrackData.Tracks.KICK].activate_weapon()
 
 func _process(delta):
 	_attack_handler()
@@ -86,19 +85,6 @@ func _attack_handler():
 					# trigger attack
 					Log.print("[player] Attack Handler - triggered %s, current level %s" % [str(TrackData.Tracks.keys()[track.TrackType]), str(TrackData.Level.keys()[level - 1])])
 					weapon_node.trigger_weapon()
-	
-	#TODO prob want to handle the disabling within the weapon itself so i can modify cooldowns and such
-	# hide displays after short duration
-	#for track in display_map.keys():
-		#var t = display_timers.get(track, 0)
-		#if t > 0 and now - t > 120: # ms to show
-			#if display_map[track]:
-				#display_map[track].visible = false
-			#display_timers[track] = 0
-
-#func drumkick_attack():
-	#attacks.get_node("kick").visible = !attacks.get_node("kick").visible
-	#var collision = attacks.get_node("kick").get_node("drumkickHitbox/hitboxCollision") as CollisionShape2D
 
 func _on_hurtbox_hurt(damage):
 	hp -= damage

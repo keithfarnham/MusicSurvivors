@@ -15,7 +15,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="MusicSurvivors"
-run/main_scene="uid://bku5fgkivuptn"
+run/main_scene="uid://ck33t0yhvn2ie"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
 

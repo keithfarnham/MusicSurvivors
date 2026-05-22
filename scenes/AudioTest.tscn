@@ -74,7 +74,21 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_cmrro")
 
+[node name="BigText" type="RichTextLabel" parent="." unique_id=641692113]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.8
+anchor_bottom = 0.22222222
+bbcode_enabled = true
+text = "[color=white]A[/color] [color=white] U [color=white] D [color=white] I [color=white] O [color=white] T [color=white] E [color=white] S [color=white] T"
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1
+justification_flags = 162
+metadata/_edit_use_anchors_ = true
+
 [node name="Background" type="Control" parent="." unique_id=802830520]
+z_index = -1
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -92,9 +106,9 @@ z_index = 1
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.025
-anchor_top = 0.35555556
+anchor_top = 0.24444444
 anchor_right = 0.525
-anchor_bottom = 0.75555557
+anchor_bottom = 0.64444447
 offset_right = 160.0
 offset_bottom = 72.0
 grow_horizontal = 2
@@ -105,6 +119,7 @@ metadata/_edit_use_anchors_ = true
 
 [node name="Kick" type="CheckButton" parent="TrackMutes" unique_id=937706601]
 layout_mode = 2
+button_pressed = true
 text = "Kick"
 
 [node name="KickRect" type="TextureRect" parent="TrackMutes/Kick" unique_id=825361383]
@@ -190,7 +205,6 @@ popup/item_2/id = 2
 
 [node name="Sample" type="CheckButton" parent="TrackMutes" unique_id=708507569]
 layout_mode = 2
-button_pressed = true
 text = "Sample"
 
 [node name="SampleRect" type="TextureRect" parent="TrackMutes/Sample" unique_id=2123067150]
@@ -219,6 +233,7 @@ popup/item_2/id = 2
 
 [node name="Bass" type="CheckButton" parent="TrackMutes" unique_id=1546205012]
 layout_mode = 2
+button_pressed = true
 text = "Bass"
 
 [node name="BassRect" type="TextureRect" parent="TrackMutes/Bass" unique_id=1380737018]
@@ -330,31 +345,6 @@ popup/item_1/id = 1
 popup/item_2/text = "lv3"
 popup/item_2/id = 2
 
-[node name="SongChoice" type="OptionButton" parent="." unique_id=485371660]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.025
-anchor_top = 0.13333334
-anchor_right = 0.234375
-anchor_bottom = 0.24444444
-theme_override_font_sizes/font_size = 8
-selected = 0
-item_count = 1
-popup/item_0/text = "DEFAULT"
-popup/item_0/id = 0
-metadata/_edit_use_anchors_ = true
-
-[node name="SongChoiceLabel" type="RichTextLabel" parent="SongChoice" unique_id=1720257533]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = -0.8000001
-anchor_right = 0.95522386
-theme_override_font_sizes/normal_font_size = 10
-text = "Song Choice:"
-scroll_active = false
-autowrap_mode = 0
-metadata/_edit_use_anchors_ = true
-
 [node name="RandomizeLevels" type="Button" parent="." unique_id=1707769519]
 layout_mode = 1
 anchors_preset = -1
@@ -377,7 +367,6 @@ anchor_bottom = 0.6666667
 offset_right = -16.0
 offset_bottom = -16.000004
 scale = Vector2(1.5, 1.5)
-toggle_mode = true
 texture_normal = SubResource("AtlasTexture_1l0cp")
 texture_pressed = ExtResource("4_1l0cp")
 metadata/_edit_use_anchors_ = true
@@ -391,6 +380,77 @@ offset_bottom = 176.0
 theme_override_font_sizes/font_size = 8
 text = "Randomize Active Tracks"
 autowrap_mode = 3
+
+[node name="AllMuteLv" type="HBoxContainer" parent="." unique_id=1162833801]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0171875
+anchor_top = 0.62222224
+anchor_right = 0.209375
+anchor_bottom = 0.7111111
+offset_left = 2.5
+offset_right = 54.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.5, 0.5)
+theme_override_constants/separation = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="AllMute" type="CheckButton" parent="AllMuteLv" unique_id=452773726]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/h_separation = 0
+theme_override_font_sizes/font_size = 8
+text = "Set All"
+
+[node name="AllLv" type="OptionButton" parent="AllMuteLv" unique_id=1905394569]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 8
+theme_override_constants/arrow_margin = 4
+selected = 0
+item_count = 3
+popup/item_0/text = "lv1"
+popup/item_0/id = 0
+popup/item_1/text = "lv2"
+popup/item_1/id = 1
+popup/item_2/text = "lv3"
+popup/item_2/id = 2
+
+[node name="SongChoiceControl" type="HBoxContainer" parent="." unique_id=366748602]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -128.0
+offset_top = -28.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_constants/separation = 1
+
+[node name="SongChoiceLabel" type="RichTextLabel" parent="SongChoiceControl" unique_id=1720257533]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 10
+text = "Song:"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="SongChoice" type="OptionButton" parent="SongChoiceControl" unique_id=485371660]
+layout_mode = 2
+theme_override_font_sizes/font_size = 8
+selected = 0
+item_count = 1
+popup/item_0/text = "THIS IS THE LONGEST POSSIBLE"
+popup/item_0/id = 0
 
 [connection signal="toggled" from="TrackMutes/Kick" to="." method="_on_kick_toggled"]
 [connection signal="item_selected" from="TrackMutes/KickLv" to="." method="_on_kick_lv_item_selected"]
@@ -408,7 +468,9 @@ autowrap_mode = 3
 [connection signal="item_selected" from="TrackMutes/ArpLv" to="." method="_on_arp_lv_item_selected"]
 [connection signal="toggled" from="TrackMutes/Chord" to="." method="_on_chord_toggled"]
 [connection signal="item_selected" from="TrackMutes/ChordLv" to="." method="_on_chord_lv_item_selected"]
-[connection signal="item_selected" from="SongChoice" to="." method="_on_song_choice_item_selected"]
 [connection signal="pressed" from="RandomizeLevels" to="." method="_on_randomize_levels_pressed"]
 [connection signal="pressed" from="StartPause" to="." method="_on_start_pause_pressed"]
 [connection signal="pressed" from="RandomizeActiveTracks" to="." method="_on_randomize_active_tracks_pressed"]
+[connection signal="toggled" from="AllMuteLv/AllMute" to="." method="_on_all_mute_toggled"]
+[connection signal="item_selected" from="AllMuteLv/AllLv" to="." method="_on_all_lv_item_selected"]
+[connection signal="item_selected" from="SongChoiceControl/SongChoice" to="." method="_on_song_choice_item_selected"]

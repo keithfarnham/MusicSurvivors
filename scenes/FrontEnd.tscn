@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://3iduqkughdys"]
+
+[ext_resource type="Script" uid="uid://bked3005501nd" path="res://scripts/FrontEnd.gd" id="1_0uanh"]
+
+[node name="FrontEnd" type="Control" unique_id=4499274]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_0uanh")
+metadata/_edit_use_anchors_ = true
+
+[node name="Start Game" type="Button" parent="." unique_id=539839076]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -93.0
+offset_top = -15.5
+offset_right = 93.0
+offset_bottom = 15.5
+grow_horizontal = 2
+grow_vertical = 2
+disabled = true
+text = "Start Game (DISABLED)"
+
+[node name="Audio Test" type="Button" parent="." unique_id=1433166187]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -45.0
+offset_top = -31.0
+offset_right = 45.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Audio Test"
+
+[connection signal="pressed" from="Audio Test" to="." method="_on_audio_test_pressed"]

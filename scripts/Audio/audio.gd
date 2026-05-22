@@ -23,6 +23,7 @@ var loop_total = {}
 var last_loop_start_time = {}
 
 signal end_of_loop(loop)
+signal midi_event(track)
 
 func pause():
 	playback_time_sec = get_playback_position() + AudioServer.get_time_since_last_mix() # TODO idk if this works
@@ -32,7 +33,6 @@ func pause():
 	
 func resume(): 
 	stream_paused = false
-	#play(playback_time)
 	start_song(playback_time_sec) # the midi start in start_song() might be a problem
 
 func get_playback_time_sec() -> float:
@@ -56,6 +56,8 @@ func start_song(from_position : float = 0.0):
 		SongData.currentSong.trackData[track].MidiProcess = {"start_time": Time.get_ticks_msec(), "delta_tick": 0, "event_index": 0}
 
 func load_song(song: SongData.Songs):
+	# TODO there is a perf spike when doing this, see if i can split up load_song over multiple frames via await
+	Log.print("[audio] load_song loading %s" % [str(SongData.SongNameForDisplay.values()[song])])
 	SongData.currentSong = Song.new(song, 136.0, 4) #TODO should not be hard coded values
 	stop()
 	
@@ -86,8 +88,6 @@ func load_track_stream(track: TrackData.Tracks):
 func set_track_active(track: TrackData.Tracks, is_enabled: bool):
 	if track not in track_players:
 		return
-	
-	#var player = stream.get_sync_stream(track)
 	track_active.set(track, is_enabled)
 	stream.set_sync_stream_volume(track, 0 if is_enabled else -80)
 	
@@ -96,68 +96,16 @@ func set_track_level(track : TrackData.Tracks, level : TrackData.Level):
 	SongData.currentSong.set_level_for_track(track, level)
 	load_track_stream(track)
 
-func _ready():
-	end_of_loop.connect(_on_end_of_loop)
-	
-	track_players = {
-		TrackData.Tracks.KICK: $kick,
-		TrackData.Tracks.SNARE: $snare,
-		TrackData.Tracks.CYMB: $cymb,
-		TrackData.Tracks.SAMPLE: $sample,
-		TrackData.Tracks.BASS: $bass,
-		TrackData.Tracks.LEAD: $lead,
-		TrackData.Tracks.ARP: $arp,
-		TrackData.Tracks.CHORD: $chord,
-	}
-	
-	for track in TrackData.Tracks:
-		loop_total.set(track, 1)
-		last_loop_start_time.set(track, 0.0)
-	
-	for track in track_players:
-		var player = track_players.values()[track]
-		sync_stream.set_sync_stream(track, player)
-
-func _process(delta):
-	if not SongData.currentSong:
-		Log.print("[audio] currentSong not setup in SongData")
-		return
-	
-	if not playing:
-		if paused_at > 0.0:
-			paused_for_ms += delta * 1000
-			#TODO might want to 'if OS.is_debug_build()' this and update_debug_info call at end of func
-			Debug.update_paused_info(paused_for_ms)
-		return
-	
-	var now = Time.get_ticks_msec()
-	var playback_position = get_playback_position()
-	var time_since_last_mix = AudioServer.get_time_since_last_mix()
-	var loop_playback_ms = playback_time_sec * 1000 if playback_position == 0.0 else (playback_position + AudioServer.get_time_since_last_mix()) * 1000.0
-	var measure = int(loop_playback_ms / SongData.currentSong.ms_per_measure) + 1
-	
-	#check if we are on the next measure
-	if measure > current_measure:
-		current_measure = measure
-		Log.print("[audio] Measure %d Loop %d - program time %d, playback time %sms = %fs + %fs" % \
-		[ current_measure, current_loop, now, str(loop_playback_ms), playback_position, time_since_last_mix ])
-		
-	#check if we've looped around from last measure MEASURE_PER_LOOP to first
-	if current_measure >= SongData.MEASURE_PER_LOOP and measure == 1:
-		current_loop += 1
-		current_measure = 1
-		Log.print("[audio] Now on loop %d" % [current_loop])
-		var calculated_loop_end = song_start + (current_loop * SongData.MEASURE_PER_LOOP * SongData.currentSong.ms_per_measure)
-		var offset = calculated_loop_end - now # TODO reasses if offset is necessary, it was causing problems with midi looping
-		end_of_loop.emit(current_loop, offset)
-	
-	Debug.update_debug_info(now, loop_playback_ms, song_start, current_loop, measure, paused_for_ms)
-
 func _on_end_of_loop(loop : int, start_offset : int):
 	Log.print("[audio] Loop ended, now on loop %s" % [str(loop)])
 	paused_for_ms = 0.0 # reset paused_for_ms time on loop end - only need it to sync up midi in a single loop
 	var now = Time.get_ticks_msec()
 	for track in SongData.currentSong.trackData.values():
+		if track.MidiProcess.is_empty():
+			#TODO find proper fix for this
+			Log.print("[audio] WARNING _on_end_of_loop track's MidiProcess is empty. This might not be a real problem if it's just between loads")
+			track.MidiProcess = {"start_time": Time.get_ticks_msec(), "delta_tick": 0, "event_index": 0}
+			#return
 		loop_total[TrackData.Tracks.keys()[track.TrackType]] = loop
 		Log.print("[audio] Looping %s now on loop %s. Started at [%s] and ending at [%s], diff = %s" % \
 		[ str(TrackData.Tracks.keys()[track.TrackType]), str(loop_total[TrackData.Tracks.keys()[track.TrackType]]), str(track.MidiProcess.start_time), str(now), str(now - track.MidiProcess.start_time) ])
@@ -265,28 +213,122 @@ func update_track_level(track: TrackData.Tracks, level : TrackData.Level):
 	var sync_pos = 0.0
 	# Get current playpack pos
 	if playing:
-		#var sync_stream = audio_node.stream as AudioStreamSynchronized
 		var playback_pos = get_playback_time_sec()
 		sync_pos = playback_pos + AudioServer.get_time_since_last_mix()
 	set_track_level(track, level)
 	# Resume playback at the same position
-	Log.print("[AudioTest] updating track - resuming at %ss = %s + %s" % [str(sync_pos), str(get_playback_position()), str(AudioServer.get_time_since_last_mix())])
-	$sfx/levelup.play()
+	Log.print("[audio] updating track - resuming at %ss = %s + %s" % [str(sync_pos), str(get_playback_position()), str(AudioServer.get_time_since_last_mix())])
+	$sfx/levelup.play() #TODO try out some different lv up sounds
 	call_deferred("_resume_at", sync_pos)
 
-func update_all_tracks_synced(current_levels):
+func update_all_track_levels(current_levels):
 	var sync_pos = 0.0
 	# Get current playpack pos
 	if playing:
-		#var sync_stream = audio_node.stream as AudioStreamSynchronized
 		var playback_pos = get_playback_position()
 		sync_pos = playback_pos + AudioServer.get_time_since_last_mix()
 	# update all the tracks
 	for track in TrackData.Tracks.values():
 		set_track_level(track, current_levels[track])
-	Log.print("[AudioTest] updating all tracks - resuming at %ss. playing = %s" % [str(sync_pos), str(playing)])
+	Log.print("[audio] updating all tracks - resuming at %ss. playing = %s" % [str(sync_pos), str(playing)])
 	$sfx/levelup.play()
 	call_deferred("_resume_at", sync_pos)
 
 func _resume_at(playback_pos: float):
 	play(playback_pos)
+
+func _midi_process():
+	var songInfo = SongData.currentSong
+	var ms_per_tick = songInfo.ms_per_tick
+	var now = Time.get_ticks_msec()
+	
+	if not playing:
+		# early out if there's no audio playing
+		return
+	
+	for track in SongData.currentSong.trackData.values():
+		if !track_active.get(track.TrackType):
+			# early out for muted tracks
+			continue
+		if track.MidiProcess.is_empty():
+			#TODO find proper fix for this
+			Log.print("[MidiProcess] WARNING a track's MidiProcess is empty. This might just be in between loading so it may not acutally be an issue, early out")
+			track.MidiProcess = {"start_time": Time.get_ticks_msec(), "delta_tick": 0, "event_index": 0}
+			#return
+		assert(now >= track.MidiProcess.start_time, "[MidiProcess] now < MidiProcess.start_time resulting in negative delta_ticks")
+		var elapsed_ms = now - track.MidiProcess.start_time - paused_for_ms
+		var delta_ticks = float(elapsed_ms) / ms_per_tick if ms_per_tick > 0 else 0
+		var level = SongData.currentSong.get_current_level_for_track(track.TrackType) as TrackData.Level
+		var midi = track.GetMidiForLevel(level) as MidiFileParser.Track
+		assert(elapsed_ms >= 0.0, "[MidiProcess] elapsed time should not be negative. elapsed_ms: %s = %s - %s - %s" % [str(elapsed_ms), str(now), str(track.MidiProcess.start_time), str(paused_for_ms)])
+#		Log.print("[DisplayHandler] elapsedms: %s, delta_ticks: %s, level: %s" % [str(elapsed_ms), str(delta_ticks), str(TrackData.Level.keys()[level - 1])])
+		while track.MidiProcess.event_index < midi.events.size():
+			var ev = track.MidiForLevel[TrackData.Level.keys()[level - 1]].events[track.MidiProcess.event_index]
+			if track.MidiProcess.delta_tick + ev.delta_ticks > delta_ticks:
+				break
+			track.MidiProcess.delta_tick += ev.delta_ticks
+			track.MidiProcess.event_index += 1
+			if ev.event_type == MidiFileParser.Event.EventType.MIDI:
+				var midi_ev = ev as MidiFileParser.Midi
+				# NOTE_ON status and velocity > 0
+				if midi_ev.status == MidiFileParser.Midi.Status.NOTE_ON and midi_ev.velocity > 0:
+					# send a signal out here with the track
+					midi_event.emit(track.TrackType)
+
+func _ready():
+	end_of_loop.connect(_on_end_of_loop)
+	
+	track_players = {
+		TrackData.Tracks.KICK: $kick,
+		TrackData.Tracks.SNARE: $snare,
+		TrackData.Tracks.CYMB: $cymb,
+		TrackData.Tracks.SAMPLE: $sample,
+		TrackData.Tracks.BASS: $bass,
+		TrackData.Tracks.LEAD: $lead,
+		TrackData.Tracks.ARP: $arp,
+		TrackData.Tracks.CHORD: $chord,
+	}
+	
+	for track in TrackData.Tracks:
+		loop_total.set(track, 1)
+		last_loop_start_time.set(track, 0.0)
+	
+	for track in track_players:
+		var player = track_players.values()[track]
+		sync_stream.set_sync_stream(track, player)
+
+func _process(delta):
+	if not SongData.currentSong:
+		Log.print("[audio] currentSong not setup in SongData")
+		return
+	
+	if not playing:
+		if paused_at > 0.0:
+			paused_for_ms += delta * 1000
+			#TODO might want to 'if OS.is_debug_build()' this and update_debug_info call at end of func
+			Debug.update_paused_info(paused_for_ms)
+		return
+	
+	var now = Time.get_ticks_msec()
+	var playback_position = get_playback_position()
+	var time_since_last_mix = AudioServer.get_time_since_last_mix()
+	var loop_playback_ms = playback_time_sec * 1000 if playback_position == 0.0 else (playback_position + AudioServer.get_time_since_last_mix()) * 1000.0
+	var measure = int(loop_playback_ms / SongData.currentSong.ms_per_measure) + 1
+	
+	#check if we are on the next measure
+	if measure > current_measure:
+		current_measure = measure
+		Log.print("[audio] Measure %d Loop %d - program time %d, playback time %sms = %fs + %fs" % \
+		[ current_measure, current_loop, now, str(loop_playback_ms), playback_position, time_since_last_mix ])
+		
+	#check if we've looped around from last measure MEASURE_PER_LOOP to first
+	if current_measure >= SongData.MEASURE_PER_LOOP and measure == 1:
+		current_loop += 1
+		current_measure = 1
+		Log.print("[audio] Now on loop %d" % [current_loop])
+		var calculated_loop_end = song_start + (current_loop * SongData.MEASURE_PER_LOOP * SongData.currentSong.ms_per_measure)
+		var offset = calculated_loop_end - now # TODO reasses if offset is necessary, it was causing problems with midi looping
+		end_of_loop.emit(current_loop, offset)
+	
+	Debug.update_debug_info(now, loop_playback_ms, song_start, current_loop, measure, paused_for_ms)
+	_midi_process()
