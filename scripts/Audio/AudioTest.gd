@@ -3,7 +3,8 @@ extends Control
 @onready var audio_node = $AudioController as AudioController
 @onready var song_choice = $SongChoice
 @onready var track_mutes = $TrackMutes
-@onready var sprite_material = $Background/SubViewport/BackgroundSprite2D.material
+@onready var start_pause_button = $StartPause as TextureButton
+#@onready var sprite_material = $Background/SubViewportContainer/SubViewport/BackgroundSprite2D.material
 
 #region Debug Event Handlers
 @onready var kick_display = $TrackMutes/Kick/KickRect
@@ -87,6 +88,13 @@ func _ready():
 	for track in TrackData.Tracks.values():
 		current_levels[track] = TrackData.Level.lv1
 	
+	#setup song choice drop down
+	for i in $SongChoice.item_count:
+		$SongChoice.remove_item(i)
+	for song in SongData.Songs.values():
+		if SongData.SongNameForDisplay.has(song):
+			$SongChoice.add_item(SongData.SongNameForDisplay[song]) # may want to specify id here
+	
 	# Load initial song
 	audio_node.load_song(SongData.Songs.testsong)
 
@@ -107,11 +115,11 @@ func _ready():
 			display_timers[track] = 0
 
 func _on_song_choice_item_selected(index):
-	var songs = SongData.Songs
-	var song_names = ["testsong", "testsong2"]
-	
-	if index >= 0 and index < song_names.size():
-		var selected_song = SongData.Songs[song_names[index]]
+	if index >= 0 and index < SongData.Songs.size():
+		start_pause_button.texture_normal = play_texture
+		start_pause_button.button_pressed = false
+		#$StartPause.set_deferred('texture_normal', play_texture)
+		var selected_song = SongData.Songs.values()[index]
 		audio_node.load_song(selected_song)
 
 #region Mute Toggles 
@@ -177,36 +185,8 @@ func _on_chord_lv_item_selected(index):
 	current_levels[TrackData.Tracks.CHORD] = index + 1 as TrackData.Level
 	audio_node.update_track_level(TrackData.Tracks.CHORD, current_levels[TrackData.Tracks.CHORD])
 
-#func _update_track_synced(track: TrackData.Tracks):
-	#audio_node.set_track_level(track, current_levels[track])
-	## Get current playpack pos
-	#var sync_pos = 0.0
-	#if audio_node.playing:
-		##var sync_stream = audio_node.stream as AudioStreamSynchronized
-		#var playback_pos = audio_node.get_playback_time_sec()
-		#sync_pos = playback_pos + AudioServer.get_time_since_last_mix()
-	## Resume playback at the same position
-	#Log.print("[AudioTest] updating track - resuming at %ss = %s + %s" % [str(sync_pos), str(audio_node.get_playback_position()), str(AudioServer.get_time_since_last_mix())])
-	#call_deferred("_resume_at", sync_pos)
-#
-#func _update_all_tracks_synced():
-	#var sync_pos = 0.0
-	## update all the tracks
-	#for track in TrackData.Tracks.values():
-		#audio_node.set_track_level(track, current_levels[track])
-	## Get current playpack pos
-	#if audio_node.playing:
-		##var sync_stream = audio_node.stream as AudioStreamSynchronized
-		#var playback_pos = audio_node.get_playback_position()
-		#sync_pos = playback_pos + AudioServer.get_time_since_last_mix()
-	#Log.print("[AudioTest] updating all tracks - resuming at %ss" % [str(sync_pos)])
-	#call_deferred("_resume_at", sync_pos)
-#
-#func _resume_at(playback_pos: float):
-	#if audio_node:
-		#audio_node.play(playback_pos)
-
 func _on_randomize_levels_pressed():
+	#BUG hitting this sometimes breaks the midi displays and they stop displaying until muting/unmuting the track
 	for trackType in TrackData.Tracks.values():
 		var newLvl : TrackData.Level = TrackData.Level.values()[randi_range(0, TrackData.Level.size() - 1)]
 		Log.print("[AudioTest] Randomizing %s level to %s" % [TrackData.Tracks.keys()[trackType], newLvl])
@@ -219,10 +199,10 @@ func _on_randomize_levels_pressed():
 func _on_start_pause_pressed():
 	if audio_node.playing:
 		audio_node.pause()
-		$StartPause.texture_normal = play_texture
+		start_pause_button.texture_normal = play_texture
 	else:
 		audio_node.resume()
-		$StartPause.texture_normal = pause_texture
+		start_pause_button.texture_normal = pause_texture
 
 func _display_handler():
 	var songInfo = SongData.currentSong
@@ -237,12 +217,12 @@ func _display_handler():
 		if !audio_node.track_active.get(track.TrackType):
 			#early out for muted tracks
 			continue
+		#BUG hitting Randomize Track Levels before starting song hits this
 		assert(now >= track.MidiProcess.start_time, "now < MidiProcess.start_time resulting in negative delta_ticks")
 		var elapsed_ms = now - track.MidiProcess.start_time - audio_node.paused_for_ms
 		var delta_ticks = float(elapsed_ms) / ms_per_tick if ms_per_tick > 0 else 0
 		var level = current_levels[track.TrackType] as TrackData.Level
 		var midi = track.GetMidiForLevel(level) as MidiFileParser.Track
-		#BUG elapsed time goes negative on first beat of new loop after pause
 		assert(elapsed_ms >= 0.0, "[DisplayHandler] elapsed time should not be negative. elapsed_ms: %s = %s - %s - %s" % [str(elapsed_ms), str(now), str(track.MidiProcess.start_time), str(audio_node.paused_for_ms)])
 #		Log.print("[DisplayHandler] elapsedms: %s, delta_ticks: %s, level: %s" % [str(elapsed_ms), str(delta_ticks), str(TrackData.Level.keys()[level - 1])])
 		while track.MidiProcess.event_index < midi.events.size():
@@ -250,6 +230,7 @@ func _display_handler():
 			if track.MidiProcess.delta_tick + ev.delta_ticks > delta_ticks:
 				break
 			#TODO should this be internal to the audio node rather than handled externally?
+			# would need to move this whole function into audio script
 			track.MidiProcess.delta_tick += ev.delta_ticks
 			track.MidiProcess.event_index += 1
 			if ev.event_type == MidiFileParser.Event.EventType.MIDI:

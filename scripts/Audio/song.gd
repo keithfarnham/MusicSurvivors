@@ -4,7 +4,7 @@ class_name Song
 
 var bpm
 var ms_per_beat
-var beats_per_bar
+var beats_per_measure
 var ms_per_measure
 var ms_per_tick
 var ticks_per_beat := 960 #aka PPQN (pulse per quarter note), set in reaper midi export
@@ -12,13 +12,13 @@ var songTitle
 var trackData = {}
 var song : SongData.Songs
 
-func _init(newSong : SongData.Songs, songBpm = 110.0, songBeatsPerBar = 4):
+func _init(newSong : SongData.Songs, songBpm = 110.0, beatsPerMeasure = 4):
 	Log.print("[song] setting up song " + str(SongData.Songs.keys()[newSong]))
 	songTitle = str(SongData.Songs.keys()[newSong])
 	bpm = songBpm
 	ms_per_beat = 60000.0 / bpm
-	beats_per_bar = songBeatsPerBar
-	ms_per_measure = ms_per_beat * beats_per_bar
+	beats_per_measure = beatsPerMeasure
+	ms_per_measure = ms_per_beat * beatsPerMeasure
 	ms_per_tick = 60000 / (bpm * ticks_per_beat)
 	song = newSong
 	for track in TrackData.Tracks.values():

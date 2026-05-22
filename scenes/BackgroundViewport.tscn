@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://6gam6irvv1ji"]
+
+[ext_resource type="Shader" uid="uid://dn8k3i77d1icu" path="res://shaders/AudioTestBackground.gdshader" id="1_gwi7g"]
+[ext_resource type="Script" uid="uid://dfmmbn2um4ubb" path="res://scripts/Shaders/AudioTestBackground.gd" id="1_ox0kh"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gwi7g"]
+shader = ExtResource("1_gwi7g")
+shader_parameter/planeDist = 0.5
+shader_parameter/furthest = 16.0
+shader_parameter/fadeFrom = 8.0
+shader_parameter/fadeOutMod = 0.0
+shader_parameter/shapeRadius = 0.5
+shader_parameter/antiAliasBaseValue = 3.0
+shader_parameter/slowVal = 2.0
+shader_parameter/rayDepth = 1.75
+shader_parameter/rayDirMod = Vector3(4.59, 4.77, -0.835)
+shader_parameter/rayOriginMod = Vector3(9.765, -10.515, -1.44)
+shader_parameter/planeZMod = 0.0
+shader_parameter/zoomValue = 15.16
+shader_parameter/pixelCoords_mod = Vector2(-9, -1)
+shader_parameter/pathA = Vector2(0, 0)
+shader_parameter/pathB = Vector2(0, 0)
+shader_parameter/paletteColor1 = Vector3(0, 0, 0)
+shader_parameter/paletteColor2 = Vector3(0, 0, 0)
+shader_parameter/freq_data = PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ox0kh"]
+
+[node name="BackgroundSubviewport" type="SubViewportContainer" unique_id=2107181315]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ox0kh")
+metadata/_edit_use_anchors_ = true
+
+[node name="SubViewport" type="SubViewport" parent="." unique_id=1189403001]
+handle_input_locally = false
+size = Vector2i(320, 180)
+render_target_update_mode = 4
+
+[node name="SubViewportSprite2D" type="Sprite2D" parent="SubViewport" unique_id=559310077]
+material = SubResource("ShaderMaterial_gwi7g")
+position = Vector2(160.00002, 90.12501)
+scale = Vector2(320, 180.25)
+texture = SubResource("PlaceholderTexture2D_ox0kh")

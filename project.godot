@@ -47,6 +47,12 @@ Player=""
 
 theme/default_font_multichannel_signed_distance_field=true
 
+[importer_defaults]
+
+oggvorbisstr={
+&"loop": true
+}
+
 [input]
 
 move_up={

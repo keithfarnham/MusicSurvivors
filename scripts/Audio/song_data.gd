@@ -2,13 +2,13 @@ extends Node
 
 var currentSong : Song
 
-const MEASURE_PER_LOOP := 8
+const MEASURE_PER_LOOP := 8 # This is consistent between songs for now, but could be set per song later on
 
-enum Songs {testsong, testsong2}
+enum Songs {testsong, AnotherAudioAdventure}
 
 var SongNameForDisplay = {
 	Songs.testsong : "Test Song",
-	Songs.testsong2 : "Test Song 2"
+	Songs.AnotherAudioAdventure : "Another Audio Adventure"
 }
 
 #var TrackAudioForLevel = {

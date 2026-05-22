@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://ck33t0yhvn2ie"]
 
 [ext_resource type="Script" uid="uid://cdejuklv6ntfh" path="res://scripts/Audio/AudioTest.gd" id="1_cmrro"]
+[ext_resource type="PackedScene" uid="uid://6gam6irvv1ji" path="res://scenes/BackgroundViewport.tscn" id="2_4mtf6"]
 [ext_resource type="PackedScene" uid="uid://xea7vhfq8eq7" path="res://scenes/AudioController.tscn" id="2_qn2mr"]
 [ext_resource type="Texture2D" uid="uid://b7t4jmcnt16al" path="res://sprites/playpause.png" id="3_qn2mr"]
 [ext_resource type="Texture2D" uid="uid://dpft6ikyjgvbw" path="res://sprites/playpauseatlas.tres" id="4_1l0cp"]
@@ -81,9 +82,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="SubViewport" type="SubViewport" parent="Background" unique_id=1249403257]
-
-[node name="BackgroundSprite2D" type="Sprite2D" parent="Background/SubViewport" unique_id=1388237553]
+[node name="SubViewportContainer" parent="Background" unique_id=986253039 instance=ExtResource("2_4mtf6")]
+layout_mode = 1
 
 [node name="AudioController" parent="." unique_id=651702734 instance=ExtResource("2_qn2mr")]
 
@@ -335,26 +335,24 @@ layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.025
 anchor_top = 0.13333334
-anchor_right = 0.2875
-anchor_bottom = 0.26666668
-theme_override_font_sizes/font_size = 11
+anchor_right = 0.234375
+anchor_bottom = 0.24444444
+theme_override_font_sizes/font_size = 8
 selected = 0
-item_count = 2
-popup/item_0/text = "testsong"
+item_count = 1
+popup/item_0/text = "DEFAULT"
 popup/item_0/id = 0
-popup/item_1/text = "testsong2"
-popup/item_1/id = 1
-popup/item_1/disabled = true
 metadata/_edit_use_anchors_ = true
 
 [node name="SongChoiceLabel" type="RichTextLabel" parent="SongChoice" unique_id=1720257533]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = -0.58333325
-anchor_right = 0.7619048
+anchor_top = -0.8000001
+anchor_right = 0.95522386
 theme_override_font_sizes/normal_font_size = 10
 text = "Song Choice:"
 scroll_active = false
+autowrap_mode = 0
 metadata/_edit_use_anchors_ = true
 
 [node name="RandomizeLevels" type="Button" parent="." unique_id=1707769519]
