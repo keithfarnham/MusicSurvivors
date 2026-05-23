@@ -71,11 +71,11 @@ func load_track_stream(track: TrackData.Tracks):
 	if track not in track_players:
 		return
 	
-	var level = SongData.currentSong.get_current_level_for_track(track)#trackData[track].CurrentLevel
+	var level = SongData.currentSong.get_current_level_for_track(track)
 	Log.print("[audio] Loading track %s at level %s" % [str(TrackData.Tracks.keys()[track]), str(TrackData.Level.keys()[level - 1])])
 	# Get the audio path from SongData
-	var audio_path = SongData.currentSong.get_audio_path_for_level(track, level)#TrackAudioForLevel[track][level]
-	
+	var audio_path = SongData.currentSong.get_audio_path_for_level(track, level)
+	audio_path = audio_path.trim_suffix(".import") # files exported as resources 
 	if audio_path and audio_path != "":
 		stream.set_sync_stream(track, load(audio_path))
 		# update cached length if available
@@ -144,9 +144,12 @@ func _load_track_files(trackPath: String, trackEnum: int):
 		trackDir.list_dir_begin()
 		var fileName = trackDir.get_next()
 		while fileName != "":
-			if not trackDir.current_is_dir() and fileName.ends_with(".ogg"):
-				# Parse filename: e.g., "testsong_lv1_kick.ogg"
-				var withoutExt = fileName.trim_suffix(".ogg")
+			# there were issues with the exported version not finding the .ogg files until I instead looked for the .ogg.import files
+			# so, I am switching to checking the .import files and removing the .ogg.import part of the string
+			if not trackDir.current_is_dir() and fileName.ends_with(".ogg.import"):
+				# Parse filename: e.g., "testsong_lv1_kick.ogg.import"
+				var withoutExt = fileName.left(fileName.find(".ogg.import"))
+				
 				var parts = withoutExt.split("_")
 				
 				# Find level (lv1, lv2, lv3)
@@ -162,7 +165,7 @@ func _load_track_files(trackPath: String, trackEnum: int):
 						var fullPath = trackPath + "/" + fileName
 						SongData.currentSong.set_audio_path_for_level(trackEnum, level, fullPath)
 						audioFiles.append(fullPath)
-						Log.print("[audio] Loaded: %s -> Track %d, Level %d" % [fullPath, trackEnum, level])
+						Log.print("[audio] _load_track_files Loaded: %s -> Track %d, Level %d" % [fullPath, trackEnum, level])
 			
 			fileName = trackDir.get_next()
 		trackDir.list_dir_end()
