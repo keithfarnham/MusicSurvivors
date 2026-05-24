@@ -37,6 +37,7 @@ script = ExtResource("1_wdo3m")
 [node name="chord" type="AudioStreamPlayer" parent="." unique_id=61454457]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1978030341]
+visible = false
 scale = Vector2(0.5, 0.5)
 transform = Transform2D(0.5, 0, 0, 0.5, 0, 0)
 
