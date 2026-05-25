@@ -11,7 +11,6 @@ var playback_time_sec : float = 0.0
 var paused_at : float = 0.0
 var paused_for_ms : float = 0.0
 
-var songFolder = "res://songs/"
 var audioFiles = []
 var track_players = {}
 var track_lengths = {}  # length of each loaded track
@@ -22,18 +21,20 @@ var sync_stream = stream as AudioStreamSynchronized
 var loop_total = {}
 var last_loop_start_time = {}
 
+const songFolder = "res://songs/"
+
 signal end_of_loop(loop)
 signal midi_event(track)
 
 func pause():
-	playback_time_sec = get_playback_position() + AudioServer.get_time_since_last_mix() # TODO idk if this works
+	playback_time_sec = get_playback_position() + AudioServer.get_time_since_last_mix()
 	paused_at = Time.get_ticks_msec()
 	stream_paused = true
 	stop()
 	
 func resume(): 
 	stream_paused = false
-	start_song(playback_time_sec) # the midi start in start_song() might be a problem
+	start_song(playback_time_sec)
 
 func get_playback_time_sec() -> float:
 	var playback = get_playback_position()
@@ -96,16 +97,39 @@ func set_track_level(track : TrackData.Tracks, level : TrackData.Level):
 	SongData.currentSong.set_level_for_track(track, level)
 	load_track_stream(track)
 
+func update_track_level(track: TrackData.Tracks, level : TrackData.Level):
+	var sync_pos = 0.0
+	# Get current playpack pos
+	if playing:
+		var playback_pos = get_playback_time_sec()
+		sync_pos = playback_pos + AudioServer.get_time_since_last_mix()
+	set_track_level(track, level)
+	# Resume playback at the same position
+	Log.print("[audio] updating track - resuming at %ss = %s + %s" % [str(sync_pos), str(get_playback_position()), str(AudioServer.get_time_since_last_mix())])
+	$sfx/levelup.play() #TODO try out some different lv up sounds
+	call_deferred("_resume_at", sync_pos)
+
+func update_all_track_levels(current_levels):
+	var sync_pos = 0.0
+	# Get current playpack pos
+	if playing:
+		var playback_pos = get_playback_position()
+		sync_pos = playback_pos + AudioServer.get_time_since_last_mix()
+	# update all the tracks
+	for track in TrackData.Tracks.values():
+		set_track_level(track, current_levels[track])
+	Log.print("[audio] updating all tracks - resuming at %ss. playing = %s" % [str(sync_pos), str(playing)])
+	$sfx/levelup.play()
+	call_deferred("_resume_at", sync_pos)
+
 func _on_end_of_loop(loop : int, start_offset : int):
 	Log.print("[audio] Loop ended, now on loop %s" % [str(loop)])
 	paused_for_ms = 0.0 # reset paused_for_ms time on loop end - only need it to sync up midi in a single loop
 	var now = Time.get_ticks_msec()
 	for track in SongData.currentSong.trackData.values():
 		if track.MidiProcess.is_empty():
-			#TODO find proper fix for this
 			Log.print("[audio] WARNING _on_end_of_loop track's MidiProcess is empty. This might not be a real problem if it's just between loads")
 			track.MidiProcess = {"start_time": Time.get_ticks_msec(), "delta_tick": 0, "event_index": 0}
-			#return
 		loop_total[TrackData.Tracks.keys()[track.TrackType]] = loop
 		Log.print("[audio] Looping %s now on loop %s. Started at [%s] and ending at [%s], diff = %s" % \
 		[ str(TrackData.Tracks.keys()[track.TrackType]), str(loop_total[TrackData.Tracks.keys()[track.TrackType]]), str(track.MidiProcess.start_time), str(now), str(now - track.MidiProcess.start_time) ])
@@ -212,31 +236,6 @@ func _load_all_tracks_synced():
 	for track in TrackData.Tracks.values():
 		load_track_stream(track)
 
-func update_track_level(track: TrackData.Tracks, level : TrackData.Level):
-	var sync_pos = 0.0
-	# Get current playpack pos
-	if playing:
-		var playback_pos = get_playback_time_sec()
-		sync_pos = playback_pos + AudioServer.get_time_since_last_mix()
-	set_track_level(track, level)
-	# Resume playback at the same position
-	Log.print("[audio] updating track - resuming at %ss = %s + %s" % [str(sync_pos), str(get_playback_position()), str(AudioServer.get_time_since_last_mix())])
-	$sfx/levelup.play() #TODO try out some different lv up sounds
-	call_deferred("_resume_at", sync_pos)
-
-func update_all_track_levels(current_levels):
-	var sync_pos = 0.0
-	# Get current playpack pos
-	if playing:
-		var playback_pos = get_playback_position()
-		sync_pos = playback_pos + AudioServer.get_time_since_last_mix()
-	# update all the tracks
-	for track in TrackData.Tracks.values():
-		set_track_level(track, current_levels[track])
-	Log.print("[audio] updating all tracks - resuming at %ss. playing = %s" % [str(sync_pos), str(playing)])
-	$sfx/levelup.play()
-	call_deferred("_resume_at", sync_pos)
-
 func _resume_at(playback_pos: float):
 	play(playback_pos)
 
@@ -255,9 +254,8 @@ func _midi_process():
 			continue
 		if track.MidiProcess.is_empty():
 			#TODO find proper fix for this
-			Log.print("[MidiProcess] WARNING a track's MidiProcess is empty. This might just be in between loading so it may not acutally be an issue, early out")
+			Log.print("[MidiProcess] WARNING a track's MidiProcess is empty. This might just be in between loading so it may not acutally be an issue")
 			track.MidiProcess = {"start_time": Time.get_ticks_msec(), "delta_tick": 0, "event_index": 0}
-			#return
 		assert(now >= track.MidiProcess.start_time, "[MidiProcess] now < MidiProcess.start_time resulting in negative delta_ticks")
 		var elapsed_ms = now - track.MidiProcess.start_time - paused_for_ms
 		var delta_ticks = float(elapsed_ms) / ms_per_tick if ms_per_tick > 0 else 0

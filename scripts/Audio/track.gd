@@ -8,7 +8,6 @@ var AudioPathForLevel = {TrackData.Level.lv1: "", TrackData.Level.lv2: "", Track
 
 var MidiForLevel = {} #{TrackData.Level.lv1: MidiFileParser.Track, TrackData.Level.lv2: MidiFileParser.Track,TrackData.Level.lv3: MidiFileParser.Track} #might want to make this dynamically sized - for now this works
 var MidiProcess = {}
-#var MidiTrackIndex : int
 
 func GetMidiForLevel(level : TrackData.Level) -> MidiFileParser.Track:
 	var midi = MidiForLevel[TrackData.Level.keys()[level - 1]]
@@ -24,7 +23,6 @@ func _init(song : SongData.Songs, track_type : TrackData.Tracks, starting_level 
 func _load_midi_for_track(song : SongData.Songs, track_type : TrackData.Tracks):
 	var midi_parser : MidiFileParser = null
 	assert(SongData != null, "ERROR - SongData is null")
-	#var songInfo = SongData.currentSong as Song#SongData.song_data.get(song) as Song
 	for level in TrackData.Level:
 		var midi_path = "res://songs/" + str(SongData.Songs.keys()[song]) + "/midi/" + str(SongData.Songs.keys()[song]) + "_" + str(level) + ".mid"
 		var f = FileAccess.open(midi_path, FileAccess.READ)
@@ -44,6 +42,5 @@ func _load_midi_for_track(song : SongData.Songs, track_type : TrackData.Tracks):
 							assert(midi_tr != null, "midi for track is null")
 							MidiForLevel[level] = midi_tr
 							break
-							#MidiTrackIndex = midi_tr_index
 		else:
 			Log.print("[track] MIDI not found for track %s at path %s " % [TrackData.Tracks.keys()[track_type], midi_path])
