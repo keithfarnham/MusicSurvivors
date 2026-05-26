@@ -258,10 +258,11 @@ func _midi_process():
 			track.MidiProcess = {"start_time": Time.get_ticks_msec(), "delta_tick": 0, "event_index": 0}
 		assert(now >= track.MidiProcess.start_time, "[MidiProcess] now < MidiProcess.start_time resulting in negative delta_ticks")
 		var elapsed_ms = now - track.MidiProcess.start_time - paused_for_ms
+		assert(elapsed_ms >= 0.0, "[MidiProcess] elapsed time should not be negative. elapsed_ms: %s = %s - %s - %s" % [str(elapsed_ms), str(now), str(track.MidiProcess.start_time), str(paused_for_ms)])
 		var delta_ticks = float(elapsed_ms) / ms_per_tick if ms_per_tick > 0 else 0
 		var level = SongData.currentSong.get_current_level_for_track(track.TrackType) as TrackData.Level
 		var midi = track.GetMidiForLevel(level) as MidiFileParser.Track
-		assert(elapsed_ms >= 0.0, "[MidiProcess] elapsed time should not be negative. elapsed_ms: %s = %s - %s - %s" % [str(elapsed_ms), str(now), str(track.MidiProcess.start_time), str(paused_for_ms)])
+		assert(midi != null, "[MidiProcess] midi for level is null. Where is the midi?")
 #		Log.print("[DisplayHandler] elapsedms: %s, delta_ticks: %s, level: %s" % [str(elapsed_ms), str(delta_ticks), str(TrackData.Level.keys()[level - 1])])
 		while track.MidiProcess.event_index < midi.events.size():
 			var ev = track.MidiForLevel[TrackData.Level.keys()[level - 1]].events[track.MidiProcess.event_index]
