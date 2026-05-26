@@ -2,7 +2,7 @@
 
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
-uid="uid://ba77efjc8i24s"
+uid="uid://bgtap04lxy0w8"
 path="res://.godot/imported/testsong_lv2_arp.ogg-1e14a5a1a790b5cc85ab5463015eebe7.oggvorbisstr"
 
 [deps]
@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/testsong_lv2_arp.ogg-1e14a5a1a790b5cc85ab5463
 [params]
 
 loop=true
-loop_offset=0.0
-bpm=0.0
+loop_offset=0
+bpm=0
 beat_count=0
 bar_beats=4

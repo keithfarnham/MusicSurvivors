@@ -4,11 +4,22 @@ var currentSong : Song
 
 const MEASURE_PER_LOOP := 8 # This is consistent between songs for now, but could be set per song later on
 
-enum Songs {testsong, AnotherAudioAdventure}
+enum Songs {
+	testsong,
+	AnotherAudioAdventure,
+	BreakingBreath
+	}
 
 var SongNameForDisplay = {
 	Songs.testsong : "Test Song",
-	Songs.AnotherAudioAdventure : "Another Audio Adventure"
+	Songs.AnotherAudioAdventure : "Another Audio Adventure",
+	Songs.BreakingBreath : "Breaking Breath"
+}
+
+var SongBPM = {
+	Songs.testsong : 136,
+	Songs.AnotherAudioAdventure : 136,
+	Songs.BreakingBreath : 146
 }
 
 #var TrackAudioForLevel = {

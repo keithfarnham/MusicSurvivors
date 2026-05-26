@@ -2,7 +2,7 @@
 
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
-uid="uid://djl70yogpltl"
+uid="uid://drkju8kyh5ypp"
 path="res://.godot/imported/testsong_lv3_cymb.ogg-456199e40e4d75913abc2600feb70d65.oggvorbisstr"
 
 [deps]
@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/testsong_lv3_cymb.ogg-456199e40e4d75913abc260
 [params]
 
 loop=true
-loop_offset=0.0
-bpm=0.0
+loop_offset=0
+bpm=0
 beat_count=0
 bar_beats=4
