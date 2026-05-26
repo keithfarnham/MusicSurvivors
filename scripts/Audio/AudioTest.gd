@@ -274,6 +274,14 @@ func _ready():
 		if display_map[track]:
 			display_map[track].visible = false
 			display_timers[track] = 0
+			
+	# setup random 4 active tracks
+	var alreadyActive = []
+	while alreadyActive.size() < 4:
+		var randTrack = randi() % TrackData.Tracks.size()
+		if not alreadyActive.has(randTrack):
+			alreadyActive.append(randTrack)
+			mute_toggles[randTrack].button_pressed = true
 
 func _process(delta):
 	_display_handler()

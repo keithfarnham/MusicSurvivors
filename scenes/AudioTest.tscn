@@ -121,7 +121,6 @@ metadata/_edit_use_anchors_ = true
 
 [node name="Kick" type="CheckButton" parent="TrackMutes" unique_id=937706601]
 layout_mode = 2
-button_pressed = true
 text = "Kick"
 
 [node name="KickRect" type="TextureRect" parent="TrackMutes/Kick" unique_id=825361383]
@@ -150,7 +149,6 @@ popup/item_2/id = 2
 
 [node name="Snare" type="CheckButton" parent="TrackMutes" unique_id=575025516]
 layout_mode = 2
-button_pressed = true
 text = "Snare"
 
 [node name="SnareRect" type="TextureRect" parent="TrackMutes/Snare" unique_id=2072918734]
@@ -235,7 +233,6 @@ popup/item_2/id = 2
 
 [node name="Bass" type="CheckButton" parent="TrackMutes" unique_id=1546205012]
 layout_mode = 2
-button_pressed = true
 text = "Bass"
 
 [node name="BassRect" type="TextureRect" parent="TrackMutes/Bass" unique_id=1380737018]
@@ -264,7 +261,6 @@ popup/item_2/id = 2
 
 [node name="Lead" type="CheckButton" parent="TrackMutes" unique_id=1724401529]
 layout_mode = 2
-button_pressed = true
 text = "Lead"
 
 [node name="LeadRect" type="TextureRect" parent="TrackMutes/Lead" unique_id=725022599]
