@@ -59,7 +59,7 @@ func start_song(from_position : float = 0.0):
 func load_song(song: SongData.Songs):
 	# TODO there is a perf spike when doing this, see if i can split up load_song over multiple frames via await
 	Log.print("[audio] load_song loading %s" % [str(SongData.SongNameForDisplay.values()[song])])
-	SongData.currentSong = Song.new(song, 136.0, 4) #TODO should not be hard coded values
+	SongData.currentSong = Song.new(song, SongData.SongBPM[song], 4)
 	stop()
 	
 	# Load audio + midi files for all tracks and levels

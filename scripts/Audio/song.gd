@@ -13,13 +13,13 @@ var song : SongData.Songs
 const ticks_per_beat := 960 # aka PPQN (pulse per quarter note), set in reaper midi export
 
 func _init(newSong : SongData.Songs, songBpm = 110.0, beatsPerMeasure = 4):
-	Log.print("[song] setting up song " + str(SongData.Songs.keys()[newSong]))
+	Log.print("[song] setting up song %s with bpm %d " % [str(SongData.Songs.keys()[newSong]), songBpm])
 	songTitle = str(SongData.Songs.keys()[newSong])
 	bpm = songBpm
 	ms_per_beat = 60000.0 / bpm
 	beats_per_measure = beatsPerMeasure
 	ms_per_measure = ms_per_beat * beatsPerMeasure
-	ms_per_tick = 60000 / (bpm * ticks_per_beat)
+	ms_per_tick = 60000.0 / (bpm * ticks_per_beat)
 	song = newSong
 	for track in TrackData.Tracks.values():
 		trackData.set(track, SongTrack.new(newSong, track, TrackData.Level.lv1)) #lv 1 default
