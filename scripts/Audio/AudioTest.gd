@@ -179,6 +179,12 @@ func _on_start_pause_pressed():
 		audio_node.resume()
 		start_pause_button.texture_normal = pause_texture
 
+func _on_start_pause_mouse_entered():
+	start_pause_button.modulate = Color(0.671, 0.78, 0.871)
+
+func _on_start_pause_mouse_exited():
+	start_pause_button.modulate = Color(1.0, 1.0, 1.0)
+
 func _handle_fancy_title_colors(trackType : TrackData.Tracks, enable : bool):
 	# doing parsing for fun
 	var finalString = ""
@@ -250,8 +256,7 @@ func _ready():
 	for i in $SongChoiceControl/SongChoice.item_count:
 		$SongChoiceControl/SongChoice.remove_item(i)
 	for song in SongData.Songs.values():
-		if SongData.SongNameForDisplay.has(song):
-			$SongChoiceControl/SongChoice.add_item(SongData.SongNameForDisplay[song]) # may want to specify id here
+		$SongChoiceControl/SongChoice.add_item(SongData.get_song_display_string(song)) # may want to specify id here
 	
 	# Load initial song
 	audio_node.load_song(SongData.Songs.testsong)

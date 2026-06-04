@@ -53,13 +53,14 @@ func start_song(from_position : float = 0.0):
 	paused_for_ms = 0.0
 	# start MIDI processing clock if we are starting from beginning
 	for track in TrackData.Tracks.values():
-		Log.print("[audio] Starting midi for %s at %s" % [str(TrackData.Tracks.keys()[track]), str(Time.get_ticks_msec())])
-		SongData.currentSong.trackData[track].MidiProcess = {"start_time": Time.get_ticks_msec(), "delta_tick": 0, "event_index": 0}
+		Log.print("[audio] Starting midi for %s at %s" % [str(TrackData.Tracks.keys()[track]), str(song_start)])
+		SongData.currentSong.trackData[track].MidiProcess = {"start_time": song_start, "delta_tick": 0, "event_index": 0}
 
 func load_song(song: SongData.Songs):
+	paused_for_ms = 0.0 # clear to prevent negative elapsed_ms
 	# TODO there is a perf spike when doing this, see if i can split up load_song over multiple frames via await
-	Log.print("[audio] load_song loading %s" % [str(SongData.SongNameForDisplay.values()[song])])
-	SongData.currentSong = Song.new(song, SongData.SongBPM[song], 4)
+	Log.print("[audio] load_song loading %s" % [SongData.get_song_display_string(song)])
+	SongData.currentSong = Song.new(song, SongData.get_song_bpm(song), 4)
 	stop()
 	
 	# Load audio + midi files for all tracks and levels
@@ -242,7 +243,6 @@ func _resume_at(playback_pos: float):
 func _midi_process():
 	var songInfo = SongData.currentSong
 	var ms_per_tick = songInfo.ms_per_tick
-	var now = Time.get_ticks_msec()
 	
 	if not playing:
 		# early out if there's no audio playing
@@ -256,7 +256,8 @@ func _midi_process():
 			#TODO find proper fix for this
 			Log.print("[MidiProcess] WARNING a track's MidiProcess is empty. This might just be in between loading so it may not acutally be an issue")
 			track.MidiProcess = {"start_time": Time.get_ticks_msec(), "delta_tick": 0, "event_index": 0}
-		assert(now >= track.MidiProcess.start_time, "[MidiProcess] now < MidiProcess.start_time resulting in negative delta_ticks")
+		var now = Time.get_ticks_msec()
+		assert(now >= track.MidiProcess.start_time, "[MidiProcess] now (%f) < MidiProcess.start_time (%f) resulting in negative delta_ticks" % [now, track.MidiProcess.start_time])
 		var elapsed_ms = now - track.MidiProcess.start_time - paused_for_ms
 		assert(elapsed_ms >= 0.0, "[MidiProcess] elapsed time should not be negative. elapsed_ms: %s = %s - %s - %s" % [str(elapsed_ms), str(now), str(track.MidiProcess.start_time), str(paused_for_ms)])
 		var delta_ticks = float(elapsed_ms) / ms_per_tick if ms_per_tick > 0 else 0
@@ -304,7 +305,7 @@ func _process(delta):
 		Log.print("[audio] currentSong not setup in SongData")
 		return
 	
-	if not playing:
+	if not playing and stream_paused == true:
 		if paused_at > 0.0:
 			paused_for_ms += delta * 1000
 			#TODO might want to 'if OS.is_debug_build()' this and update_debug_info call at end of func
@@ -323,12 +324,13 @@ func _process(delta):
 		Log.print("[audio] Measure %d Loop %d - program time %d, playback time %sms = %fs + %fs" % \
 		[ current_measure, current_loop, now, str(loop_playback_ms), playback_position, time_since_last_mix ])
 		
-	#check if we've looped around from last measure MEASURE_PER_LOOP to first
-	if current_measure >= SongData.MEASURE_PER_LOOP and measure == 1:
+	#check if we've looped around from last measure to first
+	var measure_per_loop = SongData.get_song_measure_per_loop(SongData.currentSong.song)
+	if current_measure >= measure_per_loop and measure == 1:
 		current_loop += 1
 		current_measure = 1
 		Log.print("[audio] Now on loop %d" % [current_loop])
-		var calculated_loop_end = song_start + (current_loop * SongData.MEASURE_PER_LOOP * SongData.currentSong.ms_per_measure)
+		var calculated_loop_end = song_start + (current_loop * measure_per_loop * SongData.currentSong.ms_per_measure)
 		var offset = calculated_loop_end - now # TODO reasses if offset is necessary, it was causing problems with midi looping
 		end_of_loop.emit(current_loop, offset)
 	

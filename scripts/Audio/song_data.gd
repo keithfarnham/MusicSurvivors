@@ -2,45 +2,27 @@ extends Node
 
 var currentSong : Song
 
-const MEASURE_PER_LOOP := 8 # This is consistent between songs for now, but could be set per song later on
-
 enum Songs {
 	testsong,
 	AnotherAudioAdventure,
-	BreakingBreath
+	BreakingBreath,
+	CosmicChill
 	}
 
-var SongNameForDisplay = {
-	Songs.testsong : "Test Song",
-	Songs.AnotherAudioAdventure : "Another Audio Adventure",
-	Songs.BreakingBreath : "Breaking Breath"
+var song_data := {
+	# Songs.Enum: [Display String, BPM, Measure Per Loop]
+	Songs.testsong: ["Test Song", 136.0, 8],
+	Songs.AnotherAudioAdventure: ["Another Audio Adventure", 136.0, 8],
+	Songs.BreakingBreath: ["Breaking Breath", 146.0, 8],
+	Songs.CosmicChill: ["Cosmic Chill", 121.0, 16]
+
 }
 
-var SongBPM = {
-	Songs.testsong : 136,
-	Songs.AnotherAudioAdventure : 136,
-	Songs.BreakingBreath : 146
-}
+func get_song_display_string(song : Songs):
+	return song_data[song][0]
 
-#var TrackAudioForLevel = {
-	#Tracks.KICK: {Level.lv1: "", Level.lv2: "", Level.lv3: ""},
-	#Tracks.SNARE: {Level.lv1: "", Level.lv2: "", Level.lv3: ""},
-	#Tracks.CYMB: {Level.lv1: "", Level.lv2: "", Level.lv3: ""},
-	#Tracks.SAMPLE: {Level.lv1: "", Level.lv2: "", Level.lv3: ""},
-	#Tracks.BASS: {Level.lv1: "", Level.lv2: "", Level.lv3: ""},
-	#Tracks.LEAD: {Level.lv1: "", Level.lv2: "", Level.lv3: ""},
-	#Tracks.ARP: {Level.lv1: "", Level.lv2: "", Level.lv3: ""},
-	#Tracks.CHORD: {Level.lv1: "", Level.lv2: "", Level.lv3: ""}
-#}
+func get_song_bpm(song : Songs):
+	return song_data[song][1]
 
-#var song_data := {
-	#Songs.testsong: Song.new(Songs.testsong, "testsong", 136.0, 4),
-	#Songs.testsong2: Song.new(Songs.testsong2, "testsong2", 140.0, 4)
-	##songs.brango4: Song.new("brango4", 187.0, 4),
-	##songs.lostinspace1: Song.new("lostinspace1", 77.0, 3)
-#}
-#var song_data = {}
-
-#func _ready():
-	#song_data.set(Songs.testsong, Song.new(Songs.testsong, "testsong", 136.0, 4))
-	#song_data.set(Songs.testsong2, Song.new(Songs.testsong2, "testsong2", 140.0, 4))
+func get_song_measure_per_loop(song : Songs):
+	return song_data[song][2]
