@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://cdejuklv6ntfh" path="res://scripts/Audio/AudioTest.gd" id="1_cmrro"]
 [ext_resource type="PackedScene" uid="uid://6gam6irvv1ji" path="res://scenes/BackgroundViewport.tscn" id="2_4mtf6"]
 [ext_resource type="PackedScene" uid="uid://xea7vhfq8eq7" path="res://scenes/AudioController.tscn" id="2_qn2mr"]
+[ext_resource type="Texture2D" uid="uid://dhiee4dgtmg17" path="res://sprites/play.png" id="4_1l0cp"]
 
 [sub_resource type="Gradient" id="Gradient_hwf88"]
 offsets = PackedFloat32Array(0.6938776, 1)
@@ -58,13 +59,6 @@ colors = PackedColorArray(0.8627451, 0.34117648, 0.07450981, 1, 1, 1, 1, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_dbhed"]
 gradient = SubResource("Gradient_j11na")
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_qn2mr"]
-load_path = "res://.godot/imported/playpause.png-f706be5a2d1f711f0ac97150bbef9eb4.ctex"
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_1l0cp"]
-atlas = SubResource("CompressedTexture2D_qn2mr")
-region = Rect2(0, 0, 32, 32)
 
 [node name="AudioTest" type="Control" unique_id=1743367705]
 layout_mode = 3
@@ -354,7 +348,7 @@ anchor_bottom = 0.6666667
 offset_right = -16.0
 offset_bottom = -16.0
 scale = Vector2(1.5, 1.5)
-texture_normal = SubResource("AtlasTexture_1l0cp")
+texture_normal = ExtResource("4_1l0cp")
 metadata/_edit_use_anchors_ = true
 
 [node name="RandomizeLevels" type="Button" parent="." unique_id=1707769519]
