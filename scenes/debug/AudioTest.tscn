@@ -1,0 +1,170 @@
+[gd_scene format=3 uid="uid://ck33t0yhvn2ie"]
+
+[ext_resource type="Script" uid="uid://cdejuklv6ntfh" path="res://scripts/Audio/AudioTest.gd" id="1_735n5"]
+[ext_resource type="PackedScene" uid="uid://6gam6irvv1ji" path="res://scenes/BackgroundViewport.tscn" id="2_7np5s"]
+[ext_resource type="PackedScene" uid="uid://xea7vhfq8eq7" path="res://scenes/AudioController.tscn" id="3_8uw7v"]
+[ext_resource type="Texture2D" uid="uid://dhiee4dgtmg17" path="res://sprites/play.png" id="4_ebxs4"]
+[ext_resource type="PackedScene" uid="uid://dfy78x6o87cb3" path="res://scenes/debug/DebugTrackOptions.tscn" id="5_3jiaw"]
+
+[node name="AudioTest" type="Control" unique_id=1743367705]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_735n5")
+
+[node name="BigText" type="RichTextLabel" parent="." unique_id=641692113]
+texture_filter = 2
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.8
+anchor_bottom = 0.22222222
+bbcode_enabled = true
+text = "[color=white]A[/color] [color=white] U [color=white] D [color=white] I [color=white] O [color=white] T [color=white] E [color=white] S [color=white] T"
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1
+justification_flags = 162
+metadata/_edit_use_anchors_ = true
+
+[node name="Background" type="Control" parent="." unique_id=802830520]
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SubViewportContainer" parent="Background" unique_id=986253039 instance=ExtResource("2_7np5s")]
+layout_mode = 1
+
+[node name="AudioController" parent="." unique_id=651702734 groups=["AudioController"] instance=ExtResource("3_8uw7v")]
+
+[node name="StartPause" type="TextureButton" parent="." unique_id=883685089]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.625
+anchor_top = 0.4
+anchor_right = 0.775
+anchor_bottom = 0.6666667
+offset_right = -16.0
+offset_bottom = -16.0
+scale = Vector2(1.5, 1.5)
+texture_normal = ExtResource("4_ebxs4")
+metadata/_edit_use_anchors_ = true
+
+[node name="RandomizeLevels" type="Button" parent="." unique_id=1707769519]
+texture_filter = 2
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.025
+anchor_top = 0.75555557
+anchor_right = 0.2
+anchor_bottom = 0.9777778
+theme_override_font_sizes/font_size = 8
+text = "Randomize Track Levels"
+autowrap_mode = 3
+
+[node name="RandomizeActiveTracks" type="Button" parent="." unique_id=418366545]
+texture_filter = 2
+layout_mode = 0
+offset_left = 72.0
+offset_top = 136.0
+offset_right = 136.0
+offset_bottom = 176.0
+theme_override_font_sizes/font_size = 8
+text = "Randomize Active Tracks"
+autowrap_mode = 3
+
+[node name="AllMuteLv" type="HBoxContainer" parent="." unique_id=1162833801]
+texture_filter = 2
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.025
+anchor_top = 0.62222224
+anchor_right = 0.2015625
+anchor_bottom = 0.7111111
+offset_right = 56.5
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.5, 0.5)
+theme_override_constants/separation = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="AllMute" type="CheckButton" parent="AllMuteLv" unique_id=452773726]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/h_separation = 0
+theme_override_font_sizes/font_size = 8
+text = "Set All"
+
+[node name="AllLv" type="OptionButton" parent="AllMuteLv" unique_id=1905394569]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 8
+theme_override_constants/arrow_margin = 4
+selected = 0
+item_count = 3
+popup/item_0/text = "lv1"
+popup/item_0/id = 0
+popup/item_1/text = "lv2"
+popup/item_1/id = 1
+popup/item_2/text = "lv3"
+popup/item_2/id = 2
+
+[node name="SongChoiceControl" type="HBoxContainer" parent="." unique_id=366748602]
+texture_filter = 2
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.425
+anchor_top = 0.8226945
+anchor_right = 0.990625
+anchor_bottom = 0.97825
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_constants/separation = 1
+
+[node name="SongChoiceLabel" type="RichTextLabel" parent="SongChoiceControl" unique_id=1720257533]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 10
+text = "Song:"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="SongChoice" type="OptionButton" parent="SongChoiceControl" unique_id=485371660]
+layout_mode = 2
+theme_override_font_sizes/font_size = 8
+selected = 0
+item_count = 1
+popup/item_0/text = "THIS IS THE LONGEST POSSIBLE"
+popup/item_0/id = 0
+
+[node name="TrackOptions" parent="." unique_id=499712253 instance=ExtResource("5_3jiaw")]
+layout_mode = 1
+anchor_left = 0.003125
+anchor_top = 0.23333333
+anchor_right = 0.5015625
+anchor_bottom = 0.62222224
+offset_right = 159.5
+offset_bottom = 69.99999
+grow_horizontal = 1
+grow_vertical = 1
+
+[connection signal="mouse_entered" from="StartPause" to="." method="_on_start_pause_mouse_entered"]
+[connection signal="mouse_exited" from="StartPause" to="." method="_on_start_pause_mouse_exited"]
+[connection signal="pressed" from="StartPause" to="." method="_on_start_pause_pressed"]
+[connection signal="pressed" from="RandomizeLevels" to="." method="_on_randomize_levels_pressed"]
+[connection signal="pressed" from="RandomizeActiveTracks" to="." method="_on_randomize_active_tracks_pressed"]
+[connection signal="toggled" from="AllMuteLv/AllMute" to="." method="_on_all_mute_toggled"]
+[connection signal="item_selected" from="AllMuteLv/AllLv" to="." method="_on_all_lv_item_selected"]
+[connection signal="item_selected" from="SongChoiceControl/SongChoice" to="." method="_on_song_choice_item_selected"]

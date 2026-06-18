@@ -1,0 +1,131 @@
+[gd_scene format=3 uid="uid://cal4d5c72wllu"]
+
+[ext_resource type="Script" uid="uid://b55t3ol6xw0og" path="res://scripts/Debug/debug_tools.gd" id="1_oyoff"]
+[ext_resource type="PackedScene" uid="uid://dfy78x6o87cb3" path="res://scenes/debug/DebugTrackOptions.tscn" id="2_gmcvr"]
+
+[node name="DebugDisplay" type="CanvasLayer" unique_id=790191721]
+scale = Vector2(0.5, 0.5)
+transform = Transform2D(0.5, 0, 0, 0.5, 0, 0)
+
+[node name="DebugInfo" type="Control" parent="." unique_id=1007736110]
+layout_mode = 3
+anchor_left = 1.64375
+anchor_top = 0.022222223
+anchor_right = 1.9984375
+anchor_bottom = 1.3333334
+grow_horizontal = 0
+script = ExtResource("1_oyoff")
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxLabels" type="VBoxContainer" parent="DebugInfo" unique_id=223035306]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.52863437
+anchor_bottom = 0.30508474
+theme_override_constants/separation = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="SongStartLabel" type="RichTextLabel" parent="DebugInfo/VBoxLabels" unique_id=521804904]
+custom_minimum_size = Vector2(60, 12)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 8
+text = "Song Start: "
+
+[node name="ProgramTimeLabel" type="RichTextLabel" parent="DebugInfo/VBoxLabels" unique_id=1284827399]
+custom_minimum_size = Vector2(60, 12)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 8
+text = "Program Time:"
+
+[node name="AudioPlaybackTimeLabel" type="RichTextLabel" parent="DebugInfo/VBoxLabels" unique_id=922335193]
+custom_minimum_size = Vector2(60, 12)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 8
+text = "Playback Time:"
+
+[node name="LoopCountLabel" type="RichTextLabel" parent="DebugInfo/VBoxLabels" unique_id=925711429]
+custom_minimum_size = Vector2(60, 12)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 8
+text = "Loop: "
+
+[node name="MeasureCountLabel" type="RichTextLabel" parent="DebugInfo/VBoxLabels" unique_id=1617356487]
+custom_minimum_size = Vector2(60, 12)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 8
+text = "Measure: "
+
+[node name="PausedTimeLabel" type="RichTextLabel" parent="DebugInfo/VBoxLabels" unique_id=473260747]
+custom_minimum_size = Vector2(60, 12)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 8
+text = "Paused Time:"
+
+[node name="VBoxValues" type="VBoxContainer" parent="DebugInfo" unique_id=1013778956]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5462555
+anchor_right = 0.9162996
+anchor_bottom = 0.30508474
+theme_override_constants/separation = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="SongStartValue" type="RichTextLabel" parent="DebugInfo/VBoxValues" unique_id=656652040]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 8
+text = "0.0"
+
+[node name="ProgramTimeValue" type="RichTextLabel" parent="DebugInfo/VBoxValues" unique_id=259746974]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 8
+text = "00000.0"
+metadata/_edit_use_anchors_ = true
+
+[node name="AudioPlaybackValue" type="RichTextLabel" parent="DebugInfo/VBoxValues" unique_id=245800298]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 8
+text = "00000.00"
+metadata/_edit_use_anchors_ = true
+
+[node name="LoopCountValue" type="RichTextLabel" parent="DebugInfo/VBoxValues" unique_id=1942659738]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 8
+text = "0"
+
+[node name="MeasureCountValue" type="RichTextLabel" parent="DebugInfo/VBoxValues" unique_id=2041093237]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 8
+text = "0"
+
+[node name="PausedTimeValue" type="RichTextLabel" parent="DebugInfo/VBoxValues" unique_id=1395755648]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 8
+text = "0.0"
+
+[node name="LoopProgress" type="ProgressBar" parent="DebugInfo" unique_id=25699313]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01762101
+anchor_top = 0.30508474
+anchor_right = 0.986784
+anchor_bottom = 0.37288135
+show_percentage = false
+metadata/_edit_use_anchors_ = true
+
+[node name="TrackOptions" parent="DebugInfo" unique_id=499712253 instance=ExtResource("2_gmcvr")]
+layout_mode = 1
+anchor_left = 0.017621145
+anchor_top = 0.3898305
+anchor_right = 0.95154184
+anchor_bottom = 0.9830508
+offset_right = 106.0
+offset_bottom = 140.0
+grow_horizontal = 1
+grow_vertical = 1
+columns = 2

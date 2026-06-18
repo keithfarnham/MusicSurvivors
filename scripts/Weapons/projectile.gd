@@ -37,12 +37,13 @@ var falloff_distance : float
 var homing_enabled : bool = false
 var homing_power : float = 1.0
 
-var path : Path2D #TODO investigate
+var path : Path2D #TODO investigate for more complicated bullet pathing
 
 var state : ProjectileState
 
 func _set_state(newState : ProjectileState):
 	Log.print("[projectile] setting state from %s to %s" % [ str(ProjectileState.keys()[state]), str(ProjectileState.keys()[newState]) ])
+	state = newState
 
 func _get_distance(pos1 : Vector2, pos2 : Vector2) -> float:
 	return sqrt( pow(pos2.x - pos1.x, 2) + pow(pos2.y - pos1.y, 2) )
@@ -66,7 +67,7 @@ func _on_projectile_falloff():
 
 func _on_projectile_despawn():
 	# stuff to do when the projectile is gonna disappear (explosion effects, shooting other projectiles, etc.)
-	Log.print("[projectile] removing " + str(name))
+	#Log.print("[projectile] removing " + str(name))
 	queue_free()
 #endregion
 	

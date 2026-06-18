@@ -10,7 +10,8 @@ class_name ProjectileSpawner
 @abstract func spawn_projectiles()
 
 func get_nearest_target_pos() -> Vector2:
-	return get_nearest_enemy().position
+	var nearest_enemy = get_nearest_enemy()
+	return Vector2(0, 0) if nearest_enemy == null else nearest_enemy.position
 	
 #func get_nearest_target_pos_with_lead() -> Vector2:
 	## does get_nearest_target_pos() but adds a lead to the shot based on the enemy's movement

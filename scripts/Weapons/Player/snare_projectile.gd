@@ -16,4 +16,4 @@ func _physics_process(delta):
 
 func _on_projectile_spawn():
 	super()
-	print("_on_projectile_spawn override hit")
+	#print("_on_projectile_spawn override hit")

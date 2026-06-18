@@ -7,16 +7,38 @@ extends Control
 @onready var measure_count_text = $VBoxValues/MeasureCountValue
 @onready var paused_time_text = $VBoxValues/PausedTimeValue
 
-@onready var kick_toggle = $TrackMutes/Kick
-@onready var snare_toggle = $TrackMutes/Snare
-@onready var cymb_toggle = $TrackMutes/Cymb
-@onready var sample_toggle = $TrackMutes/Sample
-@onready var bass_toggle = $TrackMutes/Bass
-@onready var lead_toggle = $TrackMutes/Lead
-@onready var arp_toggle = $TrackMutes/Arp
-@onready var chord_toggle = $TrackMutes/Chord
+#region Debug Event Handlers
+@onready var kick_display = $TrackOptions/Kick/KickRect
+@onready var snare_display = $TrackOptions/Snare/SnareRect
+@onready var cymb_display = $TrackOptions/Cymb/CymbRect
+@onready var sample_display = $TrackOptions/Sample/SampleRect
+@onready var bass_display = $TrackOptions/Bass/BassRect
+@onready var lead_display = $TrackOptions/Lead/LeadRect
+@onready var arp_display = $TrackOptions/Arp/ArpRect
+@onready var chord_display = $TrackOptions/Chord/ChordRect
 
-var mute_toggles = {}
+# UI element references
+@onready var kick_toggle = $TrackOptions/Kick
+@onready var snare_toggle = $TrackOptions/Snare
+@onready var cymb_toggle = $TrackOptions/Cymb
+@onready var sample_toggle = $TrackOptions/Sample
+@onready var bass_toggle = $TrackOptions/Bass
+@onready var lead_toggle = $TrackOptions/Lead
+@onready var arp_toggle = $TrackOptions/Arp
+@onready var chord_toggle = $TrackOptions/Chord
+
+# Level selectors
+@onready var kick_lv = $TrackOptions/KickLv as OptionButton
+@onready var snare_lv = $TrackOptions/SnareLv as OptionButton
+@onready var cymb_lv = $TrackOptions/CymbLv as OptionButton
+@onready var sample_lv = $TrackOptions/SampleLv as OptionButton
+@onready var bass_lv = $TrackOptions/BassLv as OptionButton
+@onready var lead_lv = $TrackOptions/LeadLv as OptionButton
+@onready var arp_lv = $TrackOptions/ArpLv as OptionButton
+@onready var chord_lv = $TrackOptions/ChordLv as OptionButton
+#endregion
+
+var setup_complete := false
 
 func update_debug_info(programTime : float, loopPlaybackTime : float, songStart : float, loopCount : int, measureCount : int, pausedTime : float):
 	program_time_text.text = str(programTime)
@@ -32,37 +54,39 @@ func update_paused_info(pausedTime : float):
 	paused_time_text.text = str(snapped(pausedTime, 0.01))
 
 func _on_kick_toggled(toggled_on):
-	find_parent("AudioController").set_track_active(TrackData.Tracks.KICK, toggled_on)
+	get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.KICK, toggled_on)
 
 func _on_snare_toggled(toggled_on):
-	find_parent("AudioController").set_track_active(TrackData.Tracks.SNARE, toggled_on)
+	get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.SNARE, toggled_on)
 
 func _on_cymb_toggled(toggled_on):
-	find_parent("AudioController").set_track_active(TrackData.Tracks.CYMB, toggled_on)
+	get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.CYMB, toggled_on)
 
 func _on_sample_toggled(toggled_on):
-	find_parent("AudioController").set_track_active(TrackData.Tracks.SAMPLE, toggled_on)
+	get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.SAMPLE, toggled_on)
 
 func _on_bass_toggled(toggled_on):
-	find_parent("AudioController").set_track_active(TrackData.Tracks.BASS, toggled_on)
+	get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.BASS, toggled_on)
 
 func _on_lead_toggled(toggled_on):
-	find_parent("AudioController").set_track_active(TrackData.Tracks.LEAD, toggled_on)
+	get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.LEAD, toggled_on)
 
 func _on_arp_toggled(toggled_on):
-	find_parent("AudioController").set_track_active(TrackData.Tracks.ARP, toggled_on)
+	get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.ARP, toggled_on)
 
 func _on_chord_toggled(toggled_on):
-	find_parent("AudioController").set_track_active(TrackData.Tracks.CHORD, toggled_on)
+	get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.CHORD, toggled_on)
+	
+func _process(delta):
+	# this is done in process because I have to wait for the AudioController to instantiate
+	var audio_node = get_tree().get_first_node_in_group("AudioController") as AudioController
+	var player_node = get_tree().get_first_node_in_group("Player")
+	if not setup_complete and audio_node != null and player_node != null:
+		setup_complete = true
+		audio_node.track_toggled.connect(_on_track_toggled)
+		for track in TrackData.Tracks.values():
+			$TrackOptions.mute_toggles[track].button_pressed = player_node.is_weapon_active(track)
 
-func _ready():
-	mute_toggles = {
-		TrackData.Tracks.KICK: kick_toggle,
-		TrackData.Tracks.SNARE: snare_toggle,
-		TrackData.Tracks.CYMB: cymb_toggle,
-		TrackData.Tracks.SAMPLE: sample_toggle,
-		TrackData.Tracks.BASS: bass_toggle,
-		TrackData.Tracks.LEAD: lead_toggle,
-		TrackData.Tracks.ARP: arp_toggle,
-		TrackData.Tracks.CHORD: chord_toggle,
-	}
+func _on_track_toggled(track, is_enabled):
+	Log.print("[DebugTools] %s Toggled %s " % [ str(TrackData.Tracks.keys()[track]), "enabled" if is_enabled else "disabled" ] )
+	#mute_toggles[track].button_pressed = is_enabled

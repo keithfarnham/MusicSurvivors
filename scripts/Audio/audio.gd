@@ -25,6 +25,7 @@ const songFolder = "res://songs/"
 
 signal end_of_loop(loop)
 signal midi_event(track)
+signal track_toggled(track, isEnabled)
 
 func pause():
 	playback_time_sec = get_playback_position() + AudioServer.get_time_since_last_mix()
@@ -93,9 +94,10 @@ func set_track_active(track : TrackData.Tracks, is_enabled : bool):
 	track_active.set(track, is_enabled)
 	stream.set_sync_stream_volume(track, 0 if is_enabled else -80)
 	
-	if OS.is_debug_build():
-		# debug only setup for mute toggles
-		$CanvasLayer/DebugInfo.mute_toggles[track].button_pressed = is_enabled
+	track_toggled.emit(track, is_enabled)
+	#if OS.is_debug_build():
+		## debug only setup for mute toggles
+		#$DebugDisplay/DebugInfo.mute_toggles[track].button_pressed = is_enabled
 	
 func is_track_active(track : TrackData.Tracks) -> bool:
 	return track_active.get(track)

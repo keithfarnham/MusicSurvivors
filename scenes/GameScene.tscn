@@ -6,11 +6,12 @@
 [ext_resource type="PackedScene" uid="uid://yxccevfb407i" path="res://scenes/Enemy1.tscn" id="3_cxv17"]
 [ext_resource type="PackedScene" uid="uid://xea7vhfq8eq7" path="res://scenes/AudioController.tscn" id="5_7s5hy"]
 [ext_resource type="PackedScene" uid="uid://bowa3juik316y" path="res://scenes/PlayerUI.tscn" id="6_xs4ih"]
+[ext_resource type="PackedScene" uid="uid://cal4d5c72wllu" path="res://scenes/debug/DebugDisplay.tscn" id="7_6ytau"]
 
 [node name="Game" type="Node2D" unique_id=1367614656]
 script = ExtResource("1_xs4ih")
 
-[node name="AudioController" parent="." unique_id=651702734 instance=ExtResource("5_7s5hy")]
+[node name="AudioController" parent="." unique_id=651702734 groups=["AudioController"] instance=ExtResource("5_7s5hy")]
 
 [node name="PlayerUI" parent="." unique_id=1938607081 instance=ExtResource("6_xs4ih")]
 
@@ -38,3 +39,5 @@ position = Vector2(-7, 4)
 scale = Vector2(0.75, 0.75)
 
 [node name="Projectiles" type="Node" parent="." unique_id=633507272]
+
+[node name="DebugDisplay" parent="." unique_id=790191721 instance=ExtResource("7_6ytau")]

@@ -7,7 +7,7 @@ var current_levels = {}  # selected level for each track
 
 func _ready():
 	# right now this is setup as follows:
-	# player sets weapon as active -> 
+	# player sets weapons as active -> 
 	# this (game_controller) sets the audio track active based on the active weapons on the player -> 
 	# audio pushes events to player to trigger weapon
 	#TODO cut out middle man here and have player directly set audio tracks active?

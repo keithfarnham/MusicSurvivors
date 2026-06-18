@@ -1,9 +1,8 @@
 extends Weapon
 
-class_name Sample
+class_name Arp
 
-# TODO sample weapon has a zone that orbits player, moving 90 degrees around the player each trigger
-# zone can scale with area
+# TODO arp weapon
 
 func trigger_weapon():
 	Log.print("[%s] triggering" % [str(TrackData.Tracks.keys()[track])])

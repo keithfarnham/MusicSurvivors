@@ -6,6 +6,11 @@
 [ext_resource type="PackedScene" uid="uid://fosyj45yykcs" path="res://scenes/attacks/kick.tscn" id="4_hwioa"]
 [ext_resource type="PackedScene" uid="uid://dll0qttr7dhpn" path="res://scenes/attacks/snare.tscn" id="5_b4xdg"]
 [ext_resource type="PackedScene" uid="uid://bx6147dclp3e6" path="res://scenes/attacks/cymb.tscn" id="6_qxfha"]
+[ext_resource type="PackedScene" uid="uid://bnjla43osrf30" path="res://scenes/attacks/sample.tscn" id="7_cw2d6"]
+[ext_resource type="PackedScene" uid="uid://eybrsg3mpa4q" path="res://scenes/attacks/lead.tscn" id="8_d3wef"]
+[ext_resource type="PackedScene" uid="uid://bbf16o0bpcgun" path="res://scenes/attacks/bass.tscn" id="9_o4126"]
+[ext_resource type="PackedScene" uid="uid://djyuo7ghiehpg" path="res://scenes/attacks/arp.tscn" id="10_lkdrv"]
+[ext_resource type="PackedScene" uid="uid://chpsj0dmhbs7i" path="res://scenes/attacks/chord.tscn" id="11_p7iby"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_vdp4a"]
 radius = 1.0
@@ -43,6 +48,16 @@ shape = SubResource("RectangleShape2D_b4xdg")
 [node name="snare" parent="attacks" unique_id=1938818084 groups=["attack"] instance=ExtResource("5_b4xdg")]
 
 [node name="cymb" parent="attacks" unique_id=284221930 instance=ExtResource("6_qxfha")]
+
+[node name="sample" parent="attacks" unique_id=405191859 instance=ExtResource("7_cw2d6")]
+
+[node name="bass" parent="attacks" unique_id=2081952260 instance=ExtResource("9_o4126")]
+
+[node name="lead" parent="attacks" unique_id=1821741322 instance=ExtResource("8_d3wef")]
+
+[node name="arp" parent="attacks" unique_id=1277362349 instance=ExtResource("10_lkdrv")]
+
+[node name="chord" parent="attacks" unique_id=1551177728 instance=ExtResource("11_p7iby")]
 
 [connection signal="hurt" from="playerHurtbox" to="." method="_on_hurtbox_hurt"]
 
