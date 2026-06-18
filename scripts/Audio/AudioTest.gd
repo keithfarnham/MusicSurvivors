@@ -38,7 +38,6 @@ extends Control
 
 # Current song being played
 var current_levels = {}  # selected level for each track
-#var track_muted = {} # is track muted
 var mute_toggles = {}
 var lvl_selectors = {}
 
@@ -202,7 +201,7 @@ func _handle_fancy_title_colors(trackType : TrackData.Tracks, enable : bool):
 	$BigText.text = finalString
 
 func _trigger_display(trackType):
-	_handle_fancy_title_colors(trackType, true) #TODO finish setting this up
+	_handle_fancy_title_colors(trackType, true)
 	if trackType in display_map.keys() and display_map[trackType]:
 		# show display and start timer
 		display_map[trackType].visible = true

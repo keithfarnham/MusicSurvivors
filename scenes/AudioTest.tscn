@@ -5,60 +5,60 @@
 [ext_resource type="PackedScene" uid="uid://xea7vhfq8eq7" path="res://scenes/AudioController.tscn" id="2_qn2mr"]
 [ext_resource type="Texture2D" uid="uid://dhiee4dgtmg17" path="res://sprites/play.png" id="4_1l0cp"]
 
-[sub_resource type="Gradient" id="Gradient_hwf88"]
+[sub_resource type="Gradient" id="Gradient_1l0cp"]
 offsets = PackedFloat32Array(0.6938776, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_4wgqe"]
-gradient = SubResource("Gradient_hwf88")
+gradient = SubResource("Gradient_1l0cp")
 
-[sub_resource type="Gradient" id="Gradient_4wgqe"]
+[sub_resource type="Gradient" id="Gradient_4mtf6"]
 offsets = PackedFloat32Array(0.82653064, 1)
 colors = PackedColorArray(0, 0, 0.36078432, 1, 1, 1, 1, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_dagca"]
-gradient = SubResource("Gradient_4wgqe")
+gradient = SubResource("Gradient_4mtf6")
 
-[sub_resource type="Gradient" id="Gradient_dagca"]
+[sub_resource type="Gradient" id="Gradient_3nf8r"]
 offsets = PackedFloat32Array(0.75510204, 1)
 colors = PackedColorArray(0.21176471, 0, 0, 1, 1, 1, 1, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_wi0h7"]
-gradient = SubResource("Gradient_dagca")
+gradient = SubResource("Gradient_3nf8r")
 
-[sub_resource type="Gradient" id="Gradient_wi0h7"]
+[sub_resource type="Gradient" id="Gradient_eqdc6"]
 offsets = PackedFloat32Array(0.89285713, 1)
 colors = PackedColorArray(0.35686275, 0.22352941, 0, 1, 1, 1, 1, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_jagq2"]
-gradient = SubResource("Gradient_wi0h7")
+gradient = SubResource("Gradient_eqdc6")
 
-[sub_resource type="Gradient" id="Gradient_aa4rq"]
+[sub_resource type="Gradient" id="Gradient_l44la"]
 offsets = PackedFloat32Array(0.7755102, 1)
 colors = PackedColorArray(0, 0.16078432, 0, 1, 1, 1, 1, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_xupkg"]
-gradient = SubResource("Gradient_aa4rq")
+gradient = SubResource("Gradient_l44la")
 
-[sub_resource type="Gradient" id="Gradient_kjiw2"]
+[sub_resource type="Gradient" id="Gradient_4ilkc"]
 offsets = PackedFloat32Array(0.86734694, 1)
 colors = PackedColorArray(0, 0.22352941, 0.25490198, 1, 1, 1, 1, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_exchb"]
-gradient = SubResource("Gradient_kjiw2")
+gradient = SubResource("Gradient_4ilkc")
 
-[sub_resource type="Gradient" id="Gradient_t7gpv"]
+[sub_resource type="Gradient" id="Gradient_ojecs"]
 offsets = PackedFloat32Array(0.8010204, 1)
 colors = PackedColorArray(6.858632e-07, 0.32853898, 0.21957022, 1, 1, 1, 1, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_lp530"]
-gradient = SubResource("Gradient_t7gpv")
+gradient = SubResource("Gradient_ojecs")
 
-[sub_resource type="Gradient" id="Gradient_j11na"]
+[sub_resource type="Gradient" id="Gradient_80sjn"]
 offsets = PackedFloat32Array(0.81122446, 1)
 colors = PackedColorArray(0.8627451, 0.34117648, 0.07450981, 1, 1, 1, 1, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_dbhed"]
-gradient = SubResource("Gradient_j11na")
+gradient = SubResource("Gradient_80sjn")
 
 [node name="AudioTest" type="Control" unique_id=1743367705]
 layout_mode = 3

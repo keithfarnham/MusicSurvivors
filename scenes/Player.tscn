@@ -3,9 +3,9 @@
 [ext_resource type="Texture2D" uid="uid://cexgh0xqjw6tg" path="res://sprites/Character/Player/goblin.png" id="1_f302p"]
 [ext_resource type="Script" uid="uid://drsopayjvluf7" path="res://scripts/player.gd" id="1_vdp4a"]
 [ext_resource type="PackedScene" uid="uid://ceokyxnjfscgk" path="res://scenes/Hurtbox.tscn" id="3_3lb1s"]
-[ext_resource type="PackedScene" uid="uid://fosyj45yykcs" path="res://scenes/attacks/Kick.tscn" id="4_hwioa"]
-[ext_resource type="PackedScene" uid="uid://dll0qttr7dhpn" path="res://scenes/attacks/Snare.tscn" id="5_b4xdg"]
-[ext_resource type="PackedScene" uid="uid://bx6147dclp3e6" path="res://scenes/attacks/Cymb.tscn" id="6_qxfha"]
+[ext_resource type="PackedScene" uid="uid://fosyj45yykcs" path="res://scenes/attacks/kick.tscn" id="4_hwioa"]
+[ext_resource type="PackedScene" uid="uid://dll0qttr7dhpn" path="res://scenes/attacks/snare.tscn" id="5_b4xdg"]
+[ext_resource type="PackedScene" uid="uid://bx6147dclp3e6" path="res://scenes/attacks/cymb.tscn" id="6_qxfha"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_vdp4a"]
 radius = 1.0

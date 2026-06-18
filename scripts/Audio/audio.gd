@@ -56,7 +56,7 @@ func start_song(from_position : float = 0.0):
 		Log.print("[audio] Starting midi for %s at %s" % [str(TrackData.Tracks.keys()[track]), str(song_start)])
 		SongData.currentSong.trackData[track].MidiProcess = {"start_time": song_start, "delta_tick": 0, "event_index": 0}
 
-func load_song(song: SongData.Songs):
+func load_song(song : SongData.Songs):
 	paused_for_ms = 0.0 # clear to prevent negative elapsed_ms
 	# TODO there is a perf spike when doing this, see if i can split up load_song over multiple frames via await
 	Log.print("[audio] load_song loading %s" % [SongData.get_song_display_string(song)])
@@ -66,10 +66,10 @@ func load_song(song: SongData.Songs):
 	# Load audio + midi files for all tracks and levels
 	_load_audio_for_song(song)
 	
-	# Load and play all tracks in sync
+	# Load all tracks in sync
 	_load_all_tracks_synced()
 
-func load_track_stream(track: TrackData.Tracks):
+func load_track_stream(track : TrackData.Tracks):
 	if track not in track_players:
 		return
 	
@@ -87,11 +87,18 @@ func load_track_stream(track: TrackData.Tracks):
 		Log.print("[audio] ERROR - No audio file found for track %d, level %d" % [track, level - 1])
 		stream = null
 
-func set_track_active(track: TrackData.Tracks, is_enabled: bool):
+func set_track_active(track : TrackData.Tracks, is_enabled : bool):
 	if track not in track_players:
 		return
 	track_active.set(track, is_enabled)
 	stream.set_sync_stream_volume(track, 0 if is_enabled else -80)
+	
+	if OS.is_debug_build():
+		# debug only setup for mute toggles
+		$CanvasLayer/DebugInfo.mute_toggles[track].button_pressed = is_enabled
+	
+func is_track_active(track : TrackData.Tracks) -> bool:
+	return track_active.get(track)
 	
 func set_track_level(track : TrackData.Tracks, level : TrackData.Level):
 	#update the track data

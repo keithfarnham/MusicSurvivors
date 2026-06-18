@@ -13,3 +13,7 @@ func _physics_process(delta):
 #func _init(newDmg : int, newPos : Vector2):
 	#damage = newDmg
 	#target_pos = newPos
+
+func _on_projectile_spawn():
+	super()
+	print("_on_projectile_spawn override hit")

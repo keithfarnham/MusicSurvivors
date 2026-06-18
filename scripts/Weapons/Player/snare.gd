@@ -15,6 +15,7 @@ func spawn_projectiles():
 	var damage = 1
 	var speed = 50.0
 	newInstance.initialize(damage, player.position, get_nearest_target_pos(), speed, Vector2.ZERO)
+	
 	# adding the projectiles as a child of the player makes them inherit movement from the parent.
 	# to avoid this there is a Projectile control node in the game scene
 	get_tree().current_scene.find_child("Projectiles").add_child(newInstance)
