@@ -41,7 +41,7 @@ var lvl_selectors = {}
 var display_map = {}
 var display_timers = {}
 
-signal pause_toggled(isPaused)
+signal active_toggled(isActive)
 
 #region Mute Toggles
 func _on_kick_toggled(toggled_on):
@@ -72,43 +72,42 @@ func _on_chord_toggled(toggled_on):
 #region Track level selectors
 func _on_kick_lv_item_selected(index):
 	current_levels[TrackData.Tracks.KICK] = index + 1 as TrackData.Level
-	pause_toggled.emit(true)
-	#start_pause_button.texture_normal = pause_texture
+	active_toggled.emit(false)
 	get_tree().get_first_node_in_group("AudioController").update_track_level(TrackData.Tracks.KICK, current_levels[TrackData.Tracks.KICK])
 
 func _on_snare_lv_item_selected(index):
 	current_levels[TrackData.Tracks.SNARE] = index + 1 as TrackData.Level
-	pause_toggled.emit(true)
+	active_toggled.emit(false)
 	get_tree().get_first_node_in_group("AudioController").update_track_level(TrackData.Tracks.SNARE, current_levels[TrackData.Tracks.SNARE])
 
 func _on_cymb_lv_item_selected(index):
 	current_levels[TrackData.Tracks.CYMB] = index + 1 as TrackData.Level
-	pause_toggled.emit(true)
+	active_toggled.emit(false)
 	get_tree().get_first_node_in_group("AudioController").update_track_level(TrackData.Tracks.CYMB, current_levels[TrackData.Tracks.CYMB])
 
 func _on_sample_lv_item_selected(index):
 	current_levels[TrackData.Tracks.SAMPLE] = index + 1 as TrackData.Level
-	pause_toggled.emit(true)
+	active_toggled.emit(false)
 	get_tree().get_first_node_in_group("AudioController").update_track_level(TrackData.Tracks.SAMPLE, current_levels[TrackData.Tracks.SAMPLE])
 
 func _on_bass_lv_item_selected(index):
 	current_levels[TrackData.Tracks.BASS] = index + 1 as TrackData.Level
-	pause_toggled.emit(true)
+	active_toggled.emit(false)
 	get_tree().get_first_node_in_group("AudioController").update_track_level(TrackData.Tracks.BASS, current_levels[TrackData.Tracks.BASS])
 
 func _on_lead_lv_item_selected(index):
 	current_levels[TrackData.Tracks.LEAD] = index + 1 as TrackData.Level
-	pause_toggled.emit(true)
+	active_toggled.emit(false)
 	get_tree().get_first_node_in_group("AudioController").update_track_level(TrackData.Tracks.LEAD, current_levels[TrackData.Tracks.LEAD])
 
 func _on_arp_lv_item_selected(index):
 	current_levels[TrackData.Tracks.ARP] = index + 1 as TrackData.Level
-	pause_toggled.emit(true)
+	active_toggled.emit(false)
 	get_tree().get_first_node_in_group("AudioController").update_track_level(TrackData.Tracks.ARP, current_levels[TrackData.Tracks.ARP])
 
 func _on_chord_lv_item_selected(index):
 	current_levels[TrackData.Tracks.CHORD] = index + 1 as TrackData.Level
-	pause_toggled.emit(true)
+	active_toggled.emit(false)
 	get_tree().get_first_node_in_group("AudioController").update_track_level(TrackData.Tracks.CHORD, current_levels[TrackData.Tracks.CHORD])
 #endregion
 
@@ -148,6 +147,7 @@ func _ready():
 	# Initialize current levels to lv1
 	for track in TrackData.Tracks.values():
 		current_levels[track] = TrackData.Level.lv1
+	
 	# Initialize display map
 	for track in display_map.keys():
 		if display_map[track]:

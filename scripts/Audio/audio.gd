@@ -2,7 +2,7 @@ extends AudioStreamPlayer
 
 class_name AudioController
 
-@onready var Debug = $CanvasLayer/DebugInfo
+@onready var Debug = $DebugDisplay/DebugInfo
 
 var current_measure : int = 1
 var current_loop : int = 1
@@ -10,6 +10,8 @@ var song_start : float = 0.0
 var playback_time_sec : float = 0.0
 var paused_at : float = 0.0
 var paused_for_ms : float = 0.0
+
+var audio_effect_length : float = 1.0
 
 var audioFiles = []
 var track_players = {}
@@ -21,6 +23,18 @@ var sync_stream = stream as AudioStreamSynchronized
 var loop_total = {}
 var last_loop_start_time = {}
 
+#auido effect vars
+var effect_type : AudioEffectType
+var effect_length_ms : float
+var effect_start_ms : float
+enum AudioEffectType {
+	NONE,
+	SLOWDOWN,
+	SPEEDUP,
+	REVERB,
+	CHORUS
+}
+
 const songFolder = "res://songs/"
 
 signal end_of_loop(loop)
@@ -28,12 +42,12 @@ signal midi_event(track)
 signal track_toggled(track, isEnabled)
 
 func pause():
+	_trigger_audio_effect(AudioEffectType.SLOWDOWN, 500.0)
 	playback_time_sec = get_playback_position() + AudioServer.get_time_since_last_mix()
 	paused_at = Time.get_ticks_msec()
-	stream_paused = true
-	stop()
 	
-func resume(): 
+func resume():
+	_trigger_audio_effect(AudioEffectType.SPEEDUP, 500.0)
 	stream_paused = false
 	start_song(playback_time_sec)
 
@@ -59,6 +73,7 @@ func start_song(from_position : float = 0.0):
 
 func load_song(song : SongData.Songs):
 	paused_for_ms = 0.0 # clear to prevent negative elapsed_ms
+	playback_time_sec = 0.0 # clear to prevent negative elaspsed_ms
 	# TODO there is a perf spike when doing this, see if i can split up load_song over multiple frames via await
 	Log.print("[audio] load_song loading %s" % [SongData.get_song_display_string(song)])
 	SongData.currentSong = Song.new(song, SongData.get_song_bpm(song), 4)
@@ -117,7 +132,8 @@ func update_track_level(track: TrackData.Tracks, level : TrackData.Level):
 	# Resume playback at the same position
 	Log.print("[audio] updating track - resuming at %ss = %s + %s" % [str(sync_pos), str(get_playback_position()), str(AudioServer.get_time_since_last_mix())])
 	$sfx/levelup.play() #TODO try out some different lv up sounds
-	call_deferred("_resume_at", sync_pos)
+	_resume_at(sync_pos)
+	#call_deferred("_resume_at", sync_pos)
 
 func update_all_track_levels(current_levels):
 	var sync_pos = 0.0
@@ -287,6 +303,34 @@ func _midi_process():
 					# send a signal out here with the track
 					midi_event.emit(track.TrackType)
 
+func _trigger_audio_effect(effectType : AudioEffectType, effectLengthMs : float = 1000.0):
+	effect_type = effectType
+	effect_length_ms = effectLengthMs
+	effect_start_ms = Time.get_ticks_msec()
+
+func _cleanup_effect_data():
+	pitch_scale = 1.0
+	effect_type = AudioEffectType.NONE
+	effect_length_ms = 0.0
+	effect_start_ms = 0.0
+
+func _audio_effect_update():
+	var effect_end = effect_start_ms + effect_length_ms
+	Log.print("[audio] AudioEffectType %s pitch scale %s effect start at %s, for length %s, end at %s. current time %s " % [ str(AudioEffectType.keys()[effect_type]), str(pitch_scale), str(effect_start_ms), str(effect_length_ms), str(effect_end), str(Time.get_ticks_msec()) ])
+	match effect_type:
+		AudioEffectType.SLOWDOWN:
+			if Time.get_ticks_msec() >= effect_end:
+				stream_paused = true
+				_cleanup_effect_data()
+				stop()
+				return
+			pitch_scale = 1.0 - ( (Time.get_ticks_msec() - effect_start_ms) / effect_length_ms )
+		AudioEffectType.SPEEDUP:
+			if Time.get_ticks_msec() >= effect_end:
+				_cleanup_effect_data()
+				return
+			pitch_scale = (Time.get_ticks_msec() - effect_start_ms) / effect_length_ms
+
 func _ready():
 	end_of_loop.connect(_on_end_of_loop)
 	
@@ -314,7 +358,7 @@ func _process(delta):
 		Log.print("[audio] currentSong not setup in SongData")
 		return
 	
-	if not playing and stream_paused == true:
+	if not playing:# and stream_paused:
 		if paused_at > 0.0:
 			paused_for_ms += delta * 1000
 			#TODO might want to 'if OS.is_debug_build()' this and update_debug_info call at end of func
@@ -345,3 +389,6 @@ func _process(delta):
 	
 	Debug.update_debug_info(now, loop_playback_ms, song_start, current_loop, measure, paused_for_ms)
 	_midi_process()
+	
+	if effect_type != AudioEffectType.NONE:
+		_audio_effect_update()

@@ -9,8 +9,8 @@ class_name Hitbox
 @export var damage = 1
 
 enum HitboxType {
-	Single, # does a single hit of damage to target
-	Cooldown, # damage over time on a cooldown while colliding with target
+	SINGLE, # does a single hit of damage to target
+	COOLDOWN, # damage over time on a cooldown while colliding with target
 }
 
 func disable():

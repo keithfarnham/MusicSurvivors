@@ -4,7 +4,6 @@
 [ext_resource type="PackedScene" uid="uid://6gam6irvv1ji" path="res://scenes/BackgroundViewport.tscn" id="2_7np5s"]
 [ext_resource type="PackedScene" uid="uid://xea7vhfq8eq7" path="res://scenes/AudioController.tscn" id="3_8uw7v"]
 [ext_resource type="Texture2D" uid="uid://dhiee4dgtmg17" path="res://sprites/play.png" id="4_ebxs4"]
-[ext_resource type="PackedScene" uid="uid://dfy78x6o87cb3" path="res://scenes/debug/DebugTrackOptions.tscn" id="5_3jiaw"]
 
 [node name="AudioTest" type="Control" unique_id=1743367705]
 layout_mode = 3
@@ -41,9 +40,8 @@ grow_vertical = 2
 [node name="SubViewportContainer" parent="Background" unique_id=986253039 instance=ExtResource("2_7np5s")]
 layout_mode = 1
 
-[node name="AudioController" parent="." unique_id=651702734 groups=["AudioController"] instance=ExtResource("3_8uw7v")]
-
 [node name="StartPause" type="TextureButton" parent="." unique_id=883685089]
+z_index = 1
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.625
@@ -71,13 +69,14 @@ autowrap_mode = 3
 [node name="RandomizeActiveTracks" type="Button" parent="." unique_id=418366545]
 texture_filter = 2
 layout_mode = 0
-offset_left = 72.0
-offset_top = 136.0
-offset_right = 136.0
-offset_bottom = 176.0
+anchor_left = 0.225
+anchor_top = 0.75555557
+anchor_right = 0.425
+anchor_bottom = 0.9777778
 theme_override_font_sizes/font_size = 8
 text = "Randomize Active Tracks"
 autowrap_mode = 3
+metadata/_edit_use_anchors_ = true
 
 [node name="AllMuteLv" type="HBoxContainer" parent="." unique_id=1162833801]
 texture_filter = 2
@@ -149,16 +148,54 @@ item_count = 1
 popup/item_0/text = "THIS IS THE LONGEST POSSIBLE"
 popup/item_0/id = 0
 
-[node name="TrackOptions" parent="." unique_id=499712253 instance=ExtResource("5_3jiaw")]
-layout_mode = 1
+[node name="AudioController" parent="." unique_id=651702734 groups=["AudioController"] instance=ExtResource("3_8uw7v")]
+
+[node name="DebugDisplay" parent="AudioController" index="8" unique_id=790191721]
+scale = Vector2(1, 1)
+transform = Transform2D(1, 0, 0, 1, 0, 0)
+
+[node name="DebugInfo" parent="AudioController/DebugDisplay" index="0" unique_id=1007736110]
+anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="VBoxLabels" parent="AudioController/DebugDisplay/DebugInfo" index="0" unique_id=223035306]
+anchor_left = 0.83125
+anchor_top = 0.0055555557
+anchor_right = 0.928125
+anchor_bottom = 0.20555556
+offset_right = 31.0
+offset_bottom = 36.0
+scale = Vector2(0.5, 0.5)
+
+[node name="VBoxValues" parent="AudioController/DebugDisplay/DebugInfo" index="1" unique_id=1013778956]
+anchor_left = 0.9306305
+anchor_top = 0.0055555557
+anchor_right = 0.9968749
+anchor_bottom = 0.20555556
+offset_right = 21.198212
+offset_bottom = 36.0
+scale = Vector2(0.5, 0.5)
+
+[node name="LoopProgress" parent="AudioController/DebugDisplay/DebugInfo" index="2" unique_id=25699313]
+anchor_left = 0.153125
+anchor_top = 0.06666667
+anchor_right = 0.65
+anchor_bottom = 0.15
+
+[node name="TrackOptions" parent="AudioController/DebugDisplay/DebugInfo" index="3" unique_id=499712253]
 anchor_left = 0.003125
 anchor_top = 0.23333333
-anchor_right = 0.5015625
-anchor_bottom = 0.62222224
-offset_right = 159.5
-offset_bottom = 69.99999
-grow_horizontal = 1
-grow_vertical = 1
+anchor_right = 0.49375
+anchor_bottom = 0.6166667
+offset_right = 163.0
+offset_bottom = 69.0
+columns = 4
 
 [connection signal="mouse_entered" from="StartPause" to="." method="_on_start_pause_mouse_entered"]
 [connection signal="mouse_exited" from="StartPause" to="." method="_on_start_pause_mouse_exited"]
@@ -168,3 +205,6 @@ grow_vertical = 1
 [connection signal="toggled" from="AllMuteLv/AllMute" to="." method="_on_all_mute_toggled"]
 [connection signal="item_selected" from="AllMuteLv/AllLv" to="." method="_on_all_lv_item_selected"]
 [connection signal="item_selected" from="SongChoiceControl/SongChoice" to="." method="_on_song_choice_item_selected"]
+
+[editable path="AudioController"]
+[editable path="AudioController/DebugDisplay"]

@@ -22,6 +22,6 @@ func _ready():
 		current_levels[track] = TrackData.Level.lv1
 	
 	# Load initial song
-	audio.load_song(SongData.Songs.testsong)
+	audio.load_song(SongData.Songs.CosmicChill)
 	
 	audio.resume()

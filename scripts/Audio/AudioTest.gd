@@ -2,7 +2,7 @@ extends Control
 
 @onready var audio_node = $AudioController as AudioController
 @onready var start_pause_button = $StartPause as TextureButton
-@onready var track_options = $TrackOptions as DebugTrackOptions
+@onready var track_options = $AudioController/DebugDisplay/DebugInfo/TrackOptions as DebugTrackOptions
 
 # Track loop timers and get_length for seamless looping
 var loop_timers = {}  # timers to prepare next loop
@@ -113,20 +113,16 @@ func _display_handler():
 				_handle_fancy_title_colors(track, false)
 			track_options.display_timers[track] = 0
 
-func _on_pause_toggled(isPaused):
+func _on_track_toggled(isPaused):
 	start_pause_button.texture_normal = play_texture if isPaused else pause_texture
 
 func _ready():
-	# dont think i need this? Weird to be setting the tracks active based on the mutes 
-	#for track in TrackData.Tracks.values():
-		#var muted = false
-		#if track_options.mute_toggles[track].button_pressed:
-			#muted = true
-		#audio_node.set_track_active(track, muted)
-	
-	## Initialize current levels to lv1
-	#for track in TrackData.Tracks.values():
-		#track_options.current_levels[track] = TrackData.Level.lv1
+	# this is needed similar to how game_controller is middleman and grabs the player's active weapons to set the active audio tracks
+	for track in TrackData.Tracks.values():
+		var muted = false
+		if track_options.mute_toggles[track].button_pressed:
+			muted = true
+		audio_node.set_track_active(track, muted)
 	
 	# setup song choice drop down
 	for i in $SongChoiceControl/SongChoice.item_count:
@@ -135,16 +131,11 @@ func _ready():
 		$SongChoiceControl/SongChoice.add_item(SongData.get_song_display_string(song)) # may want to specify id here
 	
 	# Load initial song
-	audio_node.load_song(SongData.Songs.testsong)
+	audio_node.load_song(SongData.Songs.AnotherAudioAdventure)
 	
 	# connect midi event signal
 	audio_node.midi_event.connect(_trigger_display)
-
-	#for track in track_options.display_map.keys():
-		#if track_options.display_map[track]:
-			#track_options.display_map[track].visible = false
-			#track_options.display_timers[track] = 0
-			
+	
 	# setup random 4 active tracks
 	var alreadyActive = []
 	while alreadyActive.size() < 4:
@@ -152,8 +143,9 @@ func _ready():
 		if not alreadyActive.has(randTrack):
 			alreadyActive.append(randTrack)
 			track_options.mute_toggles[randTrack].button_pressed = true
+#			audio_node.set_track_active(randTrack, true)
 	
-	track_options.pause_toggled.connect(_on_pause_toggled)
+	track_options.active_toggled.connect(_on_track_toggled)
 
 func _process(delta):
 	_display_handler()

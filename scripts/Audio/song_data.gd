@@ -3,10 +3,10 @@ extends Node
 var currentSong : Song
 
 enum Songs {
-	testsong,
 	AnotherAudioAdventure,
 	BreakingBreath,
-	CosmicChill
+	CosmicChill,
+	testsong
 	}
 
 var song_data := {

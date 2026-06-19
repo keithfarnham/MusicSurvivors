@@ -36,8 +36,7 @@ script = ExtResource("1_wdo3m")
 
 [node name="chord" type="AudioStreamPlayer" parent="." unique_id=61454457]
 
-[node name="CanvasLayer" parent="." unique_id=790191721 instance=ExtResource("2_8lvwy")]
-visible = false
+[node name="DebugDisplay" parent="." unique_id=790191721 instance=ExtResource("2_8lvwy")]
 
 [node name="sfx" type="Node" parent="." unique_id=1166649249]
 

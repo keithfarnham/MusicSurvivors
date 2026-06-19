@@ -1,11 +1,11 @@
 extends Control
 
-@onready var program_time_text = $VBoxValues/ProgramTimeValue
-@onready var playback_time_text = $VBoxValues/AudioPlaybackValue
-@onready var song_start_text = $VBoxValues/SongStartValue
-@onready var loop_count_text = $VBoxValues/LoopCountValue
-@onready var measure_count_text = $VBoxValues/MeasureCountValue
-@onready var paused_time_text = $VBoxValues/PausedTimeValue
+@onready var program_time_text = $VBoxValues/ProgramTimeValue as RichTextLabel
+@onready var playback_time_text = $VBoxValues/AudioPlaybackValue as RichTextLabel
+@onready var song_start_text = $VBoxValues/SongStartValue as RichTextLabel
+@onready var loop_count_text = $VBoxValues/LoopCountValue as RichTextLabel
+@onready var measure_count_text = $VBoxValues/MeasureCountValue as RichTextLabel
+@onready var paused_time_text = $VBoxValues/PausedTimeValue as RichTextLabel
 
 #region Debug Event Handlers
 @onready var kick_display = $TrackOptions/Kick/KickRect
@@ -52,30 +52,6 @@ func update_debug_info(programTime : float, loopPlaybackTime : float, songStart 
 
 func update_paused_info(pausedTime : float):
 	paused_time_text.text = str(snapped(pausedTime, 0.01))
-
-func _on_kick_toggled(toggled_on):
-	get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.KICK, toggled_on)
-
-func _on_snare_toggled(toggled_on):
-	get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.SNARE, toggled_on)
-
-func _on_cymb_toggled(toggled_on):
-	get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.CYMB, toggled_on)
-
-func _on_sample_toggled(toggled_on):
-	get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.SAMPLE, toggled_on)
-
-func _on_bass_toggled(toggled_on):
-	get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.BASS, toggled_on)
-
-func _on_lead_toggled(toggled_on):
-	get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.LEAD, toggled_on)
-
-func _on_arp_toggled(toggled_on):
-	get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.ARP, toggled_on)
-
-func _on_chord_toggled(toggled_on):
-	get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.CHORD, toggled_on)
 	
 func _process(delta):
 	# this is done in process because I have to wait for the AudioController to instantiate
@@ -89,4 +65,4 @@ func _process(delta):
 
 func _on_track_toggled(track, is_enabled):
 	Log.print("[DebugTools] %s Toggled %s " % [ str(TrackData.Tracks.keys()[track]), "enabled" if is_enabled else "disabled" ] )
-	#mute_toggles[track].button_pressed = is_enabled
+	$TrackOptions.mute_toggles[track].button_pressed = is_enabled
