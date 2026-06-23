@@ -3,11 +3,10 @@ extends Control
 @onready var audio_node = $AudioController as AudioController
 @onready var start_pause_button = $StartPause as TextureButton
 @onready var track_options = $AudioController/DebugDisplay/DebugInfo/TrackOptions as DebugTrackOptions
-
-# Track loop timers and get_length for seamless looping
-var loop_timers = {}  # timers to prepare next loop
+@onready var mega_mode = $MegaMode as Button
 
 var pause_playback_time : float
+var mega_mode_enabled : bool = false
 
 var play_texture = preload("res://sprites/play.png")
 var pause_texture = preload("res://sprites/pause.png")
@@ -102,7 +101,32 @@ func _trigger_display(trackType):
 		track_options.display_map[trackType].visible = true
 		track_options.display_timers[trackType] = Time.get_ticks_msec()
 		#Log.print("[AudioTest] Display Handler - mapped %s, current level %s" % [str(TrackData.Tracks.keys()[trackType]), str(TrackData.Level.keys()[level - 1])])
+
+func _on_track_toggled(isPaused):
+	start_pause_button.texture_normal = play_texture if isPaused else pause_texture
+
+func _on_fft_update(fft):
+	$SongChoiceControl/SongChoice/Background.material.set_shader_parameter("freq_data", fft)
+
+func _on_mega_mode_button_down():
+	mega_mode_enabled = true
+	audio_node.trigger_audio_effect(AudioController.AudioEffectType.MEGA, 0.0)
 	
+func _on_mega_mode_button_up():
+	mega_mode_enabled = false
+	audio_node.force_end_audio_effects()
+
+func _process_mega_mode():
+	var showMegaMode = true
+	for track in TrackData.Tracks.values():
+		if not audio_node.is_track_active(track):
+			showMegaMode = false
+			break
+		if not track_options.current_levels[track] == TrackData.Level.lv3: # check for max level
+			showMegaMode = false
+			break
+	$MegaMode.visible = showMegaMode
+
 func _display_handler():
 	# hide displays after short duration
 	for track in track_options.display_map.keys():
@@ -113,8 +137,9 @@ func _display_handler():
 				_handle_fancy_title_colors(track, false)
 			track_options.display_timers[track] = 0
 
-func _on_track_toggled(isPaused):
-	start_pause_button.texture_normal = play_texture if isPaused else pause_texture
+func _process(delta):
+	_display_handler()
+	_process_mega_mode()
 
 func _ready():
 	# this is needed similar to how game_controller is middleman and grabs the player's active weapons to set the active audio tracks
@@ -133,8 +158,9 @@ func _ready():
 	# Load initial song
 	audio_node.load_song(SongData.Songs.AnotherAudioAdventure)
 	
-	# connect midi event signal
+	# connect audio controller event signals
 	audio_node.midi_event.connect(_trigger_display)
+	audio_node.fft_update.connect(_on_fft_update)
 	
 	# setup random 4 active tracks
 	var alreadyActive = []
@@ -146,6 +172,3 @@ func _ready():
 #			audio_node.set_track_active(randTrack, true)
 	
 	track_options.active_toggled.connect(_on_track_toggled)
-
-func _process(delta):
-	_display_handler()

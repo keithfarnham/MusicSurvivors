@@ -3,7 +3,19 @@
 [ext_resource type="Script" uid="uid://cdejuklv6ntfh" path="res://scripts/Audio/AudioTest.gd" id="1_735n5"]
 [ext_resource type="PackedScene" uid="uid://6gam6irvv1ji" path="res://scenes/BackgroundViewport.tscn" id="2_7np5s"]
 [ext_resource type="PackedScene" uid="uid://xea7vhfq8eq7" path="res://scenes/AudioController.tscn" id="3_8uw7v"]
+[ext_resource type="Shader" uid="uid://bfkd5p4qpd7qf" path="res://shaders/ButtonBackground.gdshader" id="4_735n5"]
 [ext_resource type="Texture2D" uid="uid://dhiee4dgtmg17" path="res://sprites/play.png" id="4_ebxs4"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_735n5"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_735n5"]
+shader = ExtResource("4_735n5")
+shader_parameter/freq_data = PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/zoomValue = 100.0
+shader_parameter/pixelCoords_mod = Vector2(0, 0)
+shader_parameter/alpha_scale = 5.0
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_735n5"]
 
 [node name="AudioTest" type="Control" unique_id=1743367705]
 layout_mode = 3
@@ -141,12 +153,25 @@ vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="SongChoice" type="OptionButton" parent="SongChoiceControl" unique_id=485371660]
+material = SubResource("CanvasItemMaterial_735n5")
 layout_mode = 2
 theme_override_font_sizes/font_size = 8
 selected = 0
 item_count = 1
 popup/item_0/text = "THIS IS THE LONGEST POSSIBLE"
 popup/item_0/id = 0
+
+[node name="Background" type="TextureRect" parent="SongChoiceControl/SongChoice" unique_id=1191335412]
+z_index = -1
+texture_filter = 2
+material = SubResource("ShaderMaterial_735n5")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("PlaceholderTexture2D_735n5")
 
 [node name="AudioController" parent="." unique_id=651702734 groups=["AudioController"] instance=ExtResource("3_8uw7v")]
 
@@ -165,6 +190,7 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="VBoxLabels" parent="AudioController/DebugDisplay/DebugInfo" index="0" unique_id=223035306]
+visible = false
 anchor_left = 0.83125
 anchor_top = 0.0055555557
 anchor_right = 0.928125
@@ -174,6 +200,7 @@ offset_bottom = 36.0
 scale = Vector2(0.5, 0.5)
 
 [node name="VBoxValues" parent="AudioController/DebugDisplay/DebugInfo" index="1" unique_id=1013778956]
+visible = false
 anchor_left = 0.9306305
 anchor_top = 0.0055555557
 anchor_right = 0.9968749
@@ -197,6 +224,32 @@ offset_right = 163.0
 offset_bottom = 69.0
 columns = 4
 
+[node name="MegaMode" type="Button" parent="." unique_id=255573839]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.775
+anchor_top = 0.03888889
+anchor_right = 0.98125
+anchor_bottom = 0.2
+action_mode = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="MegaModeLabel" type="RichTextLabel" parent="MegaMode" unique_id=332233900]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 10
+bbcode_enabled = true
+text = "Hold For MegaMode [char=2122]"
+fit_content = true
+scroll_active = false
+metadata/_edit_use_anchors_ = true
+
 [connection signal="mouse_entered" from="StartPause" to="." method="_on_start_pause_mouse_entered"]
 [connection signal="mouse_exited" from="StartPause" to="." method="_on_start_pause_mouse_exited"]
 [connection signal="pressed" from="StartPause" to="." method="_on_start_pause_pressed"]
@@ -205,6 +258,8 @@ columns = 4
 [connection signal="toggled" from="AllMuteLv/AllMute" to="." method="_on_all_mute_toggled"]
 [connection signal="item_selected" from="AllMuteLv/AllLv" to="." method="_on_all_lv_item_selected"]
 [connection signal="item_selected" from="SongChoiceControl/SongChoice" to="." method="_on_song_choice_item_selected"]
+[connection signal="button_down" from="MegaMode" to="." method="_on_mega_mode_button_down"]
+[connection signal="button_up" from="MegaMode" to="." method="_on_mega_mode_button_up"]
 
 [editable path="AudioController"]
 [editable path="AudioController/DebugDisplay"]

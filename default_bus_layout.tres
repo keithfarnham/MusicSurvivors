@@ -3,7 +3,17 @@
 [sub_resource type="AudioEffectSpectrumAnalyzer" id="AudioEffectSpectrumAnalyzer_j3pel"]
 resource_name = "SpectrumAnalyzer"
 
+[sub_resource type="AudioEffectChorus" id="AudioEffectChorus_j3pel"]
+resource_name = "Chorus"
+
+[sub_resource type="AudioEffectPhaser" id="AudioEffectPhaser_j3pel"]
+resource_name = "Phaser"
+
 [resource]
 bus/0/volume_db = 0.0694828
 bus/0/effect/0/effect = SubResource("AudioEffectSpectrumAnalyzer_j3pel")
 bus/0/effect/0/enabled = true
+bus/0/effect/1/effect = SubResource("AudioEffectChorus_j3pel")
+bus/0/effect/1/enabled = true
+bus/0/effect/2/effect = SubResource("AudioEffectPhaser_j3pel")
+bus/0/effect/2/enabled = true

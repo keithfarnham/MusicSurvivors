@@ -4,6 +4,19 @@ class_name AudioController
 
 @onready var Debug = $DebugDisplay/DebugInfo
 
+# fft spectrum analysis vars
+const VU_COUNT = 60 #match up this value with whatever VU_COUNT is in the shader
+const FREQ_MAX = 8000.0
+const MIN_DB = 60
+const ANIMATION_SPEED = 0.1
+const HEIGHT_SCALE = 60.0
+var min_values = []
+var max_values = []
+# audio bus effects
+var spectrum
+var chorus : AudioEffectChorus
+var phaser : AudioEffectPhaser
+
 var current_measure : int = 1
 var current_loop : int = 1
 var song_start : float = 0.0
@@ -32,7 +45,8 @@ enum AudioEffectType {
 	SLOWDOWN,
 	SPEEDUP,
 	REVERB,
-	CHORUS
+	CHORUS,
+	MEGA
 }
 
 const songFolder = "res://songs/"
@@ -40,14 +54,15 @@ const songFolder = "res://songs/"
 signal end_of_loop(loop)
 signal midi_event(track)
 signal track_toggled(track, isEnabled)
+signal fft_update(fft)
 
 func pause():
-	_trigger_audio_effect(AudioEffectType.SLOWDOWN, 500.0)
+	trigger_audio_effect(AudioEffectType.SLOWDOWN, 500.0)
 	playback_time_sec = get_playback_position() + AudioServer.get_time_since_last_mix()
 	paused_at = Time.get_ticks_msec()
 	
 func resume():
-	_trigger_audio_effect(AudioEffectType.SPEEDUP, 500.0)
+	trigger_audio_effect(AudioEffectType.SPEEDUP, 500.0)
 	stream_paused = false
 	start_song(playback_time_sec)
 
@@ -303,55 +318,74 @@ func _midi_process():
 					# send a signal out here with the track
 					midi_event.emit(track.TrackType)
 
-func _trigger_audio_effect(effectType : AudioEffectType, effectLengthMs : float = 1000.0):
+## 
+func trigger_audio_effect(effectType : AudioEffectType, effectLengthMs : float = 1000.0):
 	effect_type = effectType
 	effect_length_ms = effectLengthMs
 	effect_start_ms = Time.get_ticks_msec()
+	
+func force_end_audio_effects():
+	_cleanup_effect_data()
 
 func _cleanup_effect_data():
 	pitch_scale = 1.0
 	effect_type = AudioEffectType.NONE
-	effect_length_ms = 0.0
+	effect_length_ms = -1.0
 	effect_start_ms = 0.0
+	chorus.wet = 0.0
+	var bus_index = AudioServer.get_bus_index("Master")
+	AudioServer.set_bus_effect_enabled(bus_index, 2, false) # disable phaser
+	AudioServer.set_bus_volume_db(bus_index, 0.0)
 
 func _audio_effect_update():
+	#TODO this only support a single audio effect at a time right now, might want to make 'polyphonic'
+	assert(effect_length_ms != -1.0, "[audio] effect_length_ms is -1.0, not set properly ")
 	var effect_end = effect_start_ms + effect_length_ms
 	Log.print("[audio] AudioEffectType %s pitch scale %s effect start at %s, for length %s, end at %s. current time %s " % [ str(AudioEffectType.keys()[effect_type]), str(pitch_scale), str(effect_start_ms), str(effect_length_ms), str(effect_end), str(Time.get_ticks_msec()) ])
 	match effect_type:
 		AudioEffectType.SLOWDOWN:
-			if Time.get_ticks_msec() >= effect_end:
+			if effect_length_ms > 0.0 and Time.get_ticks_msec() >= effect_end:
 				stream_paused = true
 				_cleanup_effect_data()
 				stop()
 				return
 			pitch_scale = 1.0 - ( (Time.get_ticks_msec() - effect_start_ms) / effect_length_ms )
 		AudioEffectType.SPEEDUP:
-			if Time.get_ticks_msec() >= effect_end:
+			if effect_length_ms > 0.0 and Time.get_ticks_msec() >= effect_end:
 				_cleanup_effect_data()
 				return
 			pitch_scale = (Time.get_ticks_msec() - effect_start_ms) / effect_length_ms
-
-func _ready():
-	end_of_loop.connect(_on_end_of_loop)
-	
-	track_players = {
-		TrackData.Tracks.KICK: $kick,
-		TrackData.Tracks.SNARE: $snare,
-		TrackData.Tracks.CYMB: $cymb,
-		TrackData.Tracks.SAMPLE: $sample,
-		TrackData.Tracks.BASS: $bass,
-		TrackData.Tracks.LEAD: $lead,
-		TrackData.Tracks.ARP: $arp,
-		TrackData.Tracks.CHORD: $chord,
-	}
-	
-	for track in TrackData.Tracks:
-		loop_total.set(track, 1)
-		last_loop_start_time.set(track, 0.0)
-	
-	for track in track_players:
-		var player = track_players.values()[track]
-		sync_stream.set_sync_stream(track, player)
+		AudioEffectType.MEGA:
+			if effect_length_ms > 0.0 and Time.get_ticks_msec() >= effect_end:
+				_cleanup_effect_data()
+				chorus.wet = 0.0
+				return
+			chorus.wet = 0.8
+			chorus.voice_count = sin(Time.get_ticks_msec() * 0.5) * 10.0
+			var bus_index = AudioServer.get_bus_index("Master")
+			AudioServer.set_bus_effect_enabled(bus_index, 2, true) # enable phaser
+			AudioServer.set_bus_volume_db(bus_index, -10.0)
+			
+func _process_fft():
+	var prev_hz = 0
+	var data = []
+	for i in range(1, VU_COUNT + 1):
+		var hz = i * FREQ_MAX / VU_COUNT
+		var f = spectrum.get_magnitude_for_frequency_range(prev_hz, hz)
+		var energy = clamp((MIN_DB + linear_to_db(f.length())) / MIN_DB, 0.0, 1.0)
+		data.append(energy * HEIGHT_SCALE)
+		prev_hz = hz
+	for i in range(VU_COUNT):
+		if data[i] > max_values[i]:
+			max_values[i] = data[i]
+		else:
+			max_values[i] = lerp(max_values[i], data[i], ANIMATION_SPEED)
+		if data[i] <= 0.0:
+			min_values[i] = lerp(min_values[i], 0.0, ANIMATION_SPEED)
+	var fft = []
+	for i in range(VU_COUNT):
+		fft.append(lerp(min_values[i], max_values[i], ANIMATION_SPEED))
+	fft_update.emit(fft)
 
 func _process(delta):
 	if not SongData.currentSong:
@@ -389,6 +423,44 @@ func _process(delta):
 	
 	Debug.update_debug_info(now, loop_playback_ms, song_start, current_loop, measure, paused_for_ms)
 	_midi_process()
-	
+	_process_fft()
 	if effect_type != AudioEffectType.NONE:
 		_audio_effect_update()
+
+func _ready():
+	end_of_loop.connect(_on_end_of_loop)
+	
+	track_players = {
+		TrackData.Tracks.KICK: $kick,
+		TrackData.Tracks.SNARE: $snare,
+		TrackData.Tracks.CYMB: $cymb,
+		TrackData.Tracks.SAMPLE: $sample,
+		TrackData.Tracks.BASS: $bass,
+		TrackData.Tracks.LEAD: $lead,
+		TrackData.Tracks.ARP: $arp,
+		TrackData.Tracks.CHORD: $chord,
+	}
+	
+	for track in TrackData.Tracks:
+		loop_total.set(track, 1)
+		last_loop_start_time.set(track, 0.0)
+	
+	for track in track_players:
+		var player = track_players.values()[track]
+		sync_stream.set_sync_stream(track, player)
+	
+	var busIndex = AudioServer.get_bus_index("Master")
+	if AudioServer.get_bus_effect_count(busIndex) > 0:
+		# the index of the effect is the order in the bus itself, they need to match up
+		spectrum = AudioServer.get_bus_effect_instance(busIndex, 0)
+		chorus = AudioServer.get_bus_effect(busIndex, 1) as AudioEffectChorus
+		phaser = AudioServer.get_bus_effect(busIndex, 2) as AudioEffectPhaser
+		AudioServer.set_bus_effect_enabled(busIndex, 2, false)
+		chorus.wet = 0.0
+	else:
+		push_warning("[AudioController] WARNING No effects found on bus 0. Please add an effect.")
+		spectrum = null
+	min_values.resize(VU_COUNT)
+	min_values.fill(0.0)
+	max_values.resize(VU_COUNT)
+	max_values.fill(0.0)
