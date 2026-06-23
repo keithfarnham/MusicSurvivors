@@ -19,10 +19,10 @@ func _on_area_entered(area):
 	if area.is_in_group("attack"):
 		assert(area.get("damage") != null, "[hurtbox] area %s does not have damage value" % [area.name])
 		match area.hitbox_type:
-			Hitbox.HitboxType.Single:
+			Hitbox.HitboxType.SINGLE:
 				Log.print("[hurtbox] Single Hit - area %s colliding with %s." % [str(name), str(area.name)])
 				hurt.emit(area.get("damage"))
-			Hitbox.HitboxType.Cooldown:
+			Hitbox.HitboxType.COOLDOWN:
 				Log.print("[hurtbox] Cooldown - area %s colliding with %s." % [str(name), str(area.name)])
 				colliding_hitbox.append(area)
 				#TODO dmg delayed to next update might be a problem, do stuff from _process()?

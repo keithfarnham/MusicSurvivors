@@ -354,14 +354,15 @@ func _audio_effect_update():
 			if effect_length_ms > 0.0 and Time.get_ticks_msec() >= effect_end:
 				_cleanup_effect_data()
 				return
+			#TODO this will break if effect_length_ms is 0.0
 			pitch_scale = (Time.get_ticks_msec() - effect_start_ms) / effect_length_ms
 		AudioEffectType.MEGA:
 			if effect_length_ms > 0.0 and Time.get_ticks_msec() >= effect_end:
 				_cleanup_effect_data()
 				chorus.wet = 0.0
 				return
-			chorus.wet = 0.8
-			chorus.voice_count = sin(Time.get_ticks_msec() * 0.5) * 10.0
+			var time_since_start = Time.get_ticks_msec() - effect_start_ms
+			chorus.wet = clamp( time_since_start / effect_length_ms, 0.0, 0.8 )
 			var bus_index = AudioServer.get_bus_index("Master")
 			AudioServer.set_bus_effect_enabled(bus_index, 2, true) # enable phaser
 			AudioServer.set_bus_volume_db(bus_index, -10.0)

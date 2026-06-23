@@ -14,14 +14,6 @@ script = ExtResource("1_xs4ih")
 
 [node name="PlayerUI" parent="." unique_id=1938607081 instance=ExtResource("6_xs4ih")]
 
-[node name="Background" type="Sprite2D" parent="." unique_id=536093311]
-z_index = -1
-texture_filter = 1
-texture_repeat = 3
-texture = ExtResource("1_xy3my")
-region_enabled = true
-region_rect = Rect2(0, 0, 1000, 1000)
-
 [node name="Player" parent="." unique_id=1075770607 instance=ExtResource("2_cxv17")]
 position = Vector2(160, 90)
 
@@ -38,3 +30,14 @@ position = Vector2(-7, 4)
 scale = Vector2(0.75, 0.75)
 
 [node name="Projectiles" type="Node" parent="." unique_id=633507272]
+
+[node name="Floor" type="Sprite2D" parent="." unique_id=536093311]
+z_index = -1
+texture_filter = 1
+texture_repeat = 3
+texture = ExtResource("1_xy3my")
+region_enabled = true
+region_rect = Rect2(0, 0, 1000, 1000)
+
+[editable path="AudioController"]
+[editable path="AudioController/DebugDisplay"]
