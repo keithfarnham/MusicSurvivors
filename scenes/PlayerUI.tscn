@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://bufxoo20k5lhc" path="res://sprites/UI/xp_bar_frame.png" id="3_wq4ys"]
 [ext_resource type="Texture2D" uid="uid://bvv1dk2pyq6uc" path="res://sprites/UI/xp_bar_fill.png" id="4_22y41"]
 
-[node name="CanvasLayer" type="CanvasLayer" unique_id=1938607081]
+[node name="PlayerUI" type="CanvasLayer" unique_id=1938607081]
 script = ExtResource("1_p6wq6")
 
 [node name="GUIControl" type="Control" parent="." unique_id=957168856]

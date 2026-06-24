@@ -25,6 +25,7 @@ func get_nearest_enemy():
 	if enemyNodes.is_empty():
 		return
 	for enemyNode in enemyNodes:
+		#TODO fix this
 		#var dist = _get_distance(player.position, enemyNode.global_position)
 		#if nearest_dist == 0.0 or dist < nearest_dist:
 		#	nearest_dist = dist

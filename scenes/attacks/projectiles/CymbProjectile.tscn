@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://4pr4v5iki15v"]
+
+[ext_resource type="Script" uid="uid://bwsonyqemls53" path="res://scripts/Weapons/Player/cymb_projectile.gd" id="1_bbi70"]
+[ext_resource type="Texture2D" uid="uid://dbegcn5t2f6t" path="res://sprites/WeaponIcons/attack/plus.png" id="2_bbi70"]
+[ext_resource type="PackedScene" uid="uid://dgswms5nnfie4" path="res://scenes/Hitbox.tscn" id="3_x3m4f"]
+[ext_resource type="Texture2D" uid="uid://b4w5vlkufbtrr" path="res://sprites/WeaponIcons/attack/ray_body.png" id="4_gji5u"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hrqed"]
+radius = 1.0
+height = 2.0
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_x3m4f"]
+particle_flag_disable_z = true
+angle_min = -720.0
+angle_max = 720.0
+spread = 180.0
+gravity = Vector3(0, 98, 0)
+scale_min = 0.01
+scale_max = 0.08
+
+[node name="cymbProjectile" type="Node2D" unique_id=405191859 groups=["attack"]]
+script = ExtResource("1_bbi70")
+
+[node name="cymbSprite" type="Sprite2D" parent="." unique_id=458918324]
+z_index = 1
+texture_filter = 1
+position = Vector2(0.1, 0)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_bbi70")
+
+[node name="cymbHitbox" parent="." unique_id=56940634 instance=ExtResource("3_x3m4f")]
+collision_layer = 2
+collision_mask = 4
+
+[node name="hitboxCollision" parent="cymbHitbox" index="0" unique_id=1189916875]
+position = Vector2(0, -0.6)
+scale = Vector2(0.7, 1)
+shape = SubResource("CapsuleShape2D_hrqed")
+debug_color = Color(2.5027991e-06, 0.6476252, 0.20777756, 0.41960785)
+
+[node name="trailParticles" type="GPUParticles2D" parent="." unique_id=673555312]
+texture = ExtResource("4_gji5u")
+lifetime = 0.5
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_x3m4f")
+
+[editable path="cymbHitbox"]

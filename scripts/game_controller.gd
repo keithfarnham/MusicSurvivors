@@ -1,6 +1,6 @@
 extends Node2D
 
-@onready var audio = $AudioController
+@onready var audio = $Player/AudioController as AudioController
 @onready var player = $Player
 
 var current_levels = {}  # selected level for each track

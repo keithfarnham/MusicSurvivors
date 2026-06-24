@@ -37,6 +37,8 @@ var falloff_distance : float
 var homing_enabled : bool = false
 var homing_power : float = 1.0
 
+var screenbounce_enabled : bool = false
+
 var path : Path2D #TODO investigate for more complicated bullet pathing
 
 var state : ProjectileState
