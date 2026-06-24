@@ -38,6 +38,7 @@ extends Control
 @onready var chord_lv = $TrackOptions/ChordLv as OptionButton
 #endregion
 
+var player_node : Player
 var setup_complete := false
 
 func update_debug_info(programTime : float, loopPlaybackTime : float, songStart : float, loopCount : int, measureCount : int, pausedTime : float):
@@ -55,13 +56,17 @@ func update_paused_info(pausedTime : float):
 	
 func _process(delta):
 	# this is done in process because I have to wait for the AudioController to instantiate
-	var audio_node = get_tree().get_first_node_in_group("AudioController") as AudioController
-	var player_node = get_tree().get_first_node_in_group("Player")
-	if not setup_complete and audio_node != null and player_node != null:
-		setup_complete = true
-		audio_node.track_toggled.connect(_on_track_toggled)
-		for track in TrackData.Tracks.values():
-			$TrackOptions.mute_toggles[track].button_pressed = player_node.is_weapon_active(track)
+	if not setup_complete:
+		if audio_node == null:
+			audio_node = get_tree().get_first_node_in_group("AudioController") as AudioController
+		if player_node == null:
+			player_node = get_tree().get_first_node_in_group("Player") as Player
+		
+		if audio_node != null and player_node != null:
+			setup_complete = true
+			audio_node.track_toggled.connect(_on_track_toggled)
+			for track in TrackData.Tracks.values():
+				$TrackOptions.mute_toggles[track].button_pressed = player_node.is_weapon_active(track)
 
 func _on_track_toggled(track, is_enabled):
 	Log.print("[DebugTools] %s Toggled %s " % [ str(TrackData.Tracks.keys()[track]), "enabled" if is_enabled else "disabled" ] )
