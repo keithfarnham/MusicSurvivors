@@ -2,16 +2,34 @@
 
 [ext_resource type="Script" uid="uid://c145b46pge7w8" path="res://scripts/Weapons/Player/sample.gd" id="1_ks83y"]
 [ext_resource type="PackedScene" uid="uid://dgswms5nnfie4" path="res://scenes/Hitbox.tscn" id="3_cufs1"]
+[ext_resource type="Texture2D" uid="uid://dovs7vd3a06x1" path="res://sprites/WeaponIcons/attack/orb.png" id="3_vqp2u"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hrqed"]
-radius = 1.0
-height = 2.0
+radius = 6.0
+height = 12.0
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_fpo2a"]
+particle_flag_disable_z = true
+spread = 180.0
+initial_velocity_min = 18.52
+initial_velocity_max = 20.0
+orbit_velocity_min = -2.0
+orbit_velocity_max = 1.8610002
+gravity = Vector3(0, 0, 0)
+damping_min = 27.106
+damping_max = 27.106
+scale_min = 0.049999997
+scale_max = 0.25
+hue_variation_min = -0.13000003
+hue_variation_max = 0.12999998
 
 [node name="sample" type="Node2D" unique_id=405191859 groups=["attack"]]
+position = Vector2(0, -32)
 script = ExtResource("1_ks83y")
 track = 3
 
 [node name="sampleSprite" type="Sprite2D" parent="." unique_id=458918324]
+visible = false
 texture_filter = 1
 scale = Vector2(0.125, 0.125)
 
@@ -22,5 +40,12 @@ collision_mask = 4
 [node name="hitboxCollision" parent="sampleHitbox" index="0" unique_id=1189916875]
 shape = SubResource("CapsuleShape2D_hrqed")
 debug_color = Color(2.5027991e-06, 0.6476252, 0.20777756, 0.41960785)
+
+[node name="sampleParticles" type="GPUParticles2D" parent="." unique_id=1634812671]
+amount = 64
+texture = ExtResource("3_vqp2u")
+lifetime = 0.5
+fixed_fps = 120
+process_material = SubResource("ParticleProcessMaterial_fpo2a")
 
 [editable path="sampleHitbox"]

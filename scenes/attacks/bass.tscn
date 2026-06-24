@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bbf16o0bpcgun"]
 
-[ext_resource type="Script" uid="uid://c145b46pge7w8" path="res://scripts/Weapons/Player/sample.gd" id="1_yeg8i"]
+[ext_resource type="Script" uid="uid://bo5kdfrni7m63" path="res://scripts/Weapons/Player/bass.gd" id="1_yeg8i"]
 [ext_resource type="PackedScene" uid="uid://dgswms5nnfie4" path="res://scenes/Hitbox.tscn" id="2_ti1sy"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hrqed"]

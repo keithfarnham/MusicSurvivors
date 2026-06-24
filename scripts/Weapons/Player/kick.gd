@@ -14,6 +14,7 @@ func _ready():
 	# set the colliders disabled on ready, colliders will be enabled when weapon is triggered
 	hitbox_collider_node = find_child("hitboxCollision")
 	hitbox_collider_node.set_deferred("disabled", true)
+	visible = false
 
 func _on_active_timeout():
 	visible = false
