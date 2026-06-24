@@ -38,6 +38,7 @@ extends Control
 @onready var chord_lv = $TrackOptions/ChordLv as OptionButton
 #endregion
 
+var audio_node : AudioController
 var player_node : Player
 var setup_complete := false
 
