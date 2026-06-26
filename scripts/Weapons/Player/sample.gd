@@ -2,8 +2,7 @@ extends Weapon
 
 class_name Sample
 
-# TODO sample weapon has a zone that orbits player, moving 90 degrees around the player each trigger
-# zone can scale with area
+# TODO zone can scale with area
 
 @onready var particle_node = $sampleParticles as GPUParticles2D
 
@@ -47,6 +46,11 @@ func activate_weapon():
 	super.activate_weapon()
 	find_child("hitboxCollision").set_deferred("disabled", false)
 	visible = true
+	
+func deactivate_weapon():
+	super.deactivate_weapon()
+	find_child("hitboxCollision").set_deferred("disabled", true)
+	visible = false
 
 func _ready():
 	find_child("hitboxCollision").set_deferred("disabled", true)

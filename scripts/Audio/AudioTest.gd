@@ -142,7 +142,6 @@ func _process(delta):
 	_process_mega_mode()
 
 func _ready():
-	# this is needed similar to how game_controller is middleman and grabs the player's active weapons to set the active audio tracks
 	for track in TrackData.Tracks.values():
 		var muted = false
 		if track_options.mute_toggles[track].button_pressed:

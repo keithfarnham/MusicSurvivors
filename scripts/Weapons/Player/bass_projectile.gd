@@ -1,12 +1,13 @@
 extends Projectile
 
-class_name CymbProjectile
+class_name BassProjectile
 
 func _ready():
 	angle = global_position.direction_to(target_pos)
 	rotation = angle.angle()
 
 func _physics_process(delta):
+	#Log.print("[BassProjectile] %s is processing" % [name])
 	position += angle*speed*delta
 	rotation += sin(Time.get_ticks_msec()) * 0.5
 

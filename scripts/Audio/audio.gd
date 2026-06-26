@@ -68,19 +68,20 @@ func resume():
 
 func get_playback_time_sec() -> float:
 	var playback = get_playback_position()
-	Log.print("Playback at %s" % [str(playback)])
+	#Log.print("Playback at %s" % [str(playback)])
 	return playback
 
 func start_song(from_position : float = 0.0):
 	play(from_position)
+	
+	paused_at = 0.0
+	paused_for_ms = 0.0
 	
 	if from_position != 0.0:
 		# early out if we are resuming song
 		return
 	
 	song_start = Time.get_ticks_msec()
-	paused_at = 0.0
-	paused_for_ms = 0.0
 	# start MIDI processing clock if we are starting from beginning
 	for track in TrackData.Tracks.values():
 		Log.print("[audio] Starting midi for %s at %s" % [str(TrackData.Tracks.keys()[track]), str(song_start)])
@@ -293,12 +294,11 @@ func _midi_process():
 			# early out for muted tracks
 			continue
 		if track.MidiProcess.is_empty():
-			#TODO find proper fix for this
-			Log.print("[MidiProcess] WARNING a track's MidiProcess is empty. This might just be in between loading so it may not acutally be an issue")
+			push_warning("[MidiProcess] WARNING a track's MidiProcess is empty. This might just be in between loading so it may not acutally be an issue")
 			track.MidiProcess = {"start_time": Time.get_ticks_msec(), "delta_tick": 0, "event_index": 0}
 		var now = Time.get_ticks_msec()
 		assert(now >= track.MidiProcess.start_time, "[MidiProcess] now (%f) < MidiProcess.start_time (%f) resulting in negative delta_ticks" % [now, track.MidiProcess.start_time])
-		var elapsed_ms = now - track.MidiProcess.start_time - paused_for_ms
+		var elapsed_ms = get_playback_time_sec() * 1000.0
 		assert(elapsed_ms >= 0.0, "[MidiProcess] elapsed time should not be negative. elapsed_ms: %s = %s - %s - %s" % [str(elapsed_ms), str(now), str(track.MidiProcess.start_time), str(paused_for_ms)])
 		var delta_ticks = float(elapsed_ms) / ms_per_tick if ms_per_tick > 0 else 0
 		var level = SongData.currentSong.get_current_level_for_track(track.TrackType) as TrackData.Level
@@ -318,7 +318,6 @@ func _midi_process():
 					# send a signal out here with the track
 					midi_event.emit(track.TrackType)
 
-## 
 func trigger_audio_effect(effectType : AudioEffectType, effectLengthMs : float = 1000.0):
 	effect_type = effectType
 	effect_length_ms = effectLengthMs
@@ -337,37 +336,38 @@ func _cleanup_effect_data():
 	AudioServer.set_bus_effect_enabled(bus_index, 2, false) # disable phaser
 	AudioServer.set_bus_volume_db(bus_index, 0.0)
 
-func _audio_effect_update():
+func _audio_effect_process():
 	#TODO this only support a single audio effect at a time right now, might want to make 'polyphonic'
 	assert(effect_length_ms != -1.0, "[audio] effect_length_ms is -1.0, not set properly ")
 	var effect_end = effect_start_ms + effect_length_ms
+	var now = Time.get_ticks_msec()
 	Log.print("[audio] AudioEffectType %s pitch scale %s effect start at %s, for length %s, end at %s. current time %s " % [ str(AudioEffectType.keys()[effect_type]), str(pitch_scale), str(effect_start_ms), str(effect_length_ms), str(effect_end), str(Time.get_ticks_msec()) ])
 	match effect_type:
 		AudioEffectType.SLOWDOWN:
-			if effect_length_ms > 0.0 and Time.get_ticks_msec() >= effect_end:
+			if effect_length_ms > 0.0 and now >= effect_end:
 				stream_paused = true
 				_cleanup_effect_data()
 				stop()
 				return
-			pitch_scale = 1.0 - ( (Time.get_ticks_msec() - effect_start_ms) / effect_length_ms )
+			pitch_scale = 1.0 - ( (now - effect_start_ms) / effect_length_ms )
 		AudioEffectType.SPEEDUP:
-			if effect_length_ms > 0.0 and Time.get_ticks_msec() >= effect_end:
+			if effect_length_ms > 0.0 and now >= effect_end:
 				_cleanup_effect_data()
 				return
 			#TODO this will break if effect_length_ms is 0.0
-			pitch_scale = (Time.get_ticks_msec() - effect_start_ms) / effect_length_ms
+			pitch_scale = (now - effect_start_ms) / effect_length_ms
 		AudioEffectType.MEGA:
-			if effect_length_ms > 0.0 and Time.get_ticks_msec() >= effect_end:
+			if effect_length_ms > 0.0 and now >= effect_end:
 				_cleanup_effect_data()
 				chorus.wet = 0.0
 				return
-			var time_since_start = Time.get_ticks_msec() - effect_start_ms
+			var time_since_start = now - effect_start_ms
 			chorus.wet = clamp( time_since_start / effect_length_ms, 0.0, 0.8 )
 			var bus_index = AudioServer.get_bus_index("Master")
 			AudioServer.set_bus_effect_enabled(bus_index, 2, true) # enable phaser
 			AudioServer.set_bus_volume_db(bus_index, -10.0)
 			
-func _process_fft():
+func _fft_process():
 	var prev_hz = 0
 	var data = []
 	for i in range(1, VU_COUNT + 1):
@@ -423,10 +423,11 @@ func _process(delta):
 		end_of_loop.emit(current_loop, offset)
 	
 	Debug.update_debug_info(now, loop_playback_ms, song_start, current_loop, measure, paused_for_ms)
-	_midi_process()
-	_process_fft()
 	if effect_type != AudioEffectType.NONE:
-		_audio_effect_update()
+		# _midi_process depends on _audio_effect_process updating midi for slowdown/speedup, must do _audio_effect_process first
+		_audio_effect_process()
+	_midi_process()
+	_fft_process()
 
 func _ready():
 	end_of_loop.connect(_on_end_of_loop)

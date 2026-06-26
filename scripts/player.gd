@@ -29,6 +29,8 @@ func _setup_weapons():
 		# need to finish setting up the weapon scenes and remove this once i have starting weapons figured out
 		if weapon_node.track == TrackData.Tracks.KICK or weapon_node.track == TrackData.Tracks.SNARE or weapon_node.track == TrackData.Tracks.SAMPLE:
 			weapon_node.activate_weapon()
+		else:
+			weapon_node.deactivate_weapon()
 
 func is_weapon_active(track : TrackData.Tracks) -> bool:
 	for weapon_node in $attacks.get_children():
