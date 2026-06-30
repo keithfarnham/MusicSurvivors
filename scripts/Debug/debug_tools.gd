@@ -38,9 +38,14 @@ extends Control
 @onready var chord_lv = $TrackOptions/ChordLv as OptionButton
 #endregion
 
+var measure_progress_style_1 = preload("res://progress_1_style_box_flat.tres")
+var measure_progress_style_2 = preload("res://progress_2_style_box_flat.tres")
+
 var audio_node : AudioController
 var player_node : Player
 var setup_complete := false
+var measure_progress_count : int = 0
+var measure_progress_flip := false
 
 func update_debug_info(programTime : float, loopPlaybackTime : float, songStart : float, loopCount : int, measureCount : int, pausedTime : float):
 	program_time_text.text = str(programTime)
@@ -51,6 +56,12 @@ func update_debug_info(programTime : float, loopPlaybackTime : float, songStart 
 	update_paused_info(pausedTime)
 	var ms_per_loop = SongData.currentSong.ms_per_measure
 	$LoopProgress.value = fmod(loopPlaybackTime, ms_per_loop) / ms_per_loop * 100
+	if measure_progress_count != measureCount:
+		# check for when LoopProgress reaches end of bar to give a more rotating look
+		$LoopProgress.add_theme_stylebox_override("background", measure_progress_style_1 if measure_progress_flip else measure_progress_style_2)
+		$LoopProgress.add_theme_stylebox_override("fill", measure_progress_style_2 if measure_progress_flip else measure_progress_style_1)
+		measure_progress_flip = !measure_progress_flip
+	measure_progress_count = measureCount
 
 func update_paused_info(pausedTime : float):
 	paused_time_text.text = str(snapped(pausedTime, 0.01))

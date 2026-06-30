@@ -102,9 +102,6 @@ func _trigger_display(trackType):
 		track_options.display_timers[trackType] = Time.get_ticks_msec()
 		#Log.print("[AudioTest] Display Handler - mapped %s, current level %s" % [str(TrackData.Tracks.keys()[trackType]), str(TrackData.Level.keys()[level - 1])])
 
-func _on_track_toggled(isPaused):
-	start_pause_button.texture_normal = play_texture if isPaused else pause_texture
-
 func _on_fft_update(fft):
 	$SongChoiceControl/SongChoice/Background.material.set_shader_parameter("freq_data", fft)
 
@@ -169,5 +166,3 @@ func _ready():
 			alreadyActive.append(randTrack)
 			track_options.mute_toggles[randTrack].button_pressed = true
 #			audio_node.set_track_active(randTrack, true)
-	
-	track_options.active_toggled.connect(_on_track_toggled)
