@@ -81,7 +81,7 @@ func _on_start_pause_mouse_exited():
 func _handle_fancy_title_colors(trackType : TrackData.Tracks, enable : bool):
 	# doing parsing for fun
 	var finalString = ""
-	var originalText = $BigText.text as String
+	var originalText = $BigTextCanvasLayer/BigText.text as String
 	var colorStartIndex= 0
 	var colorEndIndex = 0
 	for i in trackType + 1:
@@ -92,7 +92,7 @@ func _handle_fancy_title_colors(trackType : TrackData.Tracks, enable : bool):
 	finalString = originalText.erase(colorStartIndex, to_replace_length)
 	finalString = finalString.insert(colorStartIndex, title_colors[trackType] if enable else "white")#originalText.left(colorEndIndex) + title_colors[trackType] if enable else "white" + originalText.right(-(colorEndIndex + to_replace_length))
 	#Log.print("%s final text is %s" % [TrackData.Tracks.keys()[trackType], finalString])
-	$BigText.text = finalString
+	$BigTextCanvasLayer/BigText.text = finalString
 
 func _trigger_display(trackType):
 	_handle_fancy_title_colors(trackType, true)
