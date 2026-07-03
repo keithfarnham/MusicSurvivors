@@ -369,6 +369,7 @@ func _midi_process():
 	for track in SongData.currentSong.trackData.values():
 		if !track_active.get(track.TrackType):
 			# early out for muted tracks
+			# if I want to support turning tracks on/off rather than only off->on then I need to avoid the event.emit rather than early out here
 			continue
 		if track.MidiProcess.is_empty():
 			push_warning("[MidiProcess] WARNING a track's MidiProcess is empty. This might just be in between loading so it may not acutally be an issue")

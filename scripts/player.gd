@@ -24,10 +24,10 @@ func _physics_process(delta):
 
 func _setup_weapons():
 	# set all the weapon nodes as inactive
+	var rand_track = TrackData.Tracks.values().pick_random()
 	for weapon_node in $attacks.get_children():
-		#TODO this is just manually adding KICK as an active starting track
-		# need to finish setting up the weapon scenes and remove this once i have starting weapons figured out
-		if weapon_node.track == TrackData.Tracks.KICK or weapon_node.track == TrackData.Tracks.SNARE or weapon_node.track == TrackData.Tracks.SAMPLE:
+		#TODO this is just randomly setting an active starting track
+		if weapon_node.track == rand_track:
 			weapon_node.activate_weapon()
 		else:
 			weapon_node.deactivate_weapon()

@@ -44,29 +44,63 @@ var display_timers = {}
 signal active_toggled(isActive)
 
 #region Mute Toggles
+# Debug Toggles -> Weapon -> Audio
+# if player doesn't exist (debug mode) just enable the track directly
 func _on_kick_toggled(toggled_on):
-	get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.KICK, toggled_on)
+	if get_tree().get_first_node_in_group("Player") != null:
+		var weapon_node = get_tree().get_first_node_in_group("Player").find_child("kick") as Kick
+		weapon_node.activate_weapon() if toggled_on else weapon_node.deactivate_weapon()
+	else:
+		get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.KICK, toggled_on)
 
 func _on_snare_toggled(toggled_on):
-	get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.SNARE, toggled_on)
+	if get_tree().get_first_node_in_group("Player") != null:	
+		var weapon_node = get_tree().get_first_node_in_group("Player").find_child("snare") as Snare
+		weapon_node.activate_weapon() if toggled_on else weapon_node.deactivate_weapon()
+	else:
+		get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.SNARE, toggled_on)
 
 func _on_cymb_toggled(toggled_on):
-	get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.CYMB, toggled_on)
+	if get_tree().get_first_node_in_group("Player") != null:
+		var weapon_node = get_tree().get_first_node_in_group("Player").find_child("cymb") as Cymb
+		weapon_node.activate_weapon() if toggled_on else weapon_node.deactivate_weapon()
+	else:
+		get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.CYMB, toggled_on)
 
 func _on_sample_toggled(toggled_on):
-	get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.SAMPLE, toggled_on)
+	if get_tree().get_first_node_in_group("Player") != null:
+		var weapon_node = get_tree().get_first_node_in_group("Player").find_child("sample") as Sample
+		weapon_node.activate_weapon() if toggled_on else weapon_node.deactivate_weapon()
+	else:
+		get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.SAMPLE, toggled_on)
 
 func _on_bass_toggled(toggled_on):
-	get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.BASS, toggled_on)
+	if get_tree().get_first_node_in_group("Player") != null:
+		var weapon_node = get_tree().get_first_node_in_group("Player").find_child("bass") as Bass
+		weapon_node.activate_weapon() if toggled_on else weapon_node.deactivate_weapon()
+	else:
+		get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.BASS, toggled_on)
 
 func _on_lead_toggled(toggled_on):
-	get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.LEAD, toggled_on)
+	if get_tree().get_first_node_in_group("Player") != null:
+		var weapon_node = get_tree().get_first_node_in_group("Player").find_child("lead") as Lead
+		weapon_node.activate_weapon() if toggled_on else weapon_node.deactivate_weapon()
+	else:
+		get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.LEAD, toggled_on)
 
 func _on_arp_toggled(toggled_on):
-	get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.ARP, toggled_on)
+	if get_tree().get_first_node_in_group("Player") != null:
+		var weapon_node = get_tree().get_first_node_in_group("Player").find_child("arp") as Arp
+		weapon_node.activate_weapon() if toggled_on else weapon_node.deactivate_weapon()
+	else:
+		get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.ARP, toggled_on)
 
 func _on_chord_toggled(toggled_on):
-	get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.CHORD, toggled_on)
+	if get_tree().get_first_node_in_group("Player") != null:
+		var weapon_node = get_tree().get_first_node_in_group("Player").find_child("chord") as Chord
+		weapon_node.activate_weapon() if toggled_on else weapon_node.deactivate_weapon()
+	else:
+		get_tree().get_first_node_in_group("AudioController").set_track_active(TrackData.Tracks.CHORD, toggled_on)
 #endregion
 
 #region Track level selectors

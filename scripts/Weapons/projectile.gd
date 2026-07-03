@@ -23,7 +23,7 @@ var hits_before_despawn : int = 1
 var target_pos : Vector2
 var speed : float = 1.0
 var damage : int
-var angle : Vector2
+var angle : Vector2 = Vector2.ZERO
 var spread : float
 var turn_speed : float = 1.0 #TODO setup turnspeed
 
@@ -47,9 +47,6 @@ func _set_state(newState : ProjectileState):
 	Log.print("[projectile] setting state from %s to %s" % [ str(ProjectileState.keys()[state]), str(ProjectileState.keys()[newState]) ])
 	state = newState
 
-func _get_distance(pos1 : Vector2, pos2 : Vector2) -> float:
-	return sqrt( pow(pos2.x - pos1.x, 2) + pow(pos2.y - pos1.y, 2) )
-
 #region state machine functions
 # basic fuctions for each state. These happen for EVERY projectile unless overridden 
 # call base func in override via super()
@@ -58,13 +55,13 @@ func _on_projectile_spawn():
 	_set_state(ProjectileState.FLYING)
 
 func _on_projectile_flying():
-	if distance_to_falloff != 0.0 and _get_distance(start_position, position) >= distance_to_falloff:
+	if distance_to_falloff != 0.0 and start_position.distance_to(position) >= distance_to_falloff:
 		_set_state(ProjectileState.FALLOFF)
-	if distance_to_despawn != 0.0 and _get_distance(start_position, position) >= distance_to_despawn:
+	if distance_to_despawn != 0.0 and start_position.distance_to(position) >= distance_to_despawn:
 		_set_state(ProjectileState.ON_DESPAWN)
 
 func _on_projectile_falloff():
-	if _get_distance(start_position, position) >= distance_to_falloff + falloff_distance:
+	if start_position.distance_to(position) >= distance_to_falloff + falloff_distance:
 		_set_state(ProjectileState.ON_DESPAWN)
 
 func _on_projectile_despawn():
@@ -95,5 +92,5 @@ func initialize(newDmg : int, newStartPos : Vector2, newTargetPos : Vector2, new
 	position = newStartPos
 	target_pos = newTargetPos
 	speed = newSpeed
-	angle = newAngle
+#	rotate(angle.angle_to(newAngle))
 	turn_speed = newTurnSpeed

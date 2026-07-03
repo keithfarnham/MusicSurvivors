@@ -14,7 +14,7 @@ func spawn_projectiles():
 	var newInstance = snareProjectile.instantiate() as SnareProjectile
 	var damage = 1
 	var speed = 50.0
-	newInstance.initialize(damage, player.position, get_nearest_target_pos(), speed, Vector2.ZERO)
+	newInstance.initialize(damage, player.position, get_nearest_target_pos(), speed, player.position.direction_to(get_nearest_target_pos()))
 	
 	# adding the projectiles as a child of the player makes them inherit movement from the parent.
 	# to avoid this there is a Projectile control node in the game scene
