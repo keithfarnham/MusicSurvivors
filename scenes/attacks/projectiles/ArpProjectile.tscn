@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://imkrjgeu8ll2"]
+
+[ext_resource type="Script" uid="uid://bdfygeue3mffj" path="res://scripts/Weapons/Player/arp_projectile.gd" id="1_1c2op"]
+[ext_resource type="Texture2D" uid="uid://b4w5vlkufbtrr" path="res://sprites/WeaponIcons/attack/ray_body.png" id="2_1c2op"]
+[ext_resource type="PackedScene" uid="uid://dgswms5nnfie4" path="res://scenes/Hitbox.tscn" id="3_5b58x"]
+[ext_resource type="Texture2D" uid="uid://yg7rr0bj8tdg" path="res://resources/textures/snare_collision_1d_gradient.tres" id="4_nhntx"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5ccsb"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_bkd3d"]
+particle_flag_disable_z = true
+inherit_velocity_ratio = 1.0
+spread = 180.0
+initial_velocity_min = 1.0
+initial_velocity_max = 1.0
+gravity = Vector3(0, 0, 0)
+linear_accel_min = -0.10000224
+linear_accel_max = 0.09999776
+radial_accel_min = -2.2351742e-06
+radial_accel_max = 5.6699977
+tangential_accel_min = -0.10000224
+tangential_accel_max = 0.09999776
+scale_min = 0.25
+scale_max = 0.5
+scale_over_velocity_max = 1.0
+hue_variation_min = -0.050000023
+hue_variation_max = 0.009999977
+
+[node name="arpProjectile" type="Node2D" unique_id=405191859 groups=["attack"]]
+script = ExtResource("1_1c2op")
+
+[node name="arpSprite" type="Sprite2D" parent="." unique_id=458918324]
+texture_filter = 1
+scale = Vector2(0.003, 0.05)
+texture = ExtResource("2_1c2op")
+
+[node name="arpHitbox" parent="." unique_id=56940634 instance=ExtResource("3_5b58x")]
+collision_layer = 2
+collision_mask = 4
+
+[node name="hitboxCollision" parent="arpHitbox" index="0" unique_id=1189916875]
+scale = Vector2(0.01, 0.08)
+shape = SubResource("RectangleShape2D_5ccsb")
+debug_color = Color(2.5027991e-06, 0.6476252, 0.20777756, 0.41960785)
+
+[node name="collisionParticles" type="GPUParticles2D" parent="." unique_id=1560118833]
+z_index = 1
+emitting = false
+amount = 20
+texture = ExtResource("4_nhntx")
+lifetime = 0.25
+one_shot = true
+fixed_fps = 120
+process_material = SubResource("ParticleProcessMaterial_bkd3d")
+
+[connection signal="area_entered" from="arpHitbox" to="." method="_on_arp_hitbox_area_entered"]
+
+[editable path="arpHitbox"]

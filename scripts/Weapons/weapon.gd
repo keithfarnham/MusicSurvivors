@@ -27,7 +27,7 @@ func deactivate_weapon():
 
 func get_nearest_target_pos() -> Vector2:
 	var nearest_enemy = get_nearest_enemy()
-	return Vector2(0, 0) if nearest_enemy == null else nearest_enemy.position
+	return get_random_screen_pos() if nearest_enemy == null else nearest_enemy.position
 	
 func get_nearest_enemy():
 	var nearest_enemy
@@ -41,6 +41,10 @@ func get_nearest_enemy():
 			nearest_dist = dist
 			nearest_enemy = enemyNode
 	return nearest_enemy
-	
+
+func get_random_screen_pos():
+	var screen_size = get_viewport_rect().size
+	return Vector2(randf_range(0.0, screen_size.x), randf_range(0.0, screen_size.y))
+
 func _on_level_change(newLevel : TrackData.Level):
 	current_level = newLevel

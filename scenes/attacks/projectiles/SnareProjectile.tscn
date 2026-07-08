@@ -3,10 +3,30 @@
 [ext_resource type="Script" uid="uid://b6csubk0oc0b8" path="res://scripts/Weapons/Player/snare_projectile.gd" id="1_b5x8b"]
 [ext_resource type="Texture2D" uid="uid://c1ds2pslffyh4" path="res://sprites/WeaponIcons/attack/snare.png" id="2_5e27i"]
 [ext_resource type="PackedScene" uid="uid://dgswms5nnfie4" path="res://scenes/Hitbox.tscn" id="3_5ccsb"]
+[ext_resource type="Texture2D" uid="uid://yg7rr0bj8tdg" path="res://resources/textures/snare_collision_1d_gradient.tres" id="4_5e27i"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hrqed"]
 radius = 1.0
 height = 2.0
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_bkd3d"]
+particle_flag_disable_z = true
+inherit_velocity_ratio = 1.0
+spread = 180.0
+initial_velocity_min = 1.0
+initial_velocity_max = 1.0
+gravity = Vector3(0, 0, 0)
+linear_accel_min = -0.10000224
+linear_accel_max = 0.09999776
+radial_accel_min = -2.2351742e-06
+radial_accel_max = 5.6699977
+tangential_accel_min = -0.10000224
+tangential_accel_max = 0.09999776
+scale_min = 0.25
+scale_max = 0.5
+scale_over_velocity_max = 1.0
+hue_variation_min = -0.050000023
+hue_variation_max = 0.009999977
 
 [node name="snareProjectile" type="Node2D" unique_id=405191859 groups=["attack"]]
 script = ExtResource("1_b5x8b")
@@ -26,5 +46,17 @@ position = Vector2(0, -0.6)
 scale = Vector2(0.7, 1)
 shape = SubResource("CapsuleShape2D_hrqed")
 debug_color = Color(2.5027991e-06, 0.6476252, 0.20777756, 0.41960785)
+
+[node name="collisionParticles" type="GPUParticles2D" parent="." unique_id=1560118833]
+z_index = 1
+emitting = false
+amount = 20
+texture = ExtResource("4_5e27i")
+lifetime = 0.25
+one_shot = true
+fixed_fps = 120
+process_material = SubResource("ParticleProcessMaterial_bkd3d")
+
+[connection signal="area_entered" from="snareHitbox" to="." method="_on_snare_hitbox_area_entered"]
 
 [editable path="snareHitbox"]

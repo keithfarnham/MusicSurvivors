@@ -2,13 +2,13 @@
 
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
-uid="uid://bljvtg3ba5rjf"
-path="res://.godot/imported/cosmicchill_lv1_sample.ogg-8cec2b7a68b7b35b59b198ead39d9bbc.oggvorbisstr"
+uid="uid://hlx6y1app4w7"
+path="res://.godot/imported/CosmicChill_lv1_sample.ogg-6644aa19af13b96cfc55635849c2fcad.oggvorbisstr"
 
 [deps]
 
-source_file="res://songs/CosmicChill/audio/sample/cosmicchill_lv1_sample.ogg"
-dest_files=["res://.godot/imported/cosmicchill_lv1_sample.ogg-8cec2b7a68b7b35b59b198ead39d9bbc.oggvorbisstr"]
+source_file="res://songs/CosmicChill/audio/sample/CosmicChill_lv1_sample.ogg"
+dest_files=["res://.godot/imported/CosmicChill_lv1_sample.ogg-6644aa19af13b96cfc55635849c2fcad.oggvorbisstr"]
 
 [params]
 

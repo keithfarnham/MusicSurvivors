@@ -1,10 +1,10 @@
 extends Projectile
 
-class_name SnareProjectile
+class_name ArpProjectile
 
 @onready var particles = $collisionParticles as GPUParticles2D
-#var default_gradient = preload("res://resources/textures/snare_1d_gradient.tres")
-#var colliding_gradient = preload("res://resources/textures/snare_collision_1d_gradient.tres")
+var default_gradient = preload("res://resources/textures/snare_1d_gradient.tres")
+var colliding_gradient = preload("res://resources/textures/snare_collision_1d_gradient.tres")
 
 @export var accel_default : float = 0.1
 @export var accel_collision : float = 0.5
@@ -21,6 +21,6 @@ func _ready():
 	angle = global_position.direction_to(target_pos)
 	rotation = angle.angle() + deg_to_rad(90)
 
-func _on_snare_hitbox_area_entered(area):
+func _on_arp_hitbox_area_entered(area):
 	# turn on hit particles
 	particles.emitting = true

@@ -44,20 +44,29 @@ shape = SubResource("RectangleShape2D_b4xdg")
 [node name="attacks" type="Node2D" parent="." unique_id=931420720]
 
 [node name="kick" parent="attacks" unique_id=503724186 instance=ExtResource("4_hwioa")]
+visible = false
 
 [node name="snare" parent="attacks" unique_id=1938818084 groups=["attack"] instance=ExtResource("5_b4xdg")]
+visible = false
 
 [node name="cymb" parent="attacks" unique_id=284221930 instance=ExtResource("6_qxfha")]
+visible = false
 
 [node name="sample" parent="attacks" unique_id=405191859 instance=ExtResource("7_cw2d6")]
+visible = false
 
 [node name="bass" parent="attacks" unique_id=2081952260 instance=ExtResource("9_o4126")]
+visible = false
 
 [node name="lead" parent="attacks" unique_id=1821741322 instance=ExtResource("8_d3wef")]
+visible = false
 
 [node name="arp" parent="attacks" unique_id=1277362349 instance=ExtResource("10_lkdrv")]
+visible = false
+speed = 100.0
 
 [node name="chord" parent="attacks" unique_id=1551177728 instance=ExtResource("11_p7iby")]
+visible = false
 
 [connection signal="hurt" from="playerHurtbox" to="." method="_on_hurtbox_hurt"]
 
