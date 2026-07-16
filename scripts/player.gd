@@ -18,6 +18,9 @@ func _ready():
 	# connect midi event signal
 	audio_node.midi_event.connect(_trigger_attack)
 	_setup_weapons()
+	
+func _process(delta):
+	interface.debug_update_player_pos(global_position)
 
 func _physics_process(delta):
 	move(delta)

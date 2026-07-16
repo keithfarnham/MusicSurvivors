@@ -39,3 +39,32 @@ offset_bottom = 26.0
 scale = Vector2(0.25, 0.25)
 texture_over = ExtResource("3_wq4ys")
 texture_progress = ExtResource("4_22y41")
+
+[node name="DebugGUI" type="Control" parent="GUIControl" unique_id=201205041]
+anchors_preset = 0
+offset_right = 68.0
+offset_bottom = 7.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="GUIControl/DebugGUI" unique_id=1827538457]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.9705882
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="PosLabel" type="RichTextLabel" parent="GUIControl/DebugGUI/HBoxContainer" unique_id=1515983453]
+custom_maximum_size = Vector2(18, -1)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/normal_font_size = 3
+text = "Player Pos: "
+fit_content = true
+
+[node name="PosValue" type="RichTextLabel" parent="GUIControl/DebugGUI/HBoxContainer" unique_id=338126455]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/normal_font_size = 4
+text = "(0000.00, 0000.00)"

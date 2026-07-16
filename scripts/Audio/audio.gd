@@ -4,6 +4,7 @@ class_name AudioController
 
 @onready var Debug = $DebugDisplay/DebugInfo
 
+# spectrum analysis code from https://godotshaders.com/shader/spectrum-analyzer/
 # fft spectrum analysis vars
 const VU_COUNT = 60 #match up this value with whatever VU_COUNT is in the shader
 const FREQ_MAX = 8000.0

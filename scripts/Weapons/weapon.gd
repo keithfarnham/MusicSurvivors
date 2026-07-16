@@ -27,7 +27,7 @@ func deactivate_weapon():
 
 func get_nearest_target_pos() -> Vector2:
 	var nearest_enemy = get_nearest_enemy()
-	return get_random_screen_pos() if nearest_enemy == null else nearest_enemy.position
+	return get_random_screen_pos() if nearest_enemy == null else nearest_enemy.global_position
 	
 func get_nearest_enemy():
 	var nearest_enemy
