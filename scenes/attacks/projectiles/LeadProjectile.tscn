@@ -1,15 +1,19 @@
 [gd_scene format=3 uid="uid://c3iar0op6ygfk"]
 
 [ext_resource type="Texture2D" uid="uid://c6oj52irylqb2" path="res://sprites/WeaponIcons/attack/ray_top.png" id="1_1b5i7"]
+[ext_resource type="Script" uid="uid://nmhkrj84ha6m" path="res://scripts/Weapons/Player/lead_projectile.gd" id="1_phbix"]
 [ext_resource type="PackedScene" uid="uid://dgswms5nnfie4" path="res://scenes/Hitbox.tscn" id="2_phbix"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1j462"]
 size = Vector2(4, 3.5)
 
-[node name="leadProjectile" type="RigidBody2D" unique_id=1964099352]
-mass = 0.25
-gravity_scale = 0.0
-inertia = 1.0
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_bkd3d"]
+radius = 2.0
+height = 4.0
+
+[node name="leadProjectile" type="CharacterBody2D" unique_id=396122673]
+motion_mode = 1
+script = ExtResource("1_phbix")
 
 [node name="leadSprite" type="Sprite2D" parent="." unique_id=1070647548]
 texture_filter = 1
@@ -24,5 +28,10 @@ collision_mask = 4
 position = Vector2(0, 1.25)
 shape = SubResource("RectangleShape2D_1j462")
 debug_color = Color(2.5027991e-06, 0.6476252, 0.20777756, 0.41960785)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1556734286]
+top_level = true
+position = Vector2(0, 0.5)
+shape = SubResource("CapsuleShape2D_bkd3d")
 
 [editable path="leadHitbox"]

@@ -71,6 +71,6 @@ func _process(delta):
 	if !visible:
 		# don't need to handle this if it's not visible
 		return
-	Log.print("[arp] arp ufo is at %s" % [str(position)])
+	#Log.print("[arp] arp ufo is at %s" % [str(position)])
 	_floating_movement(delta)
 	_follow_movement(delta)

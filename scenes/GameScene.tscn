@@ -5,7 +5,12 @@
 [ext_resource type="PackedScene" uid="uid://bqwactsbgtg1e" path="res://scenes/Player.tscn" id="2_cxv17"]
 [ext_resource type="PackedScene" uid="uid://yxccevfb407i" path="res://scenes/Enemy1.tscn" id="3_cxv17"]
 [ext_resource type="PackedScene" uid="uid://xea7vhfq8eq7" path="res://scenes/AudioController.tscn" id="5_7s5hy"]
+[ext_resource type="Shader" uid="uid://dkpci0olca6tm" path="res://shaders/color_inverter.gdshader" id="6_6ytau"]
 [ext_resource type="PackedScene" uid="uid://bowa3juik316y" path="res://scenes/PlayerUI.tscn" id="6_xs4ih"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_j3pel"]
+shader = ExtResource("6_6ytau")
+shader_parameter/enabled = false
 
 [node name="Game" type="Node2D" unique_id=1367614656]
 script = ExtResource("1_xs4ih")
@@ -20,6 +25,7 @@ position = Vector2(160, 90)
 [node name="Enemy1" parent="." unique_id=836248145 instance=ExtResource("3_cxv17")]
 z_index = 1
 texture_filter = 1
+material = SubResource("ShaderMaterial_j3pel")
 position = Vector2(33, -26)
 scale = Vector2(0.5, 0.5)
 

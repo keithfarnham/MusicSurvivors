@@ -5,6 +5,8 @@
 [ext_resource type="PackedScene" uid="uid://ceokyxnjfscgk" path="res://scenes/Hurtbox.tscn" id="3_8hsf7"]
 [ext_resource type="PackedScene" uid="uid://dgswms5nnfie4" path="res://scenes/Hitbox.tscn" id="3_divfq"]
 
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_pynjx"]
+
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8hsf7"]
 radius = 3.0
 height = 10.0
@@ -20,6 +22,7 @@ script = ExtResource("1_vm68c")
 
 [node name="sprite" type="Sprite2D" parent="." unique_id=1076869869]
 texture_filter = 1
+material = SubResource("CanvasItemMaterial_pynjx")
 texture = ExtResource("1_mn0d1")
 
 [node name="enemyCollision" type="CollisionShape2D" parent="." unique_id=1028636312]

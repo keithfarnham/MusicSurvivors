@@ -26,6 +26,7 @@ var damage : int
 var angle : Vector2 = Vector2.ZERO
 var spread : float
 var turn_speed : float = 1.0 #TODO setup turnspeed
+var persistent : bool = false
 
 var time_offscreen : float = 0.0 #TODO setup time offscreen to auto despawn
 const OFFSCREEN_DESPAWN_TIME := 1.0
@@ -55,6 +56,9 @@ func _on_projectile_spawn():
 	_set_state(ProjectileState.FLYING)
 
 func _on_projectile_flying():
+	if persistent:
+		# persistent projectiles never falloff/despawn
+		return
 	if distance_to_falloff != 0.0 and start_position.distance_to(position) >= distance_to_falloff:
 		_set_state(ProjectileState.FALLOFF)
 	if distance_to_despawn != 0.0 and start_position.distance_to(position) >= distance_to_despawn:
@@ -85,7 +89,7 @@ func _process(delta):
 		ProjectileState.ON_DESPAWN:
 			_on_projectile_despawn()
 
-func initialize(newDmg : int, newStartPos : Vector2, newTargetPos : Vector2, newSpeed : float, newAngle := Vector2.ZERO, newTurnSpeed := 1.0):
+func initialize(newDmg : int, newStartPos : Vector2, newTargetPos : Vector2, newSpeed : float, newAngle := Vector2.ZERO, newTurnSpeed := 1.0, isPersistent := false):
 	damage = newDmg
 	# set both cached and current start position
 	start_position = newStartPos
@@ -94,3 +98,4 @@ func initialize(newDmg : int, newStartPos : Vector2, newTargetPos : Vector2, new
 	speed = newSpeed
 #	rotate(angle.angle_to(newAngle))
 	turn_speed = newTurnSpeed
+	persistent = isPersistent

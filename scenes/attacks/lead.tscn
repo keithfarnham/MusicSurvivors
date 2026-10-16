@@ -1,11 +1,9 @@
 [gd_scene format=3 uid="uid://eybrsg3mpa4q"]
 
 [ext_resource type="Script" uid="uid://cwmslyt0ha5u2" path="res://scripts/Weapons/Player/lead.gd" id="1_4fkuy"]
-[ext_resource type="PackedScene" uid="uid://c3iar0op6ygfk" path="res://scenes/attacks/projectiles/LeadProjectile.tscn" id="2_4fkuy"]
 
 [node name="lead" type="Node2D" unique_id=1421396289 groups=["attack"]]
 script = ExtResource("1_4fkuy")
-force_scale = Vector2(0.25, 0.25)
 track = 5
 
-[node name="leadProjectile" parent="." unique_id=1964099352 instance=ExtResource("2_4fkuy")]
+[node name="Projectiles" type="Node" parent="." unique_id=2106941141]
